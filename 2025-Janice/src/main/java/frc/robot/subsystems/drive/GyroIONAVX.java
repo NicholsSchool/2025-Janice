@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import java.util.Objects;
 

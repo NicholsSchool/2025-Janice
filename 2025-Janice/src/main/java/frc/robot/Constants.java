@@ -102,14 +102,14 @@ public final class Constants {
     public static final double kDrivingMotorFreeSpinRPM = 6000; // Kraken non-FOC max RPM
     public static final double odometryCoefficient = 1.0; // TODO: tune odometry and use this
 
-    public static final double kDrivingP = 0.02; // TODO: tune these
+    public static final double kDrivingP = 0.02; 
     public static final double kDrivingI = 0.0;
     public static final double kDrivingD = 0.0;
     public static final double kDrivingFF = 0.0;
     public static final double kDrivingStaticFF = 0.1;
     public static final double kDrivingVelocityFF = 0.13;
 
-    public static final double kTurningP = 6.2; // TODO: tune these
+    public static final double kTurningP = 6.2;
     public static final double kTurningI = 0.0;
     public static final double kTurningD = 0.12;
     public static final double kTurningFF = 0.0;
@@ -117,8 +117,9 @@ public final class Constants {
     public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
     public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
 
-    public static final int kDrivingMotorCurrentLimit = 35; // amps
-    public static final int kTurningMotorCurrentLimit = 35; // amps
+    public static final int kDrivingMotorCurrentLimit = 90; // amps
+    public static final int kTurningMotorCurrentLimit = 40; // amps
+    public static final int kMotorSupplyCurrentLimit = 35; //amps
 
     // SDS MK4i L2 Modules
     public static final double kDRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);

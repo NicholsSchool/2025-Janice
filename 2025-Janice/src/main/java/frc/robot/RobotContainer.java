@@ -1,9 +1,16 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -14,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RobotType;
@@ -48,7 +56,7 @@ public class RobotContainer {
   public static CommandXboxController operatorController = new CommandXboxController(1);
 
   // Dashboard inputs
-  //private final LoggedDashboardChooser<Command> autoChooser;
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   // Start position selections
   public static final LoggedTunableNumber startPositionIndex =
@@ -122,8 +130,8 @@ public class RobotContainer {
         break;
     }
 
-    // // Set up auto routines
-    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // Set up auto routines
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Create auto commands
     //autoCommands = new AutoCommands(drive);
@@ -300,15 +308,13 @@ public class RobotContainer {
     //   // drive.setPose(PathPlannerAuto.getStaringPoseFromAutoFile("New Auto"));
     //   // return new PathPlannerAuto("New Auto");
     //   // return AutoBuilder.followPath(PathPlannerPath.fromPathFile("TestPath"));
-    //return autoChooser.get();
-    return new Command() {
-      
-    };
+    return autoChooser.get();
   }
 
   private void addAutos() {}
 
   private void addTestingAutos() {
+    autoChooser.addOption("Wait Auto", new WaitCommand(Time.ofBaseUnits(5, Seconds)) );
     // Pathplanner Auto Testing
     // Set up feedforward characterization
     // autoChooser.addOption(

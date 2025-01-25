@@ -139,7 +139,7 @@ public class Drive extends SubsystemBase {
       wheelAbsolutes[i] = modules[i].getPosition();
     }
 
-    pose = kalman.getEstimatedPosition();
+    //pose = kalman.getEstimatedPosition();
     // updateVision(wheelAbsolutes);
 
     // Log measured states

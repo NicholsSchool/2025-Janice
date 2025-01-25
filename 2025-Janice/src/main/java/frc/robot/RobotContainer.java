@@ -21,6 +21,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
+import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
@@ -77,7 +78,7 @@ public class RobotContainer {
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
         drive =
             new Drive(
-                new GyroIONAVX(),
+                new GyroIORedux(),
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
@@ -231,6 +232,16 @@ public class RobotContainer {
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
+
+    // drive.setDefaultCommand(
+    //   DriveCommands.joystickDriveWithAngle(
+    //     drive, 
+    //     () -> -driveController.getLeftY() * 0.3, 
+    //     () -> -driveController.getLeftX() * 0.3, 
+    //     () -> -driveController.getRightX() * 0.5, 
+    //     drive::getYaw,
+    //     () -> false)
+    // );
 
     driveController
         .a()

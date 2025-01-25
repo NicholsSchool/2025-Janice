@@ -40,6 +40,7 @@ public final class Constants {
 
   // CAN IDs (Controller Area Network)
   public static final class CAN {
+    public static final int kReduxGyro = 11;
 
     public static final int kFrontLeftDrive = 20;
     public static final int kFrontLeftPivot = 21;
@@ -56,16 +57,6 @@ public final class Constants {
     public static final int kBackRightDrive = 50;
     public static final int kBackRightPivot = 51;
     public static final int kBackRightEncoder = 52;
-
-    public static final int kShoulderL = 38;
-    public static final int kShoulderR = 39;
-
-    public static final int kIntake = 29;
-
-    public static final int kIndexer = 47;
-
-    public static final int kShooterTop = 48;
-    public static final int kShooterBottom = 49;
 
     public static final int kPowerDistributionHub = 50;
   }

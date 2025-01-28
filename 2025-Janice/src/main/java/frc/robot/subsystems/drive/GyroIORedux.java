@@ -13,7 +13,7 @@ public class GyroIORedux implements GyroIO {
   private final Canandgyro gyro;
 
   /** Creates a new gyro, with period 0.02 on yaw updates, and 0.1 on status updates. */
-  public GyroIORedux(  ) {
+  public GyroIORedux() {
     gyro = new Canandgyro( CAN.kReduxGyro );
     gyro.clearStickyFaults();
     gyro.setPartyMode(0);

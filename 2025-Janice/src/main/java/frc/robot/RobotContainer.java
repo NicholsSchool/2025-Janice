@@ -236,16 +236,6 @@ public class RobotContainer {
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
 
-    // drive.setDefaultCommand(
-    //   DriveCommands.joystickDriveWithAngle(
-    //     drive, 
-    //     () -> -driveController.getLeftY() * 0.3, 
-    //     () -> -driveController.getLeftX() * 0.3, 
-    //     () -> -driveController.getRightX() * 0.5, 
-    //     drive::getYaw,
-    //     () -> false)
-    // );
-
     driveController
         .a()
         .whileTrue(

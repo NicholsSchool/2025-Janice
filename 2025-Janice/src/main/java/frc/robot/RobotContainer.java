@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -46,6 +47,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   //private PowerDistribution pdh;
+  ColorInfo colorInfo;
 
   // shuffleboard
   ShuffleboardTab boomerangTab;
@@ -80,6 +82,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    colorInfo = new ColorInfo();
     switch (Constants.getRobot()) {
       case ROBOT_REAL:
         // Real robot, instantiate hardware IO implementations
@@ -158,21 +161,7 @@ public class RobotContainer {
   }
 
   public void updateShuffleboard() {
-
-    // if (Constants.getRobot() == RobotType.ROBOT_REAL) {
-    //   SmartDashboard.putNumber("PDH/Voltage", pdh.getVoltage());
-    //   SmartDashboard.putNumber("PDH/Current", pdh.getTotalCurrent());
-    //   SmartDashboard.putNumber("PDH/Power", pdh.getTotalPower());
-    //   SmartDashboard.putNumber("PDH/Energy", pdh.getTotalEnergy());
-
-    //   int numChannels = pdh.getNumChannels();
-    //   for (int i = 0; i < numChannels; i++) {
-    //     SmartDashboard.putNumber("PDH/Channel " + i, pdh.getCurrent(i));
-    //   }
-    // }
-      //System.out.println(LimelightHelpers.getTX("limelight"));
-
-    // resetPosWithDashboard();
+    colorInfo.pvCornerOne();
   }
 
   // changes robot pose with dashboard tunables

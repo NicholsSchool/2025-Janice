@@ -126,59 +126,6 @@ public final class Constants {
     public static final double kTURN_GEAR_RATIO = 150.0 / 7.0;
   }
 
-  public static final class ArmConstants {
-    public static double ArmStartPosDeg = 90.0;
-
-    public static final int ARM_CURRENT_LIMIT = 35; // amps
-    public static final double MIN_ANGLE_RADS = 0;
-    public static final double MAX_ANGLE_RADS = Math.PI;
-
-    public static final double ARM_GEAR_REDUCTION = 45.0;
-    public static final double ARM_GEAR_RATIO = 1.0 / ARM_GEAR_REDUCTION;
-
-    public static final double kAbsoluteEncoderOffset = 0.0;
-    // the absolute encoder value in degrees when the intended value is zero
-
-    public static final double ARM_P = 5;
-    public static final double ARM_I = 0.0;
-    public static final double ARM_D = 0.02;
-
-    public static final int kThroughBoreChannel = 7;
-  }
-
-  public static final class IntakeConstants {
-
-    public static double kVomitRPM = -800;
-    public static double kEatRPM = 600;
-    public static double kDigestRPM = 1500;
-    public static double kPoopRPM;
-    public static double kVomitDelay;
-  }
-
-  public static final class IndexerConstants {
-    public static final double kINDEXER_GEAR_RATIO = 1.0;
-
-    public static double kIndexRPM = -1000;
-    public static double kReverseRPM = 500;
-
-    public static final int INDEX_CURRENT_LIMIT = 35; // amps
-  }
-
-  public static final class ShooterConstants {
-    public static final double kSHOOTER_GEAR_RATIO = 1.0;
-
-    public static final double kShooterRPM = 2500;
-    public static final double kDeliverRPM = 1000;
-    public static final double kReverseRPM = 400;
-
-    public static final double kCurrentLimit = 35; // amps
-
-    public static double kP = 1.5;
-    public static double kD = 0.0;
-
-    public static double shootRampUpTimeSecs = 2.5;
-  }
-
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;

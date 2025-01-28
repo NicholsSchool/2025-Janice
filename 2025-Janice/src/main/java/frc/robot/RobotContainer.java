@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -242,7 +243,7 @@ public class RobotContainer {
                 drive,
                 () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
                 () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-                () -> LimelightHelpers.getTX("limelight"),
+                () -> 0,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
     driveController
@@ -282,6 +283,7 @@ public class RobotContainer {
     //   // drive.setPose(PathPlannerAuto.getStaringPoseFromAutoFile("New Auto"));
     //   // return new PathPlannerAuto("New Auto");
     //   // return AutoBuilder.followPath(PathPlannerPath.fromPathFile("TestPath"));
+    registerNamedCommands();
     return autoChooser.get();
   }
 
@@ -315,5 +317,10 @@ public class RobotContainer {
 
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot
+  }
+
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("Print", new InstantCommand( () -> System.out.println("Print Command!")));
+    
   }
 }

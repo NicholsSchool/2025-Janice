@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.RobotType;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.drive.Drive;
@@ -43,7 +44,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   //private PowerDistribution pdh;
-  ColorInfo colorInfo;
+  ColorInfo colorInfo = null;
 
   // shuffleboard
   ShuffleboardTab boomerangTab;
@@ -78,11 +79,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    colorInfo = new ColorInfo();
     switch (Constants.getRobot()) {
       case ROBOT_REAL:
         // Real robot, instantiate hardware IO implementations
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        colorInfo = new ColorInfo();
         drive =
             new Drive(
                 new GyroIORedux(),
@@ -117,7 +118,6 @@ public class RobotContainer {
         // case ROBOT_REPLAY:
         // Replayed robot, disable IO implementations since the replay
         // will supply the data.
-
         drive =
             new Drive(
                 new GyroIO() {},
@@ -157,7 +157,9 @@ public class RobotContainer {
   }
 
   public void updateShuffleboard() {
-    colorInfo.pvCornerOne();
+    if (RobotType.ROBOT_REAL == Constants.getRobot()) {
+      colorInfo.pvCornerOne();
+    }
   }
 
   // changes robot pose with dashboard tunables

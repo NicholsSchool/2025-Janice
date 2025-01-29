@@ -15,6 +15,8 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
 
@@ -27,8 +29,17 @@ import frc.robot.Constants;
  */
 public class ModuleIOSim implements ModuleIO {
 
-  private DCMotorSim driveSim = new DCMotorSim(null, null, null);
-  private DCMotorSim turnSim = new DCMotorSim(null, null, null);
+  private static final DCMotor driveMotorModel = DCMotor.getKrakenX60(1);
+  private static final DCMotor turnMotorModel = DCMotor.getKrakenX60(1);
+
+  private final DCMotorSim driveSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(driveMotorModel, 0.025, Constants.ModuleConstants.kDRIVE_GEAR_RATIO),
+          driveMotorModel);
+  private final DCMotorSim turnSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(turnMotorModel, 0.004, Constants.ModuleConstants.kTURN_GEAR_RATIO),
+          turnMotorModel);
 
   private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);
   private double driveAppliedVolts = 0.0;

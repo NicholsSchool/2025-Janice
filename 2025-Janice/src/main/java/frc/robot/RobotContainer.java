@@ -6,6 +6,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -59,18 +63,18 @@ public class RobotContainer {
 
   // Start position selections
   public static final LoggedTunableNumber startPositionIndex =
-      new LoggedTunableNumber("start pos index: 0 or 1", 0.0);
+      new LoggedTunableNumber("start pos index: 0 or 1", 1.34);
   // Start Pos 0: Along line of the Amp.
   public static final LoggedTunableNumber startX0 =
       new LoggedTunableNumber("Start X0(m)", Units.inchesToMeters(0));
-  public static final LoggedTunableNumber startY0 = new LoggedTunableNumber("Start Y0(m)", 4.05);
+  public static final LoggedTunableNumber startY0 = new LoggedTunableNumber("Start Y0(m)", 6.64);
   public static final LoggedTunableNumber startTheta0 =
       new LoggedTunableNumber("Start Theta0(deg)", 0.0);
   // Start Pos 1: Next to human player side of Speaker.
   public static final LoggedTunableNumber startX1 =
       new LoggedTunableNumber(
-          "Start X1(m)", Units.inchesToMeters(RobotConstants.robotSideLengthInches / 2));
-  public static final LoggedTunableNumber startY1 = new LoggedTunableNumber("Start Y1(m)", 4.05);
+          "Start X1(m)", 1.34);
+  public static final LoggedTunableNumber startY1 = new LoggedTunableNumber("Start Y1(m)", 6.64);
   public static final LoggedTunableNumber startTheta1 =
       new LoggedTunableNumber("Start Theta1(deg)", 0.0);
 
@@ -274,6 +278,17 @@ public class RobotContainer {
   //  * @return the command to run in autonomous
   //  */
   public Command getAutonomousCommand() {
+
+     try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+        System.out.println("ACTIVE PATH CALL BACK 3");
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+
     //   // var path = PathPlannerAuto.getStaringPoseFromAutoFile("TestAuto");
     //   // var path = PathPlannerPath.fromChoreoTrajectory("New Path");
     //   // NamedCommands.registerCommand("RunIntake", intake.runEatCommand().withTimeout(1.0));
@@ -285,8 +300,8 @@ public class RobotContainer {
     //   // drive.setPose(PathPlannerAuto.getStaringPoseFromAutoFile("New Auto"));
     //   // return new PathPlannerAuto("New Auto");
     //   // return AutoBuilder.followPath(PathPlannerPath.fromPathFile("TestPath"));
-    registerNamedCommands();
-    return autoChooser.get();
+    //registerNamedCommands();
+    //return autoChooser.get();
   }
 
   private void addAutos() {}

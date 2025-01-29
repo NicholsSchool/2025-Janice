@@ -29,8 +29,8 @@ import frc.robot.Constants;
  */
 public class ModuleIOSim implements ModuleIO {
 
-  private static final DCMotor driveMotorModel = DCMotor.getKrakenX60Foc(1);
-  private static final DCMotor turnMotorModel = DCMotor.getKrakenX60Foc(1);
+  private static final DCMotor driveMotorModel = DCMotor.getKrakenX60(1);
+  private static final DCMotor turnMotorModel = DCMotor.getKrakenX60(1);
 
   private final DCMotorSim driveSim =
       new DCMotorSim(

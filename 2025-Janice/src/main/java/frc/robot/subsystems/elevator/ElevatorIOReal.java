@@ -24,5 +24,22 @@ public class ElevatorIOReal implements ElevatorIO{
     rShoulder.setControl(new Follower(CAN.kLeftChain, true));
   }
 
+  private double getHeight(){
+    //TODO: we need to figure out what the conversion is between this and the actual height is 
+    return lShoulder.getPosition().getValueAsDouble();
+  }
+
+  @Override
+  public void updateInputs(ElevatorIOInputs inputs){
+    inputs.currentHeight = this.getHeight();
+    inputs.appliedVolts = new double[] {lShoulder.getMotorVoltage().getValueAsDouble(), rShoulder.getMotorVoltage().getValueAsDouble()};
+    inputs.velocityRadPerSec = new double[] {lShoulder.getVelocity().getValueAsDouble(), rShoulder.getVelocity().getValueAsDouble()};
+    inputs.currentAmps = new double[] {lShoulder.getStatorCurrent().getValueAsDouble(), lShoulder.getStatorCurrent().getValueAsDouble()};
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    lShoulder.setVoltage(voltage);
+  }
   
 }

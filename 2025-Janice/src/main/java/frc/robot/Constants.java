@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -62,6 +63,9 @@ public final class Constants {
     public static final int kBackRightEncoder = 52;
 
     public static final int kPowerDistributionHub = 50;
+
+    //TODO: get the real CAN ID
+    public static final int kArmMotor = 0;
   }
 
   public static final class RobotConstants {
@@ -143,5 +147,15 @@ public final class Constants {
     public static Translation2d cameraOnePosition = new Translation2d(-0.3, -0.3);
     public static Translation2d cameraTwoPosition = new Translation2d(-0.3, 0.3);
     public static double cameraOneAngle = Units.degreesToRadians(45);
+  }
+
+  //TODO: Get reala constants
+  public static final class ArmConstants {
+    public static final double ARM_P = -0.0;
+    public static final double ARM_I = -0.0;
+    public static final double ARM_D= -0.0;
+    public static final double ARM_CURRENT_LIMIT = 0;
+    public static final DutyCycle kThroughBoreChannel = null;
+    public static final double kAbsoluteEncoderOffset = -0.0;
   }
 }

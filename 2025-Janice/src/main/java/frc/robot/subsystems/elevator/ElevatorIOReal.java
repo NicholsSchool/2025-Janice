@@ -5,12 +5,14 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 
 public class ElevatorIOReal implements ElevatorIO{
     private TalonFX lShoulder;
     private TalonFX rShoulder;
+    private DigitalInput elevatorLimitSwitch;
 
     public ElevatorIOReal() {
     lShoulder = new TalonFX(CAN.kLeftChain);
@@ -22,6 +24,8 @@ public class ElevatorIOReal implements ElevatorIO{
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     lShoulder.getConfigurator().apply(config);
     rShoulder.setControl(new Follower(CAN.kLeftChain, true));
+
+    elevatorLimitSwitch = new DigitalInput(Constants.ElevatorConstants.elevatorLimitSwitchChannel);
   }
 
   private double getHeight(){

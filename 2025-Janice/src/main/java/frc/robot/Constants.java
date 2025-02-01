@@ -136,6 +136,8 @@ public final class Constants {
     public static double kElevatorD = 0;
     public static double maxHeight = 3.0;
     public static double minHeight = 0.0;
+
+    public static int elevatorLimitSwitchChannel = 1;
   }
 
   public static final class AutoConstants {

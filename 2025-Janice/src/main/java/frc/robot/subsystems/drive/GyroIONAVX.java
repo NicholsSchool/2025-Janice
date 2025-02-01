@@ -13,7 +13,7 @@ public class GyroIONAVX implements GyroIO {
   /** Constructor to initialize the NAVX */
   public GyroIONAVX() {
     if (Objects.requireNonNull(Constants.getRobot()) == Constants.RobotType.ROBOT_REAL) {
-      navx = new AHRS(NavXComType.kMXP_SPI);
+      navx = new AHRS(NavXComType.kUSB1);
     } else {
       throw new RuntimeException("Invalid robot for NAVX");
     }

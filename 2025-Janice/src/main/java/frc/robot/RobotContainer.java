@@ -31,8 +31,10 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONAVX;
 import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.AllianceFlipUtil;
@@ -90,11 +92,19 @@ public class RobotContainer {
         colorInfo = new ColorInfo();
         drive =
             new Drive(
-                new GyroIORedux(),
-                new ModuleIOTalonFX(0),
-                new ModuleIOTalonFX(1),
-                new ModuleIOTalonFX(2),
-                new ModuleIOTalonFX(3));
+                new GyroIONAVX(),
+                new ModuleIOMaxSwerve(0),
+                new ModuleIOMaxSwerve(1),
+                new ModuleIOMaxSwerve(2),
+                new ModuleIOMaxSwerve(3));
+                // new ModuleIOSim(),
+                // new ModuleIOSim(),
+                // new ModuleIOSim(),
+                // new ModuleIOSim());
+                // new ModuleIOTalonFX(0),
+                // new ModuleIOTalonFX(1),
+                // new ModuleIOTalonFX(2),
+                // new ModuleIOTalonFX(3));
         break;
 
       case ROBOT_SIM:

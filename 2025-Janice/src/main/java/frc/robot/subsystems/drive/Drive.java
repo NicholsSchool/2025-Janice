@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.util.LocalADStarAK;
 
 // import frc.robot.commands.VisionCommands.PhotonInfo;
@@ -285,6 +286,11 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     return pose;
+  }
+
+  @AutoLogOutput(key = "limelightPos")
+  public Pose2d limelightPose(){
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").pose;
   }
 
   /** Returns the current odometry rotation. */

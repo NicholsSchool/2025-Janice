@@ -1,9 +1,14 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants;
+
 import java.util.List;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
@@ -84,6 +89,10 @@ public class PhotonVision extends SubsystemBase {
   to object/fiducial tag space (X forward, Y left, Z up) with the lowest highest error*/
   public Transform3d getAlternateCamera(PhotonTrackedTarget target) {
     return target.getAlternateCameraToTarget();
+  }
+
+  public Pose3d getLocalizedPose(PhotonTrackedTarget target){
+    return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), FieldConstants.aprilTags.getTagPose(target.getFiducialId()).orElse(new Pose3d()), new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, Math.PI / 2)));
   }
 
   // @Override

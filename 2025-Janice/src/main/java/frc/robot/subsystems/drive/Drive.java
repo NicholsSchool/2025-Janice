@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.LocalADStarAK;
 
 // import frc.robot.commands.VisionCommands.PhotonInfo;
@@ -58,6 +59,8 @@ public class Drive extends SubsystemBase {
   private Pose2d pose = new Pose2d();
   private Rotation2d lastGyroRotation = new Rotation2d();
 
+  private PhotonVision photonCam;
+
   private Twist2d fieldVelocity = new Twist2d(); // TJG
   private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
 
@@ -85,7 +88,8 @@ public class Drive extends SubsystemBase {
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
-
+      
+    photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
          RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
@@ -291,6 +295,13 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "limelightPos")
   public Pose2d limelightPose(){
     return LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").pose;
+    // LimelightHelpers.SetRobotOrientation("limelight", this.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0 );
+    // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight").pose;
+  }
+
+  @AutoLogOutput(key = "photonPos")
+  public Pose2d photonPose(){
+    return photonCam.getLocalizedPose().toPose2d();
   }
 
   /** Returns the current odometry rotation. */

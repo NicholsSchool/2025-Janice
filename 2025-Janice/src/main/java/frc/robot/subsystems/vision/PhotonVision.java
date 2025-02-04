@@ -91,9 +91,17 @@ public class PhotonVision extends SubsystemBase {
     return target.getAlternateCameraToTarget();
   }
 
-  public Pose3d getLocalizedPose(PhotonTrackedTarget target){
-    return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), FieldConstants.aprilTags.getTagPose(target.getFiducialId()).orElse(new Pose3d()), new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, Math.PI / 2)));
+  public Pose3d getLocalizedPose(){
+    PhotonPipelineResult result = getLatestPipeline();
+    PhotonTrackedTarget target = result.getBestTarget();
+    if(target == null){ return new Pose3d();}
+    else{
+    return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+     FieldConstants.aprilTags.getTagPose(target.getFiducialId()).orElse(new Pose3d()),
+      new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, Math.PI / 2)));
+    }
   }
+
 
   // @Override
   // public void periodic(){

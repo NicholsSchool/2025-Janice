@@ -71,6 +71,7 @@ public class PhotonVision extends SubsystemBase {
 
   // Get id of tag
   public int getTargetId(PhotonTrackedTarget target) {
+    if(target == null){ return -1;} 
     return target.getFiducialId();
   }
 

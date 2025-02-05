@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -166,7 +167,7 @@ public class Drive extends SubsystemBase {
     }
 
     //pose = kalman.getEstimatedPosition();
-    // updateVision(wheelAbsolutes);
+    updateVision(wheelAbsolutes);
 
     // Log measured states
     SwerveModuleState[] measuredStates = new SwerveModuleState[4];
@@ -293,15 +294,20 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "limelightPos")
-  public Pose2d limelightPose(){
+  public Pose2d getLimelightPose(){
     return LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").pose;
     // LimelightHelpers.SetRobotOrientation("limelight", this.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0 );
     // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight").pose;
   }
 
   @AutoLogOutput(key = "photonPos")
-  public Pose2d photonPose(){
+  public Pose2d getPhotonPose(){
     return photonCam.getLocalizedPose().toPose2d();
+  }
+
+  @AutoLogOutput
+  public Pose2d getFilteredPose(){
+    return kalman.getEstimatedPosition();
   }
 
   /** Returns the current odometry rotation. */
@@ -368,11 +374,14 @@ public class Drive extends SubsystemBase {
     return pose.getRotation().getRadians();
   }
 
-  // public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
-  //   // setPose(pi.getTagPose(getYaw(), getPose()));
-  //   if (pi.getIDOne() != -1) {
-  //     kalman.addVisionMeasurement(pi.getTagPose(getYaw(), getPose()), Timer.getFPGATimestamp());
-  //   }
-  //   kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
-  // }
+  public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
+    // setPose(pi.getTagPose(getYaw(), getPose()));
+    if (LimelightHelpers.getTV("limelight")) {
+      kalman.addVisionMeasurement(getLimelightPose(), Timer.getFPGATimestamp());
+    }
+    if (photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1) {
+      kalman.addVisionMeasurement(getPhotonPose(), Timer.getFPGATimestamp());
+    }
+    kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
+  }
 }

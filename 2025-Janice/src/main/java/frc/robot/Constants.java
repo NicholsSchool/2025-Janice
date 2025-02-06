@@ -62,6 +62,8 @@ public final class Constants {
     public static final int kBackRightEncoder = 52;
 
     public static final int kPowerDistributionHub = 50;
+
+    public static final int kRightChain = 0;
   }
 
   public static final class RobotConstants {
@@ -124,6 +126,17 @@ public final class Constants {
     // SDS MK4i L2 Modules
     public static final double kDRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double kTURN_GEAR_RATIO = 150.0 / 7.0;
+  }
+
+  public static final class EndEffectorConstants {
+
+    public static final double kEndEffectorP = 6.2;
+    public static final double kEndEffectorI = 0.0;
+    public static final double kEndEffectorD = 0.12;
+    public static final double kEndEffectorFF = 0.0;
+    public static final double CurrentLimit = 0;
+    public static final int elevatorLimitSwitchChannel = 0;
+
   }
 
   public static final class AutoConstants {

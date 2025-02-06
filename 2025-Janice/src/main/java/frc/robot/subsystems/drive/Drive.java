@@ -13,6 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -377,10 +378,10 @@ public class Drive extends SubsystemBase {
   public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
     // setPose(pi.getTagPose(getYaw(), getPose()));
     if (LimelightHelpers.getTV("limelight")) {
-      kalman.addVisionMeasurement(getLimelightPose(), Timer.getFPGATimestamp());
+      kalman.addVisionMeasurement(getLimelightPose(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 99999)); //trust yaw little, our gyro is much more accurate
     }
     if (photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1) {
-      kalman.addVisionMeasurement(getPhotonPose(), Timer.getFPGATimestamp());
+      kalman.addVisionMeasurement(getPhotonPose(), Timer.getFPGATimestamp(), VecBuilder.fill( 0.5, 0.5, 999999 ) );
     }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
   }

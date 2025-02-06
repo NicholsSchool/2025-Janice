@@ -25,7 +25,7 @@ public class Elevator extends SubsystemBase {
 
      private final ProfiledPIDController elevatorPidController =
       new ProfiledPIDController(
-          10,10 ,10, new TrapezoidProfile.Constraints(10,10));
+          0,0 ,0, new TrapezoidProfile.Constraints(0,0));
 
 
   private static final LoggedTunableNumber elevatorMaxVelocityRad =
@@ -41,8 +41,8 @@ public class Elevator extends SubsystemBase {
 
         reachedTargetPos = true;
 
-        elevatorMaxAccelerationRad.initDefault(100000);
-        elevatorMaxVelocityRad.initDefault(9000);
+        elevatorMaxAccelerationRad.initDefault(Constants.ElevatorConstants.ElevatorMaxAccelerationRad);
+        elevatorMaxVelocityRad.initDefault(Constants.ElevatorConstants.ElevatorMaxVelocityRad);
 
 
         elevatorKp.initDefault(ElevatorConstants.kElevatorP);
@@ -93,7 +93,7 @@ public class Elevator extends SubsystemBase {
   public void setTargetPos(double targetHeight) {
     this.targetHeight = targetHeight;
     elevatorPidController.setGoal((targetHeight));
-    // elevatorPidController.reset(inputs.currentHeight);
+    elevatorPidController.reset(inputs.currentHeight);
     reachedTargetPos = false;
   }
   

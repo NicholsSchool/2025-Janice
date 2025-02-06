@@ -6,9 +6,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.VisionCommands.ColorInfo;
@@ -35,6 +32,7 @@ import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.*;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -46,7 +44,8 @@ import frc.robot.util.LoggedTunableNumber;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
+  public final Drive drive;
+  public final Elevator elevator;
   //private PowerDistribution pdh;
   ColorInfo colorInfo = null;
 
@@ -95,6 +94,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       case ROBOT_SIM:
@@ -106,6 +106,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+                elevator = new Elevator(new ElevatorIOSim());
         break;
 
       case ROBOT_FOOTBALL:
@@ -116,6 +117,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+                elevator = new Elevator(new ElevatorIOSim());
         break;
 
       default:
@@ -129,6 +131,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+                elevator = new Elevator(new ElevatorIOSim());
 
         break;
     }
@@ -272,6 +275,7 @@ public class RobotContainer {
                 () -> -90,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
+    elevator.setDefaultCommand(elevator.runGoToPosCommand(1000));
   }
 
   // /**

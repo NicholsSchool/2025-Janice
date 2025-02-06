@@ -18,17 +18,15 @@ public class Elevator extends SubsystemBase{
     private ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-    private double prevVelocity = 0.0;
     private double accelRad = 0.0;
 
     private double targetHeight = 0.0;
     private double voltageCmdPid = 0.0;
     private boolean reachedTargetPos = true;
-    private boolean targetPosSet = false;
 
      private final ProfiledPIDController elevatorPidController =
       new ProfiledPIDController(
-          0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0), Constants.loopPeriodSecs);
+          10,10 ,10, new TrapezoidProfile.Constraints(10,10));
 
 
   private static final LoggedTunableNumber elevatorMaxVelocityRad =
@@ -39,7 +37,7 @@ public class Elevator extends SubsystemBase{
   private static final LoggedTunableNumber elevatorKi = new LoggedTunableNumber("elevator/Ki");
   private static final LoggedTunableNumber elevatorKd = new LoggedTunableNumber("elevator/Kd");
 
-    Elevator(ElevatorIO io){
+    public Elevator(ElevatorIO io){
         this.io = io;
 
         reachedTargetPos = true;
@@ -96,9 +94,8 @@ public class Elevator extends SubsystemBase{
   public void setTargetPos(double targetHeight) {
     this.targetHeight = targetHeight;
     elevatorPidController.setGoal((targetHeight));
-    elevatorPidController.reset(inputs.currentHeight);
+    // elevatorPidController.reset(inputs.currentHeight);
     reachedTargetPos = false;
-    targetPosSet = true;
   }
   
   public Command runGoToPosCommand(double targetHeight){
@@ -108,11 +105,20 @@ public class Elevator extends SubsystemBase{
     return new InstantCommand(() -> setTargetPos(targetHeight), this);
   }
 
-
   public void setReachedTarget(boolean hasReachedTarget) {
     reachedTargetPos = hasReachedTarget;
   }
 
+
+  @AutoLogOutput
+  public double getHeight(){
+    return inputs.currentHeight;
+  }
+
+  @AutoLogOutput
+  public double targetHeight(){
+    return targetHeight;
+  }
 
   @AutoLogOutput
   public double getAcceleration() {

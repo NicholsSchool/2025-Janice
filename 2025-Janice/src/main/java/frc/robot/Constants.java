@@ -65,6 +65,8 @@ public final class Constants {
     
     public static final int kLeftChain = 10;
     public static final int kRightChain = 9;
+    //fill in properly later
+    public static final int elevatorEncoder = -1;
   }
 
   public static final class RobotConstants {
@@ -134,8 +136,8 @@ public final class Constants {
     public static double kElevatorP = 0;
     public static double kElevatorI = 0;
     public static double kElevatorD = 0;
-    public static double maxHeight = 3.0;
-    public static double minHeight = 0.0;
+    public static double maxHeight = 100000;
+    public static double minHeight = -100000;
 
     public static int elevatorLimitSwitchChannel = 1;
   }

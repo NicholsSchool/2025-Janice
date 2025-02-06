@@ -15,7 +15,7 @@ public class ElevatorIOSim implements ElevatorIO{
           lSimModel);
   private final DCMotorSim rSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(rSimModel, 0.004, Constants.ModuleConstants.kTURN_GEAR_RATIO),
+          LinearSystemId.createDCMotorSystem(rSimModel, 0.025, Constants.ModuleConstants.kTURN_GEAR_RATIO),
           rSimModel);
     
     double elevatorAppliedVolts = 0.0;
@@ -29,7 +29,8 @@ public class ElevatorIOSim implements ElevatorIO{
     }
 
     private double getCurrentHeight(){
-        return lSim.getAngularPositionRotations();
+        // find a regression for it 
+        return lSim.getAngularPositionRad();
     }
 
     @Override

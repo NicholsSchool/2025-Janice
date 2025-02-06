@@ -1,7 +1,10 @@
 package frc.robot.subsystems.elevator;
 
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -13,24 +16,29 @@ public class ElevatorIOReal implements ElevatorIO{
     private TalonFX lShoulder;
     private TalonFX rShoulder;
     private DigitalInput elevatorLimitSwitch;
+      private final CANcoder elevatorEncoder;
 
     public ElevatorIOReal() {
     lShoulder = new TalonFX(CAN.kLeftChain);
     rShoulder = new TalonFX(CAN.kRightChain);
+    elevatorEncoder = new CANcoder(CAN.elevatorEncoder);
 
-    var config = new TalonFXConfiguration();
-    config.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.ElevatorCurrentLimit;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    lShoulder.getConfigurator().apply(config);
+    var talonConfig = new TalonFXConfiguration();
+    talonConfig.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.ElevatorCurrentLimit;
+    talonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    talonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    lShoulder.getConfigurator().apply(talonConfig);
     rShoulder.setControl(new Follower(CAN.kLeftChain, true));
 
     elevatorLimitSwitch = new DigitalInput(Constants.ElevatorConstants.elevatorLimitSwitchChannel);
   }
 
   private double getHeight(){
+    if(elevatorLimitSwitch.get()){
+      //put in the reset encoder code here
+    }
     //TODO: we need to figure out what the conversion is between this and the actual height is 
-    return lShoulder.getPosition().getValueAsDouble();
+    return elevatorEncoder.getPosition().getValueAsDouble();
   }
 
   @Override

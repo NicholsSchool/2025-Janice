@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.VisionCommands.ColorInfo;
@@ -275,8 +276,9 @@ public class RobotContainer {
                 () -> -90,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
-                
-    elevator.setDefaultCommand(elevator.runGoToPosCommand(1000));
+    operatorController.a().onTrue(elevator.runGoToPosCommand(100));
+    operatorController.b().onTrue(elevator.runGoToPosCommand(0));
+    
   }
 
   // /**

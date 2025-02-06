@@ -133,7 +133,7 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double ElevatorCurrentLimit = 35.0;
-    public static double kElevatorP = 0;
+    public static double kElevatorP = 10;
     public static double kElevatorI = 0;
     public static double kElevatorD = 0;
     public static double maxHeight = 100000;

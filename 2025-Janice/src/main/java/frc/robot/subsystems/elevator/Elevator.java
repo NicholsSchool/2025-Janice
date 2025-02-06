@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 
-public class Elevator extends SubsystemBase{
+public class Elevator extends SubsystemBase {
     private ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
@@ -42,8 +42,8 @@ public class Elevator extends SubsystemBase{
 
         reachedTargetPos = true;
 
-        elevatorMaxAccelerationRad.initDefault(1.1);
-        elevatorMaxVelocityRad.initDefault(0.9);
+        elevatorMaxAccelerationRad.initDefault(100000);
+        elevatorMaxVelocityRad.initDefault(9000);
 
 
         elevatorKp.initDefault(ElevatorConstants.kElevatorP);
@@ -61,11 +61,11 @@ public class Elevator extends SubsystemBase{
 
         updateTunables();
 
-        Logger.processInputs("elevator", inputs);
+        Logger.processInputs("Elevator", inputs);
 
          if (DriverStation.isDisabled()) {}
 
-         voltageCmdPid = elevatorPidController.calculate(inputs.currentHeight);
+         voltageCmdPid = elevatorPidController.calculate( this.getHeight() );
 
          if (!reachedTargetPos) {
             reachedTargetPos = elevatorPidController.atGoal();
@@ -100,15 +100,16 @@ public class Elevator extends SubsystemBase{
   
   public Command runGoToPosCommand(double targetHeight){
     if (targetHeight > ElevatorConstants.maxHeight || targetHeight < ElevatorConstants.minHeight) {
+      System.out.println("Soft Limited Elevator");
       return new InstantCommand();
     }
+    System.out.println("Setting go to pos:" + targetHeight );
     return new InstantCommand(() -> setTargetPos(targetHeight), this);
   }
 
   public void setReachedTarget(boolean hasReachedTarget) {
     reachedTargetPos = hasReachedTarget;
   }
-
 
   @AutoLogOutput
   public double getHeight(){

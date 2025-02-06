@@ -22,6 +22,9 @@ public class ElevatorIOSim implements ElevatorIO{
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs){
+        lSim.update(Constants.loopPeriodSecs);
+        rSim.update(Constants.loopPeriodSecs);
+        
         inputs.appliedVolts = new double[] {lSim.getInputVoltage(), rSim.getInputVoltage()};
         inputs.velocityRadPerSec = new double[] {lSim.getAngularVelocityRadPerSec(),rSim.getAngularVelocityRadPerSec()};
         inputs.currentHeight = this.getCurrentHeight();

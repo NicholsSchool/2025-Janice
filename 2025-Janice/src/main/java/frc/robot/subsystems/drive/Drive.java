@@ -290,7 +290,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
-  public Pose2d getPose() {
+  public Pose2d getOdomPose() {
     return pose;
   }
 
@@ -305,9 +305,9 @@ public class Drive extends SubsystemBase {
   public Pose2d getPhotonPose(){
     return photonCam.getLocalizedPose().toPose2d();
   }
-
+  /** returns the filtered pose*/
   @AutoLogOutput
-  public Pose2d getFilteredPose(){
+  public Pose2d getPose(){
     return kalman.getEstimatedPosition();
   }
 
@@ -376,12 +376,11 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
-    // setPose(pi.getTagPose(getYaw(), getPose()));
     if (LimelightHelpers.getTV("limelight")) {
-      kalman.addVisionMeasurement(getLimelightPose(), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 99999)); //trust yaw little, our gyro is much more accurate
+      kalman.addVisionMeasurement(new Pose2d(getLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 99999)); //trust yaw little, our gyro is much more accurate
     }
     if (photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1) {
-      kalman.addVisionMeasurement(getPhotonPose(), Timer.getFPGATimestamp(), VecBuilder.fill( 0.5, 0.5, 999999 ) );
+      kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp(), VecBuilder.fill( 0.5, 0.5, 999999 ) );
     }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
   }

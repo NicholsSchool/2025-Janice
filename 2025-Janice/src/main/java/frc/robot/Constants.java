@@ -152,6 +152,7 @@ public final class Constants {
     //These next ones at the moment are temporary until the actual cameras are known
     Translation3d limelightPosition = new Translation3d(Units.inchesToMeters(8.0), 0.0, Units.inchesToMeters(14.75));
     Translation3d photonCam = new Translation3d(Units.inchesToMeters(-9.0), 0.0, Units.inchesToMeters(11.75));
+    public static double weaveToPoseBreakArea = 95;
 
   }
 }

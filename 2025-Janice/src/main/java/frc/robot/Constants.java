@@ -62,6 +62,8 @@ public final class Constants {
     public static final int kBackRightEncoder = 52;
 
     public static final int kPowerDistributionHub = 50;
+
+    public static final int kIntakeMotor = 0;
   }
 
   public static final class RobotConstants {
@@ -124,6 +126,15 @@ public final class Constants {
     // SDS MK4i L2 Modules
     public static final double kDRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double kTURN_GEAR_RATIO = 150.0 / 7.0;
+  }
+
+  public static final class IntakeConstants {
+
+    public static final double INTAKE_CURRENT_LIMIT = 0;
+    public static final double INTAKE_P = 0;
+    public static final double INTAKE_I = 0;
+    public static final double INTAKE_D = 0;
+
   }
 
   public static final class AutoConstants {

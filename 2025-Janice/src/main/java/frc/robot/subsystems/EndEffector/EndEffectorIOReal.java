@@ -24,7 +24,7 @@ public class EndEffectorIOReal implements EndEffectorIO{
         indexer = new TalonFX(CAN.kRightChain);
     
         var talonConfig = new TalonFXConfiguration();
-        talonConfig.CurrentLimits.StatorCurrentLimit = Constants.EndEffectorConstants.CurrentLimit;
+        talonConfig.CurrentLimits.StatorCurrentLimit = Constants.EndEffectorConstants.EndEffectorCurrentLimit;
         talonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         talonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         indexer.getConfigurator().apply(talonConfig);

@@ -130,12 +130,13 @@ public final class Constants {
 
   public static final class EndEffectorConstants {
 
-    public static final double kEndEffectorP = 6.2;
-    public static final double kEndEffectorI = 0.0;
-    public static final double kEndEffectorD = 0.12;
-    public static final double kEndEffectorFF = 0.0;
-    public static final double CurrentLimit = 0;
-    public static final int elevatorLimitSwitchChannel = 0;
+    public static double kEndEffectorP = 6.2;
+    public static double kEndEffectorI = 0.0;
+    public static double kEndEffectorD = 0.12;
+    public static double kEndEffectorFF = 0.0;
+    public static final double EndEffectorCurrentLimit = 35.0; 
+
+    public static int elevatorLimitSwitchChannel = 1;
 
   }
 

@@ -16,7 +16,7 @@ public class EndEffectorIOSim implements EndEffectorIO{
   double elevatorAppliedVolts = 0.0;
 
   @Override
-  public void updateInputs(ElevatorIOInputs inputs){
+  public void updateInputs(EndEffectorIOInputs inputs){
       inputs.appliedVolts = new double[] {lSim.getInputVoltage()};
       inputs.velocityRadPerSec = new double[] {lSim.getAngularVelocityRadPerSec()};
       inputs.currentHeight = this.getCurrentHeight();

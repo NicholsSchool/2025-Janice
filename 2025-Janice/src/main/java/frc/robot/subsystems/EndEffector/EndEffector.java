@@ -24,6 +24,10 @@ public class EndEffector extends SubsystemBase {
 
     private boolean open = false;
 
+    private final ProfiledPIDController endEffectorPidController =
+      new ProfiledPIDController(
+          0,0 ,0, new TrapezoidProfile.Constraints(0,0));
+
     private static final LoggedTunableNumber EndEffectorMaxVelocityRad =
       new LoggedTunableNumber("EndEffector/MaxVelocityRad");
   private static final LoggedTunableNumber EndEffectorMaxAccelerationRad =
@@ -54,7 +58,7 @@ public void periodic(){
 
     updateTunables();
 
-    Logger.processInputs(" end effector", inputs);
+    Logger.processInputs("End Effector", inputs);
 
      if (DriverStation.isDisabled()) {}
 
@@ -75,11 +79,6 @@ private void updateTunables() {
             endEffectorPidController.setConstraints(
           new TrapezoidProfile.Constraints(EndEffectorMaxVelocityRad.get(), EndEffectorMaxAccelerationRad.get()));
     }
-  }
-
-  @AutoLogOutput
-  public double getAcceleration() {
-    return accelRad;
   }
 
   @AutoLogOutput

@@ -126,6 +126,13 @@ public final class Constants {
     public static final double kTURN_GEAR_RATIO = 150.0 / 7.0;
   }
 
+  //TODO: Fix these constants MUST BE DONE BEFORE COMP
+  public static final class ClimberConstants {
+  
+    public static final int kLChannel = -0;
+    public static final int kRChannel = -0;
+  }
+
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;

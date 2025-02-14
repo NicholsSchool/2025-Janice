@@ -377,10 +377,10 @@ public class Drive extends SubsystemBase {
 
   public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
     if (LimelightHelpers.getTV("limelight")) {
-      kalman.addVisionMeasurement(new Pose2d(getLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp(), VecBuilder.fill(0.5, 0.5, 99999)); //trust yaw little, our gyro is much more accurate
+      kalman.addVisionMeasurement(new Pose2d(getLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
     }
     if (photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1) {
-      kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp(), VecBuilder.fill( 0.5, 0.5, 999999 ) );
+      kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
     }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
   }

@@ -41,15 +41,15 @@ public class AutoCommands {
             });
     return drvToPose.until(drvToPose::atGoal);
   }
-  /**
-   * this is a drive to pose that rather than it being an actual pose it just chases an object and turns until it's centered
-   * this would be used for like a drive to algae, but the measurements 
-   * @return
-   */
-  public Command weaveToPose(double objectAngle, double objectArea){
-    var weaveToPos = DriveCommands.joystickDrive(drive, () -> 0.0, () -> objectArea == 0 ? 0.0 : 0.5, () -> objectArea == 0 ? 0.1 : DriveCommands.angleToVelocity(objectAngle, 0.0), () -> true);
-    return weaveToPos.until(() -> objectArea > VisionConstants.weaveToPoseBreakArea);
-  }
+  // /**
+  //  * this is a drive to pose that rather than it being an actual pose it just chases an object and turns until it's centered
+  //  * this would be used for like a drive to algae, but the measurements 
+  //  * @return
+  //  */
+  // public Command weaveToPose(double objectAngle, double objectArea){
+  //   var weaveToPos = DriveCommands.joystickDrive(drive, () -> 0.0, () -> objectArea == 0 ? 0.0 : 0.5, () -> objectArea == 0 ? 0.1 : DriveCommands.angleToVelocity(objectAngle, 0.0), () -> true);
+  //   return weaveToPos.until(() -> objectArea > VisionConstants.weaveToPoseBreakArea);
+  // }
 
   public Command splineToPose(Pose2d pose) {
     var splToPose =
@@ -64,14 +64,14 @@ public class AutoCommands {
   public Command TenFootTest(Drive drive) {
     return new DriveToPose(drive, new Pose2d(new Translation2d(3.048, 0), new Rotation2d(0)));
   }
-  /**
-   * code for testing localization
-   * @param objectAngle angle algae is from 
-   * @param objectArea
-   * @return
-   */
-  public Command guardianOfTheReef(PhotonTrackedTarget target){
-     return new SequentialCommandGroup(driveToPose(new Pose2d(new Translation2d(15, 4), new Rotation2d())), weaveToPose(target.getYaw(), target.getArea()));
+  // /**
+  //  * code for testing localization
+  //  * @param objectAngle angle algae is from 
+  //  * @param objectArea
+  //  * @return
+  //  */
+  // public Command guardianOfTheReef(PhotonTrackedTarget target){
+  //    return new SequentialCommandGroup(driveToPose(new Pose2d(new Translation2d(15, 4), new Rotation2d())));
 
-  }
+  // }
 }

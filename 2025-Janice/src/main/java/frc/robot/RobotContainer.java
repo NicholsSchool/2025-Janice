@@ -64,7 +64,7 @@ public class RobotContainer {
   public static CommandXboxController driveController = new CommandXboxController(0);
   public static CommandXboxController operatorController = new CommandXboxController(1);
 
-  public PhotonVision pv = new PhotonVision("Microsoft_LifeCam_HD-3000");
+  //public PhotonVision pv = new PhotonVision("Microsoft_LifeCam_HD-3000");
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -292,7 +292,7 @@ public class RobotContainer {
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
 
-      operatorController.a().whileTrue(autoCommands.guardianOfTheReef(pv.getBestTarget(pv.getLatestPipeline())));
+      operatorController.a().whileTrue(autoCommands.driveToPose(new Pose2d(new Translation2d(3.048, 0), new Rotation2d(0))));
   }
 
   // /**

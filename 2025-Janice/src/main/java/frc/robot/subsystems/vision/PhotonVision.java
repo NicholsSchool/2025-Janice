@@ -97,6 +97,7 @@ public class PhotonVision extends SubsystemBase {
     PhotonTrackedTarget target = result.getBestTarget();
     if(target == null){ return new Pose3d();}
     else{
+      // this yaw from them was outputting off by 180 from what it actually was, might be worth investigating if localization doesn't work
     return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
      FieldConstants.aprilTags.getTagPose(target.getFiducialId()).orElse(new Pose3d()),
       new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, Math.PI / 2)));

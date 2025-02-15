@@ -13,16 +13,21 @@
 
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -33,11 +38,15 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.LocalADStarAK;
 
+import javax.xml.crypto.dsig.Transform;
+
 // import frc.robot.commands.VisionCommands.PhotonInfo;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+import org.photonvision.PhotonCamera;
 
+import com.google.flatbuffers.FlexBuffers.Vector;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -392,7 +401,7 @@ public class Drive extends SubsystemBase {
     if (usePhotonPose()) {
       // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
       filteredPhotonPose2d = getRawPhotonPose();
-      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp());
+      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(getDistanceToTag()) );
     }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
     // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
@@ -419,11 +428,34 @@ public class Drive extends SubsystemBase {
       //Check to see if the photon pose is too far away from the estimated pose 
       //Documentation tells you to do this step
       double distance = estimatePose.getDistance(_photonPose);
-      double threshold = 1.0; //meters
       if(distance < VisionConstants.visionDistanceUpdateThreshold)
         return true;
     }
 
     return false;
+  }
+
+
+
+
+  // private Matrix<N3, N1> getPhotonVisionStdDevs() {
+  //   Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
+  //   double distanceToTag = cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
+
+
+  // }
+
+  @AutoLogOutput
+  private double getDistanceToTag() {
+    Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
+    return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
+  }
+
+  private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
+    double xStdDevs = 0.5 * distanceToTag; //meters
+    double yStdDevs = 0.5 * distanceToTag; //meters
+    double yawStdDevs = 0.3 * distanceToTag; //rad
+
+    return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
   }
 }

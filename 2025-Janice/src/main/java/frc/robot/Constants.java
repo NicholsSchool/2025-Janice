@@ -4,6 +4,8 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -96,6 +98,9 @@ public final class Constants {
       MOI, 
       moduleConfig,
       Units.inchesToMeters(robotSideLengthInches));
+
+    public static final Transform3d robotToPhotonCam1 =
+       new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, -Math.PI / 2));
   }
 
   public static final class DriveConstants {
@@ -153,6 +158,9 @@ public final class Constants {
     Translation3d limelightPosition = new Translation3d(Units.inchesToMeters(8.0), 0.0, Units.inchesToMeters(14.75));
     Translation3d photonCam = new Translation3d(Units.inchesToMeters(-9.0), 0.0, Units.inchesToMeters(11.75));
     public static double weaveToPoseBreakArea = 95;
+
+    public static final int initVisionCountTreshold = 100;
+    public static final double visionDistanceUpdateThreshold = 1.0; //meters
 
   }
 }

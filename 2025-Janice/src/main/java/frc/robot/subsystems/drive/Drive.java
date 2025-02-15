@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.LocalADStarAK;
 
@@ -63,6 +64,7 @@ public class Drive extends SubsystemBase {
   private Pose2d filteredPhotonPose2d = new Pose2d();
 
   private PhotonVision photonCam;
+  private int initVisionCount;
 
   private Twist2d fieldVelocity = new Twist2d(); // TJG
   private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
@@ -319,7 +321,6 @@ public class Drive extends SubsystemBase {
     return odometryPose.getRotation();
   }
 
-  @AutoLogOutput
   public Pose2d getfilteredPhotonPose2d() {
     return filteredPhotonPose2d;
   }
@@ -386,7 +387,8 @@ public class Drive extends SubsystemBase {
   public void updateEstimatedPose(SwerveModulePosition[] wheelAbsolutes) {
     if (LimelightHelpers.getTV("limelight")) {
      //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
-    }
+    }      
+
     if (usePhotonPose()) {
       // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
       filteredPhotonPose2d = getRawPhotonPose();
@@ -405,15 +407,20 @@ public class Drive extends SubsystemBase {
       Pose2d estPose = kalman.getEstimatedPosition();
       Pose2d photonPose = getRawPhotonPose();
 
-      Translation2d point1 = estPose.getTranslation();
-      Translation2d point2 = photonPose.getTranslation();
+      //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
+      if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
+        initVisionCount++;
+        return true;
+      }
+
+      Translation2d estimatePose = estPose.getTranslation();
+      Translation2d _photonPose = photonPose.getTranslation();
 
       //Check to see if the photon pose is too far away from the estimated pose 
       //Documentation tells you to do this step
-      double distance = point1.getDistance(point2);
-      double threshold = 3.0;
-      //TODO: 3 is in meters and just a guess NEEDS TO BE CHANGED
-      if(distance < threshold)
+      double distance = estimatePose.getDistance(_photonPose);
+      double threshold = 1.0; //meters
+      if(distance < VisionConstants.visionDistanceUpdateThreshold)
         return true;
     }
 

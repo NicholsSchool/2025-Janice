@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -12,6 +13,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Time;
@@ -27,14 +29,18 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RobotType;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.VisionCommands.ColorInfo;
+// import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONAVX;
 import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -48,7 +54,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   //private PowerDistribution pdh;
-  ColorInfo colorInfo = null;
+  //ColorInfo colorInfo = null;
 
   // shuffleboard
   ShuffleboardTab boomerangTab;
@@ -57,6 +63,8 @@ public class RobotContainer {
   // Controller
   public static CommandXboxController driveController = new CommandXboxController(0);
   public static CommandXboxController operatorController = new CommandXboxController(1);
+
+  //public PhotonVision pv = new PhotonVision("Microsoft_LifeCam_HD-3000");
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -79,22 +87,30 @@ public class RobotContainer {
       new LoggedTunableNumber("Start Theta1(deg)", 0.0);
 
   // Auto Commands
-  //private final AutoCommands autoCommands;
-
+  final AutoCommands autoCommands;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getRobot()) {
       case ROBOT_REAL:
         // Real robot, instantiate hardware IO implementations
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
-        colorInfo = new ColorInfo();
+        //colorInfo = new ColorInfo();
         drive =
             new Drive(
-                new GyroIORedux(),
-                new ModuleIOTalonFX(0),
-                new ModuleIOTalonFX(1),
-                new ModuleIOTalonFX(2),
-                new ModuleIOTalonFX(3));
+                new GyroIONAVX(),
+                new ModuleIOMaxSwerve(0),
+                new ModuleIOMaxSwerve(1),
+                new ModuleIOMaxSwerve(2),
+                new ModuleIOMaxSwerve(3));
+                autoCommands = new AutoCommands(drive);
+                // new ModuleIOSim(),
+                // new ModuleIOSim(),
+                // new ModuleIOSim(),
+                // new ModuleIOSim());
+                // new ModuleIOTalonFX(0),
+                // new ModuleIOTalonFX(1),
+                // new ModuleIOTalonFX(2),
+                // new ModuleIOTalonFX(3));
         break;
 
       case ROBOT_SIM:
@@ -106,6 +122,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+                autoCommands = new AutoCommands(drive);
         break;
 
       case ROBOT_FOOTBALL:
@@ -116,6 +133,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+                autoCommands = new AutoCommands(drive);
         break;
 
       default:
@@ -129,6 +147,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+                autoCommands = new AutoCommands(drive);
 
         break;
     }
@@ -161,9 +180,9 @@ public class RobotContainer {
   }
 
   public void updateShuffleboard() {
-    if (RobotType.ROBOT_REAL == Constants.getRobot()) {
-      colorInfo.pvCornerOne();
-    }
+    // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
+    //   colorInfo.pvCornerOne();
+    // }
   }
 
   // changes robot pose with dashboard tunables
@@ -272,6 +291,9 @@ public class RobotContainer {
                 () -> -90,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
+
+      operatorController.a().whileTrue(autoCommands.driveToPose(new Pose2d(new Translation2d(2.93, 4.064), new Rotation2d(-1.7))));
+      operatorController.y().whileTrue(autoCommands.driveToPose(new Pose2d(new Translation2d(1.3, 7.0), new Rotation2d(-2.2))));
   }
 
   // /**
@@ -325,12 +347,12 @@ public class RobotContainer {
     //     "Module Turn Ramp Test",
     //     new VoltageCommandRamp(drive, drive::runTurnCommandRampVolts, 0.5, 5.0));
 
-    // autoChooser.addOption(
-    //     "Spline Test",
-    //     autoCommands.splineToPose(
-    //         new Pose2d(
-    //             new Translation2d(4, 3),
-    //             new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+    autoChooser.addOption(
+        "DriveToPos",
+        autoCommands.splineToPose(
+            new Pose2d(
+                new Translation2d(4, 3),
+                new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
 
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot

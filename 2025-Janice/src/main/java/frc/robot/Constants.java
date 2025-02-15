@@ -4,7 +4,10 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -62,6 +65,16 @@ public final class Constants {
     public static final int kBackRightEncoder = 52;
 
     public static final int kPowerDistributionHub = 50;
+
+    public static int kMaxFrontLeftDrivingCanId = 24;
+    public static int kMaxFrontRightDrivingCanId = 26;
+    public static int kMaxRearLeftDrivingCanId = 22;
+    public static int kMaxRearRightDrivingCanId = 28;
+    
+    public static int kMaxFrontLeftTurningCanId = 23;
+    public static int kMaxFrontRightTurningCanId = 25;
+    public static int kMaxRearLeftTurningCanId = 21;
+    public static int kMaxRearRightTurningCanId = 27;
   }
 
   public static final class RobotConstants {
@@ -85,6 +98,9 @@ public final class Constants {
       MOI, 
       moduleConfig,
       Units.inchesToMeters(robotSideLengthInches));
+
+    public static final Transform3d robotToPhotonCam1 =
+       new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, -Math.PI / 2));
   }
 
   public static final class DriveConstants {
@@ -138,10 +154,13 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
-    // both of these are the translation of the two cameras from the center of the bot
-    // need to check which camera is - and which is +
-    public static Translation2d cameraOnePosition = new Translation2d(-0.3, -0.3);
-    public static Translation2d cameraTwoPosition = new Translation2d(-0.3, 0.3);
-    public static double cameraOneAngle = Units.degreesToRadians(45);
+    //These next ones at the moment are temporary until the actual cameras are known
+    Translation3d limelightPosition = new Translation3d(Units.inchesToMeters(8.0), 0.0, Units.inchesToMeters(14.75));
+    Translation3d photonCam = new Translation3d(Units.inchesToMeters(-9.0), 0.0, Units.inchesToMeters(11.75));
+    public static double weaveToPoseBreakArea = 95;
+
+    public static final int initVisionCountTreshold = 100;
+    public static final double visionDistanceUpdateThreshold = 1.0; //meters
+
   }
 }

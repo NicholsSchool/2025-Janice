@@ -13,6 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,8 +25,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.LocalADStarAK;
 
 // import frc.robot.commands.VisionCommands.PhotonInfo;
@@ -54,8 +59,12 @@ public class Drive extends SubsystemBase {
   private final Module[] modules = new Module[kNumModules]; // FL, FR, BL, BR
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
-  private Pose2d pose = new Pose2d();
+  private Pose2d odometryPose = new Pose2d();
   private Rotation2d lastGyroRotation = new Rotation2d();
+  private Pose2d filteredPhotonPose2d = new Pose2d();
+
+  private PhotonVision photonCam;
+  private int initVisionCount;
 
   private Twist2d fieldVelocity = new Twist2d(); // TJG
   private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
@@ -68,7 +77,7 @@ public class Drive extends SubsystemBase {
 
   // PhotonInfo pi = new PhotonInfo();
   SwerveDrivePoseEstimator kalman =
-      new SwerveDrivePoseEstimator(kinematics, lastGyroRotation, positions, pose);
+      new SwerveDrivePoseEstimator(kinematics, lastGyroRotation, positions, odometryPose);
 
   private final LoggedDashboardNumber moduleTestIndex = // drive module to test with voltage ramp
       new LoggedDashboardNumber("Module Test Index (0-3)", 0);
@@ -84,7 +93,8 @@ public class Drive extends SubsystemBase {
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
-
+      
+    photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
          RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
@@ -160,8 +170,8 @@ public class Drive extends SubsystemBase {
       wheelAbsolutes[i] = modules[i].getPosition();
     }
 
-    //pose = kalman.getEstimatedPosition();
-    // updateVision(wheelAbsolutes);
+    // odometryPose = kalman.getEstimatedPosition();
+    updateEstimatedPose(wheelAbsolutes);
 
     // Log measured states
     SwerveModuleState[] measuredStates = new SwerveModuleState[4];
@@ -192,7 +202,7 @@ public class Drive extends SubsystemBase {
       lastGyroRotation = new Rotation2d(twist.dtheta + lastGyroRotation.getRadians());
     }
 
-    pose = pose.exp(twist);
+    odometryPose = odometryPose.exp(twist);
 
     // Update field velocity
     ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(measuredStates);
@@ -281,21 +291,43 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
-  /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Odometry/Robot")
-  public Pose2d getPose() {
-    return pose;
+  /** Returns the current odometry odometryPose. */
+  @AutoLogOutput
+  public Pose2d getOdomPose() {
+    return odometryPose;
+  }
+
+  @AutoLogOutput
+  public Pose2d getRawLimelightPose(){
+    //return LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").odometryPose;
+    // LimelightHelpers.SetRobotOrientation("limelight", this.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0 );
+    // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight").odometryPose;
+    return new Pose2d();
+  }
+
+  @AutoLogOutput
+  public Pose2d getRawPhotonPose(){
+    return photonCam.getLocalizedPose().toPose2d();
+  }
+  /** returns the filtered odometryPose*/
+  @AutoLogOutput
+  public Pose2d getPose(){
+    return kalman.getEstimatedPosition();
   }
 
   /** Returns the current odometry rotation. */
   @AutoLogOutput
   public Rotation2d getRotation() {
-    return pose.getRotation();
+    return odometryPose.getRotation();
   }
 
-  /** Resets the current odometry pose. */
-  public void setPose(Pose2d pose) {
-    this.pose = pose;
+  public Pose2d getfilteredPhotonPose2d() {
+    return filteredPhotonPose2d;
+  }
+
+  /** Resets the current odometry odometryPose. */
+  public void setPose(Pose2d odometryPose) {
+    this.odometryPose = odometryPose;
   }
 
   public void resetFieldHeading() {
@@ -348,14 +380,50 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput
   public double getYaw() {
-    return pose.getRotation().getRadians();
+    // return odometryPose.getRotation().getRadians();
+    return kalman.getEstimatedPosition().getRotation().getRadians();
   }
 
-  // public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
-  //   // setPose(pi.getTagPose(getYaw(), getPose()));
-  //   if (pi.getIDOne() != -1) {
-  //     kalman.addVisionMeasurement(pi.getTagPose(getYaw(), getPose()), Timer.getFPGATimestamp());
-  //   }
-  //   kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
-  // }
+  public void updateEstimatedPose(SwerveModulePosition[] wheelAbsolutes) {
+    if (LimelightHelpers.getTV("limelight")) {
+     //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
+    }      
+
+    if (usePhotonPose()) {
+      // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
+      filteredPhotonPose2d = getRawPhotonPose();
+      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp());
+    }
+    kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
+    // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
+  }
+
+  private boolean usePhotonPose(){
+
+    boolean targertDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
+
+    if(targertDetected){
+      
+      Pose2d estPose = kalman.getEstimatedPosition();
+      Pose2d photonPose = getRawPhotonPose();
+
+      //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
+      if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
+        initVisionCount++;
+        return true;
+      }
+
+      Translation2d estimatePose = estPose.getTranslation();
+      Translation2d _photonPose = photonPose.getTranslation();
+
+      //Check to see if the photon pose is too far away from the estimated pose 
+      //Documentation tells you to do this step
+      double distance = estimatePose.getDistance(_photonPose);
+      double threshold = 1.0; //meters
+      if(distance < VisionConstants.visionDistanceUpdateThreshold)
+        return true;
+    }
+
+    return false;
+  }
 }

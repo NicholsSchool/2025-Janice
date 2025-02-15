@@ -435,16 +435,6 @@ public class Drive extends SubsystemBase {
     return false;
   }
 
-
-
-
-  // private Matrix<N3, N1> getPhotonVisionStdDevs() {
-  //   Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
-  //   double distanceToTag = cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
-
-
-  // }
-
   @AutoLogOutput
   private double getDistanceToTag() {
     Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
@@ -452,8 +442,8 @@ public class Drive extends SubsystemBase {
   }
 
   private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
-    double xStdDevs = 0.5 * distanceToTag; //meters
-    double yStdDevs = 0.5 * distanceToTag; //meters
+    double xStdDevs = 0.7 * distanceToTag; //meters
+    double yStdDevs = 0.7 * distanceToTag; //meters
     double yawStdDevs = 0.3 * distanceToTag; //rad
 
     return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);

@@ -167,7 +167,7 @@ public class Drive extends SubsystemBase {
       wheelAbsolutes[i] = modules[i].getPosition();
     }
 
-    pose = kalman.getEstimatedPosition();
+    // pose = kalman.getEstimatedPosition();
     updateVision(wheelAbsolutes);
 
     // Log measured states
@@ -296,9 +296,10 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput(key = "limelightPos")
   public Pose2d getLimelightPose(){
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").pose;
+    //return LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").pose;
     // LimelightHelpers.SetRobotOrientation("limelight", this.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0 );
     // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight").pose;
+    return new Pose2d();
   }
 
   @AutoLogOutput(key = "photonPos")
@@ -372,18 +373,19 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput
   public double getYaw() {
-    return pose.getRotation().getRadians();
-    // return kalman.getEstimatedPosition().getRotation().getRadians();
+    // return pose.getRotation().getRadians();
+    return kalman.getEstimatedPosition().getRotation().getRadians();
   }
 
   public void updateVision(SwerveModulePosition[] wheelAbsolutes) {
     if (LimelightHelpers.getTV("limelight")) {
-      kalman.addVisionMeasurement(new Pose2d(getLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
+     //kalman.addVisionMeasurement(new Pose2d(getLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
     }
     if (photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1) {
       // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
       kalman.addVisionMeasurement(getPhotonPose(), Timer.getFPGATimestamp());
     }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
+    // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
   }
 }

@@ -31,7 +31,7 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.VisionCommands.ColorInfo;
+// import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -54,7 +54,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   //private PowerDistribution pdh;
-  ColorInfo colorInfo = null;
+  //ColorInfo colorInfo = null;
 
   // shuffleboard
   ShuffleboardTab boomerangTab;
@@ -94,7 +94,7 @@ public class RobotContainer {
       case ROBOT_REAL:
         // Real robot, instantiate hardware IO implementations
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
-        colorInfo = new ColorInfo();
+        //colorInfo = new ColorInfo();
         drive =
             new Drive(
                 new GyroIONAVX(),
@@ -180,9 +180,9 @@ public class RobotContainer {
   }
 
   public void updateShuffleboard() {
-    if (RobotType.ROBOT_REAL == Constants.getRobot()) {
-      colorInfo.pvCornerOne();
-    }
+    // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
+    //   colorInfo.pvCornerOne();
+    // }
   }
 
   // changes robot pose with dashboard tunables
@@ -292,7 +292,8 @@ public class RobotContainer {
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
 
-      operatorController.a().whileTrue(autoCommands.driveToPose(new Pose2d(new Translation2d(3.048, 0), new Rotation2d(0))));
+      operatorController.a().whileTrue(autoCommands.driveToPose(new Pose2d(new Translation2d(2.93, 4.064), new Rotation2d(-1.7))));
+      operatorController.y().whileTrue(autoCommands.driveToPose(new Pose2d(new Translation2d(1.3, 7.0), new Rotation2d(-2.2))));
   }
 
   // /**

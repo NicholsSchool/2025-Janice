@@ -447,8 +447,8 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput
   private PoseVisionStats runVisionStats( Pose2d newVisionPose ) {
-      //update visionStatsBuffer, keeping 100 in at all times, most recent 100
-      if( visionStatsBuffer.size() >= 100 ) {
+      //update visionStatsBuffer, keeping the maximun num in at all times, most recent 100
+      if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer ) {
         visionStatsBuffer.removeFirst();
         visionStatsBuffer.addLast(newVisionPose);
       }

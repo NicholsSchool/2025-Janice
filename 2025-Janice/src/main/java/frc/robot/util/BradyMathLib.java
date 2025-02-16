@@ -30,9 +30,10 @@ public class BradyMathLib {
     double[] sums = { 0.0, 0.0, 0.0 }; // x (meters), y (meters), theta (rad)
     Iterator<Pose2d> iterator = arrayDeque.iterator();
     while( iterator.hasNext()) {
-      sums[0] += iterator.next().getX();
-      sums[1] += iterator.next().getY();
-      sums[2] += iterator.next().getRotation().getRadians();
+      Pose2d ithPose = iterator.next();
+      sums[0] += ithPose.getX();
+      sums[1] += ithPose.getY();
+      sums[2] += ithPose.getRotation().getRadians();
     }
     
     sums[0] /= arrayDeque.size();
@@ -54,10 +55,11 @@ public class BradyMathLib {
 
     double[] squaredDifferencesSum = { 0.0, 0.0, 0.0 }; // x (meters), y (meters), theta (rad)
     while( iterator.hasNext()) {
-      squaredDifferencesSum[0] += (iterator.next().getX() - meanPose2d.getX()) * (iterator.next().getX() - meanPose2d.getX());
-      squaredDifferencesSum[1] += (iterator.next().getY() - meanPose2d.getY()) * (iterator.next().getY() - meanPose2d.getY());
-      squaredDifferencesSum[2] += (iterator.next().getRotation().getRadians() - meanPose2d.getRotation().getRadians())
-         * (iterator.next().getRotation().getRadians() - meanPose2d.getRotation().getRadians());
+      Pose2d ithPose = iterator.next();
+      squaredDifferencesSum[0] += (ithPose.getX() - meanPose2d.getX()) * (ithPose.getX() - meanPose2d.getX());
+      squaredDifferencesSum[1] += (ithPose.getY() - meanPose2d.getY()) * (ithPose.getY() - meanPose2d.getY());
+      squaredDifferencesSum[2] += (ithPose.getRotation().getRadians() - meanPose2d.getRotation().getRadians())
+         * (ithPose.getRotation().getRadians() - meanPose2d.getRotation().getRadians());
     }
 
     squaredDifferencesSum[0] /= arrayDeque.size(); //variance

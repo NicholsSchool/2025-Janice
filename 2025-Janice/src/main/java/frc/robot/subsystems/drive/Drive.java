@@ -17,6 +17,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -36,7 +37,11 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
+import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.BradyMathLib.PoseVisionStats;
+
+import java.util.ArrayDeque;
 
 import javax.xml.crypto.dsig.Transform;
 
@@ -74,6 +79,7 @@ public class Drive extends SubsystemBase {
 
   private PhotonVision photonCam;
   private int initVisionCount;
+  private ArrayDeque<Pose2d> visionStatsBuffer;
 
   private Twist2d fieldVelocity = new Twist2d(); // TJG
   private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
@@ -137,6 +143,8 @@ public class Drive extends SubsystemBase {
           System.out.println("ACTIVE PATH CALL BACK 2");
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    visionStatsBuffer = new ArrayDeque<Pose2d>(Constants.VisionConstants.visionStatsNumBuffer);
   }
 
   public void periodic() {
@@ -416,6 +424,8 @@ public class Drive extends SubsystemBase {
       Pose2d estPose = kalman.getEstimatedPosition();
       Pose2d photonPose = getRawPhotonPose();
 
+      runVisionStats(photonPose); //comment out for better performance
+
       //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
       if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
         initVisionCount++;
@@ -433,6 +443,21 @@ public class Drive extends SubsystemBase {
     }
 
     return false;
+  }
+
+  @AutoLogOutput
+  private PoseVisionStats runVisionStats( Pose2d newVisionPose ) {
+      //update visionStatsBuffer, keeping 100 in at all times, most recent 100
+      if( visionStatsBuffer.size() >= 100 ) {
+        visionStatsBuffer.removeFirst();
+        visionStatsBuffer.addLast(newVisionPose);
+      }
+
+      //update stats x
+      Pose2d meanPose2d = BradyMathLib.getMean(visionStatsBuffer);
+      Pose2d stdDevPose2d = BradyMathLib.getStdDevs(visionStatsBuffer, meanPose2d);
+
+      return new BradyMathLib.PoseVisionStats( meanPose2d, stdDevPose2d );
   }
 
   @AutoLogOutput

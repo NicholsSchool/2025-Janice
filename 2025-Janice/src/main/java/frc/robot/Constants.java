@@ -162,5 +162,7 @@ public final class Constants {
     public static final int initVisionCountTreshold = 100;
     public static final double visionDistanceUpdateThreshold = 1.0; //meters
 
+    public static final int visionStatsNumBuffer = 100;
+
   }
 }

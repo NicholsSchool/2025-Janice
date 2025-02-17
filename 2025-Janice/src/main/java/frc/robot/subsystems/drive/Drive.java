@@ -323,10 +323,7 @@ public class Drive extends SubsystemBase {
     return new Pose2d();
   }
 
-  @AutoLogOutput
-  public Pose2d getRawPhotonPose(){
-    return photonCam.getLocalizedPose().toPose2d();
-  }
+ 
   /** returns the filtered odometryPose*/
   @AutoLogOutput
   public Pose2d getPose(){
@@ -407,24 +404,23 @@ public class Drive extends SubsystemBase {
      //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
     }      
 
-    if (usePhotonPose()) {
+    if (usePhotonPose( kalman.getEstimatedPosition() )) {
       // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
-      filteredPhotonPose2d = getRawPhotonPose();
-      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(getDistanceToTag()) );
+      filteredPhotonPose2d = photonCam.getRawPhotonPose();
+      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(photonCam.getDistanceToTag()) );
     }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
     // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
   }
 
-  private boolean usePhotonPose(){
+  private boolean usePhotonPose( final Pose2d estimatedPose ){
 
     boolean targetDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
 
     if( !targetDetected )
       return false;
 
-    Pose2d kalmanPose = kalman.getEstimatedPosition();
-    Pose2d rawPhotonPose = getRawPhotonPose();
+    Pose2d rawPhotonPose = photonCam.getRawPhotonPose();
 
     //runVisionStats(rawPhotonPose); //comment out for better performance
 
@@ -434,7 +430,7 @@ public class Drive extends SubsystemBase {
       return true;
     }
 
-    Translation2d kalmanTranslation = kalmanPose.getTranslation();
+    Translation2d kalmanTranslation = estimatedPose.getTranslation();
     Translation2d rawPhotonTranslation = rawPhotonPose.getTranslation();
 
     //Check to see if the photon pose is too far away from the estimated pose 
@@ -457,15 +453,6 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput
   private PoseVisionStats getVisionStats() {
     return poseVisionStats;
-  }
-
-  @AutoLogOutput
-  private double getDistanceToTag() {
-    if( !photonCam.getLatestPipeline().hasTargets() )
-      return -1.0;
-      
-    Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
-    return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
   }
 
   private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {

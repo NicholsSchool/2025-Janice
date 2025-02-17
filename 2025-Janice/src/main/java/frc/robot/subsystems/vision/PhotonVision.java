@@ -1,13 +1,17 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.Constants.RobotConstants;
 
 import java.util.List;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -105,11 +109,17 @@ public class PhotonVision extends SubsystemBase {
     }
   }
 
+  @AutoLogOutput
+  public double getDistanceToTag() {
+    if( !getLatestPipeline().hasTargets() )
+      return -1.0;
+      
+    Transform3d cameraToTarget = getLatestPipeline().getBestTarget().bestCameraToTarget;
+    return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
+  }
 
-  // @Override
-  // public void periodic(){
-  //     DistanceFromTag d = new DistanceFromTag();
-  //     d.execute();
-  // }
-
+   @AutoLogOutput
+  public Pose2d getRawPhotonPose(){
+    return this.getLocalizedPose().toPose2d();
+  }
 }

@@ -417,43 +417,37 @@ public class Drive extends SubsystemBase {
 
   private boolean usePhotonPose(){
 
-    boolean targertDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
+    boolean targetDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
 
-    if(targertDetected){
-      
-      Pose2d estPose = kalman.getEstimatedPosition();
-      Pose2d photonPose = getRawPhotonPose();
+    if( !targetDetected )
+      return false;
 
-      runVisionStats(photonPose); //comment out for better performance
+    Pose2d kalmanPose = kalman.getEstimatedPosition();
+    Pose2d rawPhotonPose = getRawPhotonPose();
 
-      //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
-      if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
-        initVisionCount++;
-        return true;
-      }
+    runVisionStats(rawPhotonPose); //comment out for better performance
 
-      Translation2d estimatePose = estPose.getTranslation();
-      Translation2d _photonPose = photonPose.getTranslation();
-
-      //Check to see if the photon pose is too far away from the estimated pose 
-      //Documentation tells you to do this step
-      double distance = estimatePose.getDistance(_photonPose);
-      if(distance < VisionConstants.visionDistanceUpdateThreshold)
-        return true;
+    //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
+    if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
+      initVisionCount++;
+      return true;
     }
 
-    return false;
+    Translation2d kalmanTranslation = kalmanPose.getTranslation();
+    Translation2d rawPhotonTranslation = rawPhotonPose.getTranslation();
+
+    //Check to see if the photon pose is too far away from the estimated pose 
+    return kalmanTranslation.getDistance(rawPhotonTranslation) < VisionConstants.visionDistanceUpdateThreshold;
   }
 
   @AutoLogOutput
   private PoseVisionStats runVisionStats( Pose2d newVisionPose ) {
-      //update visionStatsBuffer, keeping the maximun num in at all times, most recent 100
-      if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer ) {
+      //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
+      if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer )
         visionStatsBuffer.removeFirst();
-        visionStatsBuffer.addLast(newVisionPose);
-      }
+      visionStatsBuffer.addLast(newVisionPose);
 
-      //update stats x
+      //update stats
       Pose2d meanPose2d = BradyMathLib.getMean(visionStatsBuffer);
       Pose2d stdDevPose2d = BradyMathLib.getStdDevs(visionStatsBuffer, meanPose2d);
 
@@ -467,9 +461,9 @@ public class Drive extends SubsystemBase {
   }
 
   private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
-    double xStdDevs = 0.7 * distanceToTag; //meters
-    double yStdDevs = 0.7 * distanceToTag; //meters
-    double yawStdDevs = 0.3 * distanceToTag; //rad
+    double xStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
+    double yStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
+    double yawStdDevs = VisionConstants.rotationPhotonStdDevs * distanceToTag; //rad
 
     return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
   }

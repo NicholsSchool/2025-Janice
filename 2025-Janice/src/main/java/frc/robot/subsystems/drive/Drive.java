@@ -17,6 +17,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -36,7 +37,11 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
+import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.BradyMathLib.PoseVisionStats;
+
+import java.util.ArrayDeque;
 
 import javax.xml.crypto.dsig.Transform;
 
@@ -74,6 +79,8 @@ public class Drive extends SubsystemBase {
 
   private PhotonVision photonCam;
   private int initVisionCount;
+  private ArrayDeque<Pose2d> visionStatsBuffer;
+  private PoseVisionStats poseVisionStats;
 
   private Twist2d fieldVelocity = new Twist2d(); // TJG
   private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
@@ -137,6 +144,8 @@ public class Drive extends SubsystemBase {
           System.out.println("ACTIVE PATH CALL BACK 2");
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    visionStatsBuffer = new ArrayDeque<Pose2d>(Constants.VisionConstants.visionStatsNumBuffer);
   }
 
   public void periodic() {
@@ -409,42 +418,60 @@ public class Drive extends SubsystemBase {
 
   private boolean usePhotonPose(){
 
-    boolean targertDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
+    boolean targetDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
 
-    if(targertDetected){
-      
-      Pose2d estPose = kalman.getEstimatedPosition();
-      Pose2d photonPose = getRawPhotonPose();
+    if( !targetDetected )
+      return false;
 
-      //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
-      if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
-        initVisionCount++;
-        return true;
-      }
+    Pose2d kalmanPose = kalman.getEstimatedPosition();
+    Pose2d rawPhotonPose = getRawPhotonPose();
 
-      Translation2d estimatePose = estPose.getTranslation();
-      Translation2d _photonPose = photonPose.getTranslation();
+    //runVisionStats(rawPhotonPose); //comment out for better performance
 
-      //Check to see if the photon pose is too far away from the estimated pose 
-      //Documentation tells you to do this step
-      double distance = estimatePose.getDistance(_photonPose);
-      if(distance < VisionConstants.visionDistanceUpdateThreshold)
-        return true;
+    //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
+    if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
+      initVisionCount++;
+      return true;
     }
 
-    return false;
+    Translation2d kalmanTranslation = kalmanPose.getTranslation();
+    Translation2d rawPhotonTranslation = rawPhotonPose.getTranslation();
+
+    //Check to see if the photon pose is too far away from the estimated pose 
+    return kalmanTranslation.getDistance(rawPhotonTranslation) < VisionConstants.visionDistanceUpdateThreshold;
+  }
+
+  private void runVisionStats( Pose2d newVisionPose ) {
+      //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
+      if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer )
+        visionStatsBuffer.removeFirst();
+      visionStatsBuffer.addLast(newVisionPose);
+
+      //update stats
+      Pose2d meanPose2d = BradyMathLib.getMean(visionStatsBuffer);
+      Pose2d stdDevPose2d = BradyMathLib.getStdDevs(visionStatsBuffer, meanPose2d);
+
+      poseVisionStats = new BradyMathLib.PoseVisionStats( meanPose2d, stdDevPose2d );
+  }
+
+  @AutoLogOutput
+  private PoseVisionStats getVisionStats() {
+    return poseVisionStats;
   }
 
   @AutoLogOutput
   private double getDistanceToTag() {
+    if( !photonCam.getLatestPipeline().hasTargets() )
+      return -1.0;
+      
     Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
     return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
   }
 
   private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
-    double xStdDevs = 0.7 * distanceToTag; //meters
-    double yStdDevs = 0.7 * distanceToTag; //meters
-    double yawStdDevs = 0.3 * distanceToTag; //rad
+    double xStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
+    double yStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
+    double yawStdDevs = VisionConstants.rotationPhotonStdDevs * distanceToTag; //rad
 
     return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
   }

@@ -162,5 +162,10 @@ public final class Constants {
     public static final int initVisionCountTreshold = 100;
     public static final double visionDistanceUpdateThreshold = 1.0; //meters
 
+    public static final double tranlationPhotonStdDevs = 0.01;
+    public static final double rotationPhotonStdDevs = 0.005;
+
+    public static final int visionStatsNumBuffer = 100;
+
   }
 }

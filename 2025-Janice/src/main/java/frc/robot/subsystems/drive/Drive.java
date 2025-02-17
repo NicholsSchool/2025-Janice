@@ -17,6 +17,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -38,13 +39,19 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.BradyMathLib.PoseVisionStats;
 
 import java.util.ArrayDeque;
+
+import javax.xml.crypto.dsig.Transform;
 
 // import frc.robot.commands.VisionCommands.PhotonInfo;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+import org.photonvision.PhotonCamera;
+
+import com.google.flatbuffers.FlexBuffers.Vector;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -434,7 +441,7 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput
-  private Pose2d[] runVisionStats( Pose2d newVisionPose ) {
+  private PoseVisionStats runVisionStats( Pose2d newVisionPose ) {
       //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
       if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer )
         visionStatsBuffer.removeFirst();
@@ -444,14 +451,14 @@ public class Drive extends SubsystemBase {
       Pose2d meanPose2d = BradyMathLib.getMean(visionStatsBuffer);
       Pose2d stdDevPose2d = BradyMathLib.getStdDevs(visionStatsBuffer, meanPose2d);
 
-      return new Pose2d[] { meanPose2d, stdDevPose2d };
+      return new BradyMathLib.PoseVisionStats( meanPose2d, stdDevPose2d );
   }
 
   @AutoLogOutput
   private double getDistanceToTag() {
     if( !photonCam.getLatestPipeline().hasTargets() )
       return -1.0;
-
+      
     Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
     return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
   }

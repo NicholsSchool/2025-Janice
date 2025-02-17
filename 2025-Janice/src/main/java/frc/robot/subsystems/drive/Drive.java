@@ -80,6 +80,7 @@ public class Drive extends SubsystemBase {
   private PhotonVision photonCam;
   private int initVisionCount;
   private ArrayDeque<Pose2d> visionStatsBuffer;
+  private PoseVisionStats poseVisionStats;
 
   private Twist2d fieldVelocity = new Twist2d(); // TJG
   private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
@@ -425,7 +426,7 @@ public class Drive extends SubsystemBase {
     Pose2d kalmanPose = kalman.getEstimatedPosition();
     Pose2d rawPhotonPose = getRawPhotonPose();
 
-    runVisionStats(rawPhotonPose); //comment out for better performance
+    //runVisionStats(rawPhotonPose); //comment out for better performance
 
     //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
     if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
@@ -440,8 +441,7 @@ public class Drive extends SubsystemBase {
     return kalmanTranslation.getDistance(rawPhotonTranslation) < VisionConstants.visionDistanceUpdateThreshold;
   }
 
-  @AutoLogOutput
-  private PoseVisionStats runVisionStats( Pose2d newVisionPose ) {
+  private void runVisionStats( Pose2d newVisionPose ) {
       //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
       if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer )
         visionStatsBuffer.removeFirst();
@@ -451,7 +451,12 @@ public class Drive extends SubsystemBase {
       Pose2d meanPose2d = BradyMathLib.getMean(visionStatsBuffer);
       Pose2d stdDevPose2d = BradyMathLib.getStdDevs(visionStatsBuffer, meanPose2d);
 
-      return new BradyMathLib.PoseVisionStats( meanPose2d, stdDevPose2d );
+      poseVisionStats = new BradyMathLib.PoseVisionStats( meanPose2d, stdDevPose2d );
+  }
+
+  @AutoLogOutput
+  private PoseVisionStats getVisionStats() {
+    return poseVisionStats;
   }
 
   @AutoLogOutput

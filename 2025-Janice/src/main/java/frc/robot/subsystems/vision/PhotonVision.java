@@ -35,6 +35,10 @@ public class PhotonVision extends SubsystemBase {
     return result.hasTargets();
   }
 
+  public boolean hasValidTarget() {
+    return this.getTargetId(this.getLatestPipeline().getBestTarget()) != -1;
+  }
+
   public List<PhotonTrackedTarget> getTargets(PhotonPipelineResult result) {
     return result.getTargets();
   }
@@ -118,7 +122,7 @@ public class PhotonVision extends SubsystemBase {
     return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
   }
 
-   @AutoLogOutput
+  @AutoLogOutput
   public Pose2d getRawPhotonPose(){
     return this.getLocalizedPose().toPose2d();
   }

@@ -110,7 +110,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
       
-    photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
+    photonCam = new PhotonVision(VisionConstants.cameraKey);
          RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();

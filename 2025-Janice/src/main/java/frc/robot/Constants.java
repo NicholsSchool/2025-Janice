@@ -6,7 +6,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -154,6 +153,8 @@ public final class Constants {
   }
 
   public static final class VisionConstants {
+
+    public static String cameraKey = "Arducam_OV2311_USB_Camera";
     //These next ones at the moment are temporary until the actual cameras are known
     Translation3d limelightPosition = new Translation3d(Units.inchesToMeters(8.0), 0.0, Units.inchesToMeters(14.75));
     Translation3d photonCam = new Translation3d(Units.inchesToMeters(-9.0), 0.0, Units.inchesToMeters(11.75));

@@ -3,14 +3,9 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.PathPlannerLogging;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,20 +22,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 // import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
-import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 

@@ -34,11 +34,11 @@ public class ModuleIOSim implements ModuleIO {
 
   private final DCMotorSim driveSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(driveMotorModel, 0.025, Constants.ModuleConstants.kDRIVE_GEAR_RATIO),
+          LinearSystemId.createDCMotorSystem(driveMotorModel, 0.025, (45.0 * 22) / (12 * 15)),
           driveMotorModel);
   private final DCMotorSim turnSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(turnMotorModel, 0.004, Constants.ModuleConstants.kTURN_GEAR_RATIO),
+          LinearSystemId.createDCMotorSystem(turnMotorModel, 0.004, 1.0),
           turnMotorModel);
 
   private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);

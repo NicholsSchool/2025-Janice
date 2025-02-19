@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static final RobotType robot = RobotType.ROBOT_REAL;
+  private static final RobotType robot = RobotType.ROBOT_REAL_FRANKENLEW;
   public static final boolean driveRobotRelative =
       false; // set to true to override all field relative and instead command in robot-relative.
 
@@ -38,7 +38,8 @@ public final class Constants {
   }
 
   public static enum RobotType {
-    ROBOT_REAL, // a real robot
+    ROBOT_REAL_FRANKENLEW, // a real robot (LEW ZEALAND)
+    ROBOT_REAL_JANICE, // a real robot (JANICE)
     ROBOT_REPLAY, // data file replay (could be on real bot or simulation)
     ROBOT_SIM, // simulation
     ROBOT_FOOTBALL // Football for simulating
@@ -136,10 +137,6 @@ public final class Constants {
     public static final int kDrivingMotorCurrentLimit = 90; // amps
     public static final int kTurningMotorCurrentLimit = 40; // amps
     public static final int kMotorSupplyCurrentLimit = 35; //amps
-
-    // SDS MK4i L2 Modules
-    public static final double kDRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-    public static final double kTURN_GEAR_RATIO = 150.0 / 7.0;
   }
 
   public static final class AutoConstants {

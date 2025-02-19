@@ -82,8 +82,8 @@ public class Drive extends SubsystemBase {
   private ArrayDeque<Pose2d> visionStatsBuffer;
   private PoseVisionStats poseVisionStats;
 
-  private Twist2d fieldVelocity = new Twist2d(); // TJG
-  private ChassisSpeeds setpoint = new ChassisSpeeds(); // TJG
+  private Twist2d fieldVelocity = new Twist2d();
+  private ChassisSpeeds setpoint = new ChassisSpeeds();
 
   SwerveModulePosition[] positions =
       new SwerveModulePosition[] {
@@ -111,7 +111,10 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
       
     photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
-         RobotConfig config;
+
+    // This is related to PathPlanner configuration.
+    // This RobotConfig is currently not used.
+    RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {

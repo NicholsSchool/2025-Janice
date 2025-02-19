@@ -31,7 +31,8 @@ public class Robot extends LoggedRobot {
     // Set up data receivers & replay source
     switch (Constants.getRobot()) {
       case ROBOT_FOOTBALL:
-      case ROBOT_REAL:
+      case ROBOT_REAL_FRANKENLEW:
+      case ROBOT_REAL_JANICE:
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
@@ -87,8 +88,6 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    robotContainer.setStartingPose();
-
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)

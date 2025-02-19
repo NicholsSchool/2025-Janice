@@ -12,10 +12,14 @@ public class GyroIONAVX implements GyroIO {
 
   /** Constructor to initialize the NAVX */
   public GyroIONAVX() {
-    if (Objects.requireNonNull(Constants.getRobot()) == Constants.RobotType.ROBOT_REAL) {
-      navx = new AHRS(NavXComType.kUSB1);
-    } else {
-      throw new RuntimeException("Invalid robot for NAVX");
+    Constants.RobotType robotType = Objects.requireNonNull(Constants.getRobot());
+    switch (robotType) {
+      case ROBOT_REAL_FRANKENLEW:
+      case ROBOT_REAL_JANICE:
+        navx = new AHRS(NavXComType.kUSB1);
+        break;
+      default:  
+        throw new RuntimeException("Invalid robot for NAVX");
     }
   }
 

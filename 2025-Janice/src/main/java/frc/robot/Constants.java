@@ -63,7 +63,7 @@ public final class Constants {
 
     public static final int kPowerDistributionHub = 50;
 
-    public static final int kRightChain = 0;
+    public static final int kEndEffectorIntake = 0;
   }
 
   public static final class RobotConstants {
@@ -134,21 +134,18 @@ public final class Constants {
     public static double kEndEffectorI = 0.0;
     public static double kEndEffectorD = 0.12;
     public static double kEndEffectorFF = 0.0;
-    public static final double EndEffectorCurrentLimit = 35.0; 
+    public static final double EndEffectorCurrentLimit = 35.0;
+    public static final int kDistanceSensorChannel = 0; 
+    public static final double kDistanceThreshold = 100;
 
-    public static int elevatorLimitSwitchChannel = 1;
+    public static int elevatorLimitSwitchChannel = -1;
+    public static int kSolenoidChannel = -1;
 
   }
 
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;
-  }
-
-  public static final class FiddleSongs {
-    public static final String ALL_STAR = "all-star.chrp"; // TODO: add fnaf
-    public static final String IMPERIAL_MARCH = "Imperial-March.chrp";
-    public static final String WII_SONG = "Wii-Song.chrp";
   }
 
   public static final class VisionConstants {

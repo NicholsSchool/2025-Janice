@@ -1,6 +1,5 @@
 package frc.robot.subsystems.EndEffector;
 
-import frc.robot.Constants;
 import frc.robot.Constants.EndEffectorConstants;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -9,8 +8,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -20,22 +17,17 @@ public class EndEffector extends SubsystemBase {
     private final EndEffectorIOInputsAutoLogged inputs = new EndEffectorIOInputsAutoLogged();
 
     private double spin = 0.0;
-    private double voltageCmdPid = 0.0;
+    
+    private boolean clampOn = false;
 
-    private boolean open = false;
+    private double intakeVoltage = 0.0;
 
-    private final ProfiledPIDController endEffectorPidController =
-      new ProfiledPIDController(
-          0,0 ,0, new TrapezoidProfile.Constraints(0,0));
+
 
     private static final LoggedTunableNumber EndEffectorMaxVelocityRad =
       new LoggedTunableNumber("EndEffector/MaxVelocityRad");
   private static final LoggedTunableNumber EndEffectorMaxAccelerationRad =
       new LoggedTunableNumber("EndEffector/MaxAccelerationRad");
-
-      private static final LoggedTunableNumber EndEffectorKp = new LoggedTunableNumber("EndEffector/Kp");
-  private static final LoggedTunableNumber EndEffectorKi = new LoggedTunableNumber("EndEffector/Ki");
-  private static final LoggedTunableNumber EndEffectorKd = new LoggedTunableNumber("EndEffector/Kd");
 
   public EndEffector(EndEffectorIO io){
     this.io = io;
@@ -43,16 +35,8 @@ public class EndEffector extends SubsystemBase {
     EndEffectorMaxAccelerationRad.initDefault(1.1);
     EndEffectorMaxVelocityRad.initDefault(0.9);
 
-
-    EndEffectorKp.initDefault(EndEffectorConstants.kEndEffectorP);
-    EndEffectorKi.initDefault(EndEffectorConstants.kEndEffectorI);
-    EndEffectorKd.initDefault(EndEffectorConstants.kEndEffectorD);
-
-    endEffectorPidController.setP(EndEffectorKp.get());
-    endEffectorPidController.setI(EndEffectorKi.get());
-    endEffectorPidController.setD(EndEffectorKd.get());
+   
 }
-//TODO: Add to this
 public void periodic(){
     io.updateInputs(inputs);
 
@@ -62,32 +46,37 @@ public void periodic(){
 
      if (DriverStation.isDisabled()) {}
 
+  io.setVoltage(intakeVoltage);
 
-    io.setVoltage(voltageCmdPid);
+  io.setClamp(clampOn);
+  
 }
 
 private void updateTunables() {
     // Update from tunable numbers
     if (EndEffectorMaxVelocityRad.hasChanged(hashCode())
-        || EndEffectorMaxAccelerationRad.hasChanged(hashCode())
-        || EndEffectorKp.hasChanged(hashCode())
-        || EndEffectorKi.hasChanged(hashCode())
-        || EndEffectorKd.hasChanged(hashCode())) {
-            endEffectorPidController.setP(EndEffectorKp.get());
-            endEffectorPidController.setI(EndEffectorKi.get());
-            endEffectorPidController.setD(EndEffectorKd.get());
-            endEffectorPidController.setConstraints(
-          new TrapezoidProfile.Constraints(EndEffectorMaxVelocityRad.get(), EndEffectorMaxAccelerationRad.get()));
+        || EndEffectorMaxAccelerationRad.hasChanged(hashCode())) { 
     }
   }
 
-  @AutoLogOutput
-  public double getVoltageCommandPid() {
-    return voltageCmdPid;
-  }
 
   @AutoLogOutput
   public double[] getOutputCurrent() {
     return inputs.currentAmps;
+  }
+
+  @AutoLogOutput
+  public boolean hasCoral(){
+    return inputs.hasCoral;
+  }
+
+  public void setVoltage(double voltage, boolean stopForCoral){
+    //TODO: check if voltage is positive or negative for intaking
+    if (stopForCoral && voltage < 0 && hasCoral()) {intakeVoltage = 0; return;}
+    intakeVoltage = voltage;
+  }
+
+  public void setClamp(boolean on){
+    clampOn = on;
   }
 }

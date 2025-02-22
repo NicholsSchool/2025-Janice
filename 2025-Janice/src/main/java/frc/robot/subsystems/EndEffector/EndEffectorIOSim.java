@@ -19,7 +19,6 @@ public class EndEffectorIOSim implements EndEffectorIO{
   public void updateInputs(EndEffectorIOInputs inputs){
       inputs.appliedVolts = new double[] {lSim.getInputVoltage()};
       inputs.velocityRadPerSec = new double[] {lSim.getAngularVelocityRadPerSec()};
-      inputs.currentHeight = this.getCurrentHeight();
       inputs.currentAmps = new double[] {lSim.getCurrentDrawAmps()};
   }
 

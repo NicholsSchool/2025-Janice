@@ -9,11 +9,12 @@ public interface EndEffectorIO {
         public double[] currentAmps = {0.0, 0.0};
         public double[] appliedVolts = {0.0, 0.0};
         public double[] velocityRadPerSec = {0.0, 0.0};
-        public double currentHeight = 0.0;
         public boolean closed = false;
+        public boolean hasCoral = false;
     }
       /** Updates the set of loggable inputs. */
   public default void updateInputs(EndEffectorIOInputs inputs) {};
   public default void setVoltage(double voltage) {};
+  public default void setClamp(boolean state){};
 
 }

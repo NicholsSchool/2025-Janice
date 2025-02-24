@@ -57,14 +57,11 @@ public class RobotContainer {
   //ColorInfo colorInfo = null;
 
   // shuffleboard
-  ShuffleboardTab boomerangTab;
-  public static GenericEntry hasNote;
+  ShuffleboardTab shuffleBoardTab;
 
   // Controller
   public static CommandXboxController driveController = new CommandXboxController(0);
   public static CommandXboxController operatorController = new CommandXboxController(1);
-
-  //public PhotonVision pv = new PhotonVision("Microsoft_LifeCam_HD-3000");
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -88,10 +85,11 @@ public class RobotContainer {
 
   // Auto Commands
   final AutoCommands autoCommands;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case ROBOT_REAL:
+      case ROBOT_REAL_FRANKENLEW:
         // Real robot, instantiate hardware IO implementations
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
         //colorInfo = new ColorInfo();
@@ -102,15 +100,19 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(1),
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
-                autoCommands = new AutoCommands(drive);
-                // new ModuleIOSim(),
-                // new ModuleIOSim(),
-                // new ModuleIOSim(),
-                // new ModuleIOSim());
-                // new ModuleIOTalonFX(0),
-                // new ModuleIOTalonFX(1),
-                // new ModuleIOTalonFX(2),
-                // new ModuleIOTalonFX(3));
+        break;
+
+      case ROBOT_REAL_JANICE:
+        // Real robot, instantiate hardware IO implementations
+        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        //colorInfo = new ColorInfo();
+        drive =
+            new Drive(
+                new GyroIONAVX(),
+                new ModuleIOTalonFX(0),
+                new ModuleIOTalonFX(1),
+                new ModuleIOTalonFX(2),
+                new ModuleIOTalonFX(3));
         break;
 
       case ROBOT_SIM:
@@ -122,7 +124,6 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-                autoCommands = new AutoCommands(drive);
         break;
 
       case ROBOT_FOOTBALL:
@@ -133,11 +134,10 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-                autoCommands = new AutoCommands(drive);
         break;
 
+      case ROBOT_REPLAY:
       default:
-        // case ROBOT_REPLAY:
         // Replayed robot, disable IO implementations since the replay
         // will supply the data.
         drive =
@@ -147,7 +147,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-                autoCommands = new AutoCommands(drive);
 
         break;
     }
@@ -156,7 +155,7 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Create auto commands
-    //autoCommands = new AutoCommands(drive);
+    autoCommands = new AutoCommands(drive);
 
     // autoChooser.addOption("Wait 5 seconds", new WaitCommand(5.0));
 
@@ -175,7 +174,7 @@ public class RobotContainer {
 
   private void initShuffleboard() {
     // Configure the Shuffleboard
-    boomerangTab = Shuffleboard.getTab("Boomerang");
+    shuffleBoardTab = Shuffleboard.getTab("Boomerang");
     // this is where display booleans will go
   }
 

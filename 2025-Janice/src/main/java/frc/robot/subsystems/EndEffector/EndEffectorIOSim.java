@@ -14,17 +14,14 @@ public class EndEffectorIOSim implements EndEffectorIO{
         lSimModel);
   
   double elevatorAppliedVolts = 0.0;
+  boolean clampOn = false;
 
   @Override
   public void updateInputs(EndEffectorIOInputs inputs){
       inputs.appliedVolts = new double[] {lSim.getInputVoltage()};
       inputs.velocityRadPerSec = new double[] {lSim.getAngularVelocityRadPerSec()};
       inputs.currentAmps = new double[] {lSim.getCurrentDrawAmps()};
-  }
-
-  private double getCurrentHeight(){
-      // find a regression for it 
-      return lSim.getAngularPositionRad();
+      inputs.closed = clampOn;
   }
 
   @Override
@@ -32,4 +29,9 @@ public class EndEffectorIOSim implements EndEffectorIO{
     lSim.setInputVoltage(voltage);
   }
 
+  @Override
+  public void setClamp(boolean on) {
+    clampOn = on;
+  }
+ 
 }

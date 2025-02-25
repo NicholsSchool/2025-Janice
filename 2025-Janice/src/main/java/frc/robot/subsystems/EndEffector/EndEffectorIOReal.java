@@ -1,13 +1,6 @@
 package frc.robot.subsystems.EndEffector;
 
-import static edu.wpi.first.units.Units.Meter;
-import static edu.wpi.first.units.Units.Meters;
-
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.Rev2mDistanceSensor;
@@ -15,9 +8,6 @@ import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
 
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
@@ -28,7 +18,6 @@ public class EndEffectorIOReal implements EndEffectorIO{
     private TalonFX intake;
     private Rev2mDistanceSensor distanceSensor;
     private Solenoid grabSolenoid;
-    //TODO: Need to implement the distance sensor and solenoid
 
     public EndEffectorIOReal() {
         intake = new TalonFX(CAN.kEndEffectorIntake);

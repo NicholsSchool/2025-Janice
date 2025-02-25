@@ -2,7 +2,11 @@ package frc.robot.subsystems.arm;
 
 public class ArmIOSim implements ArmIO {
 
-  public void updateInputs() {}
+  double motorVoltage = 0.0;
 
-  public void setVoltage(double voltage) {}
+  public void updateInputs(ArmIOInputs inputs) {
+    inputs.motorVoltage = this.motorVoltage;
+  }
+
+  public void setVoltage(double voltage) { motorVoltage = voltage; }
 }

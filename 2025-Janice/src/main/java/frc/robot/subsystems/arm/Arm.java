@@ -152,7 +152,7 @@ public class Arm extends SubsystemBase {
   }
 
   @AutoLogOutput
-  public double[] getOutputCurrent() {
+  public double getOutputCurrent() {
     return inputs.currentAmps;
   }
 

@@ -80,7 +80,7 @@ public class Elevator extends SubsystemBase {
           break;
           case kManual:
           voltageCmdPid = 0.0;
-          elevatorPidController.setGoal(getHeight());
+          setTargetPos(getHeight());
           }
 
          if (!reachedTargetPos) {

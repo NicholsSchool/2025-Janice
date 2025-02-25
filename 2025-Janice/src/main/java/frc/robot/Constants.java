@@ -134,6 +134,10 @@ public final class Constants {
     public static final double INTAKE_P = 0;
     public static final double INTAKE_I = 0;
     public static final double INTAKE_D = 0;
+    public static final int kLeftPistonChannel = -1;
+    public static final int kRightPistonChannel = -1;
+    public static final double kCoralDistanceCloseBound = 300;
+    public static final double kCoralDistanceFarBound = 400;
 
   }
 

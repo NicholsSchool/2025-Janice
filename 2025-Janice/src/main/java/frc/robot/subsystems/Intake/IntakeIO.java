@@ -2,16 +2,19 @@ package frc.robot.subsystems.Intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.wpilibj.Solenoid;
+
 public interface IntakeIO {
 
     @AutoLog
     public static class IntakeIOInputs {
 
-     public double[] velocityRadsPerSec = new double[] {0, 0};
-     public double[] appliedVolts = new double[] {0, 0};
-     public double[] appliedOutput = new double[] {0, 0};
-     public double[] busVoltage = new double[] {0, 0};
-     public double[] currentAmps = new double[] {0, 0};
+     public double velocityRadsPerSec = 0.0;
+     public double appliedVolts = 0.0;
+     public double motorVoltage = 0.0;
+     public double supplyVoltage = 0.0;
+     public double currentAmps = 0.0;
+     public boolean hasCoralAligned = false;
     }
 
 /** Updates the set of loggable inputs. */
@@ -19,4 +22,6 @@ public interface IntakeIO {
 
   /** Set voltage command */
   public default void setVoltage(double voltage) {}
+
+  public default void setSolenoidState (boolean out) {}
 }

@@ -63,8 +63,8 @@ public class Intake extends SubsystemBase {
 
     updateTunables();
 
-    accelRad = (BradyMathLib.avg(inputs.velocityRadsPerSec[0], prevVelocity) / 0.02);
-    prevVelocity = BradyMathLib.avg(inputs.velocityRadsPerSec[0], inputs.velocityRadsPerSec[1]);
+    accelRad = (BradyMathLib.avg(inputs.velocityRadsPerSec, prevVelocity) / 0.02);
+    prevVelocity = inputs.velocityRadsPerSec;
 
     if (DriverStation.isDisabled()) {}
 
@@ -104,7 +104,7 @@ public class Intake extends SubsystemBase {
   }
 
   @AutoLogOutput
-  public double[] getOutputCurrent() {
+  public double getOutputCurrent() {
     return inputs.currentAmps;
   }
 }

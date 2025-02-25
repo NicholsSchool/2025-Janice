@@ -14,7 +14,7 @@ public class ElevatorIOReal implements ElevatorIO{
     private TalonFX lShoulder;
     private TalonFX rShoulder;
     private DigitalInput elevatorLimitSwitch;
-      private final CANcoder elevatorEncoder;
+    private final CANcoder elevatorEncoder;
 
     public ElevatorIOReal() {
     lShoulder = new TalonFX(CAN.kLeftChain);

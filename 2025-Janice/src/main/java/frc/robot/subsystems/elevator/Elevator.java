@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -22,6 +23,14 @@ public class Elevator extends SubsystemBase {
     private double targetHeight = 0.0;
     private double voltageCmdPid = 0.0;
     private boolean reachedTargetPos = true;
+    private double voltageCmdManual = 0.0;
+
+    private enum ElevatorMode{
+      kManual,
+      kGoToPos
+    }
+
+    private ElevatorMode elevatorMode;
 
      private final ProfiledPIDController elevatorPidController =
       new ProfiledPIDController(
@@ -52,6 +61,8 @@ public class Elevator extends SubsystemBase {
         elevatorPidController.setP(elevatorKp.get());
         elevatorPidController.setI(elevatorKi.get());
         elevatorPidController.setD(elevatorKd.get());
+
+        this.elevatorMode = ElevatorMode.kGoToPos;
     }
 
     @Override
@@ -62,15 +73,21 @@ public class Elevator extends SubsystemBase {
 
         Logger.processInputs("Elevator", inputs);
 
-         if (DriverStation.isDisabled()) {}
-
-         voltageCmdPid = elevatorPidController.calculate( this.getHeight() );
+        switch(elevatorMode){
+          case kGoToPos:
+          voltageCmdPid = elevatorPidController.calculate( this.getHeight() );
+          voltageCmdManual = 0.0;
+          break;
+          case kManual:
+          voltageCmdPid = 0.0;
+          elevatorPidController.setGoal(getHeight());
+          }
 
          if (!reachedTargetPos) {
             reachedTargetPos = elevatorPidController.atGoal();
             if (reachedTargetPos) System.out.println("elevator Move to Pos Reached Goal!");
           }
-        io.setVoltage(voltageCmdPid);
+        io.setVoltage(voltageCmdManual + voltageCmdPid);
     }
 
 
@@ -98,6 +115,7 @@ public class Elevator extends SubsystemBase {
   }
   
   public Command runGoToPosCommand(double targetHeight){
+    elevatorMode = ElevatorMode.kGoToPos;
     if (targetHeight > ElevatorConstants.maxHeight || targetHeight < ElevatorConstants.minHeight) {
       System.out.println("Soft Limited Elevator");
       return new InstantCommand();
@@ -106,8 +124,22 @@ public class Elevator extends SubsystemBase {
     return new InstantCommand(() -> setTargetPos(targetHeight), this);
   }
 
+  public void runManualPos(double inputVoltage){
+    if(Math.abs(inputVoltage) > Constants.JOYSTICK_DEADBAND ){
+      elevatorMode = ElevatorMode.kManual;
+    }else{
+      elevatorMode = ElevatorMode.kGoToPos;
+    }
+    voltageCmdManual = inputVoltage;
+  }
+
   public void setReachedTarget(boolean hasReachedTarget) {
     reachedTargetPos = hasReachedTarget;
+  }
+
+  @AutoLogOutput
+  public ElevatorMode getElevatorMode(){
+    return elevatorMode;
   }
 
   @AutoLogOutput

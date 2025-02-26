@@ -19,13 +19,12 @@ public class IntakeIOReal implements IntakeIO {
     
     //TODO: Need to fimplement the Solenoids because I dont know how to do that
     private TalonFX indexer;
-    private Solenoid lExtender, rExtender;
+    private Solenoid extender;
     private Rev2mDistanceSensor lSensor, rSensor;
 
     public IntakeIOReal() {
         indexer = new TalonFX(CAN.kIntakeMotor);
-        lExtender = new Solenoid(PneumaticsModuleType.REVPH, Constants.IntakeConstants.kLeftPistonChannel);
-        rExtender = new Solenoid(PneumaticsModuleType.REVPH, Constants.IntakeConstants.kRightPistonChannel);
+        extender = new Solenoid(PneumaticsModuleType.REVPH, Constants.IntakeConstants.kLeftPistonChannel);
         lSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
         rSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
     
@@ -52,8 +51,7 @@ public class IntakeIOReal implements IntakeIO {
 
       @Override
       public void setSolenoidState(boolean out){
-        lExtender.set(out);
-        rExtender.set(out);
+        extender.set(out);
       }
 
       private boolean isCoralAligned(){

@@ -130,6 +130,7 @@ public final class Constants {
 
   public static final class IntakeConstants {
 
+    public static final double kIndexerGearRatio = 1.0;
     public static final double INTAKE_CURRENT_LIMIT = 0;
     public static final double INTAKE_P = 0;
     public static final double INTAKE_I = 0;

@@ -1,7 +1,9 @@
 package frc.robot.subsystems.Outtake;
 
+import org.littletonrobotics.junction.AutoLog;
 
 public interface OuttakeIO {
+    @AutoLog
     public static class OuttakeIOInputs {
         public double motorVoltage = 0.0;
         public double supplyVoltage = 0.0;

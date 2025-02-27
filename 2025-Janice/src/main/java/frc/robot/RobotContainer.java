@@ -29,7 +29,6 @@ import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 
-import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
@@ -108,6 +107,7 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
                 elevator = new Elevator(new ElevatorIOSim());
+                intake = new Intake(new IntakeIOSim());
         break;
 
       case ROBOT_REAL_JANICE:

@@ -406,15 +406,15 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateEstimatedPose(SwerveModulePosition[] wheelAbsolutes) {
-    if (LimelightHelpers.getTV("limelight")) {
-     //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
-    }      
+    // if (LimelightHelpers.getTV("limelight")) {
+    //  //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
+    // }      
 
-    if (usePhotonPose()) {
-      // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
-      filteredPhotonPose2d = getRawPhotonPose();
-      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(getDistanceToTag()) );
-    }
+    // if (usePhotonPose()) {
+    //   // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
+    //   filteredPhotonPose2d = getRawPhotonPose();
+    //   kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(getDistanceToTag()) );
+    // }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
     // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
   }
@@ -477,5 +477,14 @@ public class Drive extends SubsystemBase {
     double yawStdDevs = VisionConstants.rotationPhotonStdDevs * distanceToTag; //rad
 
     return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
+  }
+
+  /** Adds a new timestamped vision measurement. */
+  public void addVisionMeasurement(
+      Pose2d visionRobotPoseMeters,
+      double timestampSeconds,
+      Matrix<N3, N1> visionMeasurementStdDevs) {
+        kalman.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 }

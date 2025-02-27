@@ -43,8 +43,14 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import static frc.robot.subsystems.vision.VisionConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -58,6 +64,8 @@ public class RobotContainer {
   public final Drive drive;
   public final Elevator elevator;
   private final Intake intake;
+  private final Vision vision;
+
 
   //private PowerDistribution pdh;
   //ColorInfo colorInfo = null;
@@ -106,8 +114,13 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(1),
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
-                elevator = new Elevator(new ElevatorIOSim());
-                intake = new Intake(new IntakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
+        vision =
+              new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
       case ROBOT_REAL_JANICE:
@@ -123,6 +136,11 @@ public class RobotContainer {
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOSim());
         intake = new Intake(new IntakeIOReal());
+        vision =
+             new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1));
         break;
 
       case ROBOT_SIM:
@@ -136,6 +154,11 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         intake = new Intake(new IntakeIOSim());
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
       case ROBOT_FOOTBALL:
@@ -148,6 +171,11 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         intake = new Intake(new IntakeIOSim());
+        vision =
+             new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
       case ROBOT_REPLAY:
@@ -163,6 +191,11 @@ public class RobotContainer {
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         intake = new Intake(new IntakeIOSim());
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
     }

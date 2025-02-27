@@ -1,9 +1,15 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants;
+import frc.robot.Constants.RobotConstants;
+
 import java.util.List;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
@@ -66,6 +72,7 @@ public class PhotonVision extends SubsystemBase {
 
   // Get id of tag
   public int getTargetId(PhotonTrackedTarget target) {
+    if(target == null){ return -1;} 
     return target.getFiducialId();
   }
 
@@ -85,6 +92,19 @@ public class PhotonVision extends SubsystemBase {
   public Transform3d getAlternateCamera(PhotonTrackedTarget target) {
     return target.getAlternateCameraToTarget();
   }
+
+  public Pose3d getLocalizedPose(){
+    PhotonPipelineResult result = getLatestPipeline();
+    PhotonTrackedTarget target = result.getBestTarget();
+    if(target == null){ return new Pose3d();}
+    else{
+      // this yaw from them was outputting off by 180 from what it actually was, might be worth investigating if localization doesn't work
+    return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+     FieldConstants.aprilTags.getTagPose(target.getFiducialId()).orElse(new Pose3d()),
+      RobotConstants.robotToPhotonCam1);
+    }
+  }
+
 
   // @Override
   // public void periodic(){

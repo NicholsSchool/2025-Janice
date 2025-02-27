@@ -1,44 +1,44 @@
-// package frc.robot.commands.VisionCommands;
+package frc.robot.commands.VisionCommands;
 
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Translation2d;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.Constants.VisionConstants;
-// import frc.robot.FieldConstants;
-// import frc.robot.subsystems.vision.PhotonVision;
-// import org.photonvision.targeting.PhotonPipelineResult;
-// import org.photonvision.targeting.PhotonTrackedTarget;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.FieldConstants;
+import frc.robot.subsystems.vision.PhotonVision;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
-// // import org.photonvision.utils.*;
+// import org.photonvision.utils.*;
 
-// public class PhotonInfo extends Command {
-//   PhotonVision pv1;
+public class PhotonInfo extends Command {
+  PhotonVision pv1;
 
-//   public PhotonInfo() {
-//     pv1 = new PhotonVision("Arducam_OV2311_USB_Camera (1) (2) (3) (4)");
-//     // rcommnad = new RamseteCommand(null, null, null, null, null, null, null, null, null, null);
-//   }
+  public PhotonInfo() {
+    pv1 = new PhotonVision("Arducam_OV2311_USB_Camera (1) (2) (3) (4)");
+    // rcommnad = new RamseteCommand(null, null, null, null, null, null, null, null, null, null);
+  }
 
-//   public int getIDOne() {
-//     PhotonPipelineResult result = pv1.getLatestPipeline();
-//     PhotonTrackedTarget target = result.getBestTarget();
-//     if (target == null) return -1;
-//     else {
-//       return target.getFiducialId();
-//     }
-//   }
+  public int getIDOne() {
+    PhotonPipelineResult result = pv1.getLatestPipeline();
+    PhotonTrackedTarget target = result.getBestTarget();
+    if (target == null) return -1;
+    else {
+      return target.getFiducialId();
+    }
+  }
 
-//   public Translation2d getXYOne(double yaw) {
-//     PhotonPipelineResult result = pv1.getLatestPipeline();
-//     PhotonTrackedTarget target = result.getBestTarget();
-//     double x =
-//         Math.hypot(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY());
-//     return new Translation2d(
-//         x,
-//         target.getBestCameraToTarget().getY()
-//             + x * Math.sin(target.getBestCameraToTarget().getRotation().getZ()));
-//   }
+  public Translation2d getXYOne(double yaw) {
+    PhotonPipelineResult result = pv1.getLatestPipeline();
+    PhotonTrackedTarget target = result.getBestTarget();
+    double x =
+        Math.hypot(target.getBestCameraToTarget().getX(), target.getBestCameraToTarget().getY());
+    return new Translation2d(
+        x,
+        target.getBestCameraToTarget().getY()
+            + x * Math.sin(target.getBestCameraToTarget().getRotation().getZ()));
+  }
 
 //   public Translation2d translateToCenter(Translation2d toCenter, double yaw, Translation2d xy) {
 //     return new Translation2d(
@@ -74,4 +74,4 @@
 //             getIDOne()),
 //         new Rotation2d(yaw));
 //   }
-// }
+}

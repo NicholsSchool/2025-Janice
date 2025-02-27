@@ -80,6 +80,8 @@ public final class Constants {
     public static final int kRightChain = 9;
     //fill in properly later
     public static final int elevatorEncoder = -1;
+
+    public static final int kIntakeMotor = 0;
   }
 
   public static final class RobotConstants {
@@ -153,6 +155,20 @@ public final class Constants {
     public static int elevatorLimitSwitchChannel = 1;
 
     public static double kElevatorGearRatio = 1.0;
+  }
+
+  public static final class IntakeConstants {
+
+    public static final double kIndexerGearRatio = 1.0;
+    public static final double INTAKE_CURRENT_LIMIT = 0;
+    public static final double INTAKE_P = 0;
+    public static final double INTAKE_I = 0;
+    public static final double INTAKE_D = 0;
+    public static final int kLeftPistonChannel = -1;
+    public static final int kRightPistonChannel = -1;
+    public static final double kCoralDistanceCloseBound = 300;
+    public static final double kCoralDistanceFarBound = 400;
+
   }
 
   public static final class AutoConstants {

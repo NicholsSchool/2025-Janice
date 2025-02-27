@@ -28,7 +28,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-// import frc.robot.commands.VisionCommands.ColorInfo;
+
+import frc.robot.commands.VisionCommands.ColorInfo;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIOReal;
+import frc.robot.subsystems.Intake.IntakeIOSim;
+
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -50,8 +55,11 @@ import frc.robot.util.LoggedTunableNumber;
  */
 public class RobotContainer {
   // Subsystems
+
   public final Drive drive;
   public final Elevator elevator;
+  private final Intake intake;
+
   //private PowerDistribution pdh;
   //ColorInfo colorInfo = null;
 
@@ -114,7 +122,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOSim());
-
+        intake = new Intake(new IntakeIOReal());
         break;
 
       case ROBOT_SIM:
@@ -126,7 +134,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-                elevator = new Elevator(new ElevatorIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       case ROBOT_FOOTBALL:
@@ -137,8 +146,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-                elevator = new Elevator(new ElevatorIOSim());
-
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       case ROBOT_REPLAY:
@@ -152,8 +161,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-                elevator = new Elevator(new ElevatorIOSim());
-
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
     }
@@ -297,9 +306,13 @@ public class RobotContainer {
                 () -> -90,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
-    operatorController.a().onTrue(elevator.runGoToPosCommand(10));
+    //operatorController.a().onTrue(elevator.runGoToPosCommand(10));
     operatorController.b().onTrue(elevator.runGoToPosCommand(0));
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(-operatorController.getLeftY()), elevator));
+
+    operatorController.a().onTrue(new InstantCommand(intake::startIntake));
+    operatorController.a().whileTrue(new InstantCommand(intake::intakePeriodic));
+    operatorController.a().onFalse(new InstantCommand(intake::stopIntake));
   }
 
   // /**

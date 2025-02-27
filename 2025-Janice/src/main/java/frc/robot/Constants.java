@@ -177,6 +177,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 0;
+    public static final double kCoralDistanceFarBound = 400;
+    public static final double kCoralDistanceCloseBound = 300;
   }
 
   public static final class AutoConstants {

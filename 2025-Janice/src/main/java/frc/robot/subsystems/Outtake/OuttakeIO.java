@@ -8,6 +8,7 @@ public interface OuttakeIO {
         public double motorVoltage = 0.0;
         public double supplyVoltage = 0.0;
         public double currentAmps = 0.0;
+        public boolean hasCoral = false;
     }
 
     /** Updates the set of loggable inputs. */

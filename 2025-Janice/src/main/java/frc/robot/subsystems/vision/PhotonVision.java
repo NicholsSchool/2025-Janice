@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.VisionConstants;
 
 import java.util.List;
 import org.photonvision.PhotonCamera;
@@ -101,7 +102,7 @@ public class PhotonVision extends SubsystemBase {
       // this yaw from them was outputting off by 180 from what it actually was, might be worth investigating if localization doesn't work
     return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
      FieldConstants.aprilTags.getTagPose(target.getFiducialId()).orElse(new Pose3d()),
-      RobotConstants.robotToPhotonCam1);
+      VisionConstants.cameraOnePosition);
     }
   }
 

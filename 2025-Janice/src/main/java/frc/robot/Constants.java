@@ -4,6 +4,8 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -63,6 +65,16 @@ public final class Constants {
 
     public static final int kPowerDistributionHub = 50;
     
+    public static int kMaxFrontLeftDrivingCanId = 24;
+    public static int kMaxFrontRightDrivingCanId = 26;
+    public static int kMaxRearLeftDrivingCanId = 22;
+    public static int kMaxRearRightDrivingCanId = 28;
+    
+    public static int kMaxFrontLeftTurningCanId = 23;
+    public static int kMaxFrontRightTurningCanId = 25;
+    public static int kMaxRearLeftTurningCanId = 21;
+    public static int kMaxRearRightTurningCanId = 27;
+
     public static final int kLeftChain = 10;
     public static final int kRightChain = 9;
     //fill in properly later
@@ -158,8 +170,17 @@ public final class Constants {
   public static final class VisionConstants {
     // both of these are the translation of the two cameras from the center of the bot
     // need to check which camera is - and which is +
-    public static Translation2d cameraOnePosition = new Translation2d(-0.3, -0.3);
+    public static Transform3d cameraOnePosition = new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, -Math.PI / 2));
     public static Translation2d cameraTwoPosition = new Translation2d(-0.3, 0.3);
     public static double cameraOneAngle = Units.degreesToRadians(45);
+
+    public static final int initVisionCountTreshold = 100;
+    public static final double visionDistanceUpdateThreshold = 1.0; //meters
+
+
+    public static final double tranlationPhotonStdDevs = 0.01;
+    public static final double rotationPhotonStdDevs = 0.005;
+
+    public static final int visionStatsNumBuffer = 100;
   }
 }

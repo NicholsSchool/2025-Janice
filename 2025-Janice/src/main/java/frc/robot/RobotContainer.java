@@ -37,6 +37,8 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -139,13 +141,14 @@ public class RobotContainer {
                 elevator = new Elevator(new ElevatorIOSim());
 
         break;
+
     }
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Create auto commands
-    //autoCommands = new AutoCommands(drive);
+    autoCommands = new AutoCommands(drive);
 
     // autoChooser.addOption("Wait 5 seconds", new WaitCommand(5.0));
 

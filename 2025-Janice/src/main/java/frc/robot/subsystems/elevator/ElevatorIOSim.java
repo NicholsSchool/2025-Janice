@@ -11,11 +11,11 @@ public class ElevatorIOSim implements ElevatorIO{
 
       private final DCMotorSim lSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(lSimModel, 0.025, Constants.ModuleConstants.kDRIVE_GEAR_RATIO),
+          LinearSystemId.createDCMotorSystem(lSimModel, 0.025, Constants.ElevatorConstants.kElevatorGearRatio),
           lSimModel);
   private final DCMotorSim rSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(rSimModel, 0.025, Constants.ModuleConstants.kTURN_GEAR_RATIO),
+          LinearSystemId.createDCMotorSystem(rSimModel, 0.025, Constants.ElevatorConstants.kElevatorGearRatio),
           rSimModel);
     
     double elevatorAppliedVolts = 0.0;

@@ -41,7 +41,8 @@ public class Module {
     // Switch constants based on mode (the physics simulator is treated as a
     // separate robot with different tuning)
     switch (Constants.getRobot()) {
-      case ROBOT_REAL:
+      case ROBOT_REAL_FRANKENLEW:
+      case ROBOT_REAL_JANICE:
       case ROBOT_REPLAY:
         driveFeedforward =
             new SimpleMotorFeedforward(

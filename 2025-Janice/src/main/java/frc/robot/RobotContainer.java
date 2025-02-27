@@ -56,14 +56,11 @@ public class RobotContainer {
   //ColorInfo colorInfo = null;
 
   // shuffleboard
-  ShuffleboardTab boomerangTab;
-  public static GenericEntry hasNote;
+  ShuffleboardTab shuffleBoardTab;
 
   // Controller
   public static CommandXboxController driveController = new CommandXboxController(0);
   public static CommandXboxController operatorController = new CommandXboxController(1);
-
-  //public PhotonVision pv = new PhotonVision("Microsoft_LifeCam_HD-3000");
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -87,21 +84,37 @@ public class RobotContainer {
 
   // Auto Commands
   final AutoCommands autoCommands;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case ROBOT_REAL:
+      case ROBOT_REAL_FRANKENLEW:
         // Real robot, instantiate hardware IO implementations
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
         //colorInfo = new ColorInfo();
         drive =
             new Drive(
-                new GyroIORedux(),
+                new GyroIONAVX(),
+                new ModuleIOMaxSwerve(0),
+                new ModuleIOMaxSwerve(1),
+                new ModuleIOMaxSwerve(2),
+                new ModuleIOMaxSwerve(3));
+                elevator = new Elevator(new ElevatorIOSim());
+        break;
+
+      case ROBOT_REAL_JANICE:
+        // Real robot, instantiate hardware IO implementations
+        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        //colorInfo = new ColorInfo();
+        drive =
+            new Drive(
+                new GyroIONAVX(),
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOSim());
+
         break;
 
       case ROBOT_SIM:
@@ -125,10 +138,11 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
                 elevator = new Elevator(new ElevatorIOSim());
+
         break;
 
+      case ROBOT_REPLAY:
       default:
-        // case ROBOT_REPLAY:
         // Replayed robot, disable IO implementations since the replay
         // will supply the data.
         drive =
@@ -167,7 +181,7 @@ public class RobotContainer {
 
   private void initShuffleboard() {
     // Configure the Shuffleboard
-    boomerangTab = Shuffleboard.getTab("Boomerang");
+    shuffleBoardTab = Shuffleboard.getTab("Boomerang");
     // this is where display booleans will go
   }
 

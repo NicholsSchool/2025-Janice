@@ -78,7 +78,8 @@ public class SplineToPose extends Command {
   static {
     switch (Constants.getRobot()) {
       case ROBOT_FOOTBALL:
-      case ROBOT_REAL:
+      case ROBOT_REAL_FRANKENLEW:
+      case ROBOT_REAL_JANICE:
       case ROBOT_REPLAY:
       case ROBOT_SIM:
         splineKp.initDefault(2.0);

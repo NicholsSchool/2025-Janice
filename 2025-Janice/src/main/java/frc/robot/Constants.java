@@ -4,6 +4,8 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -18,7 +20,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static final RobotType robot = RobotType.ROBOT_REAL;
+  private static final RobotType robot = RobotType.ROBOT_REAL_FRANKENLEW;
   public static final boolean driveRobotRelative =
       false; // set to true to override all field relative and instead command in robot-relative.
 
@@ -35,7 +37,8 @@ public final class Constants {
   }
 
   public static enum RobotType {
-    ROBOT_REAL, // a real robot
+    ROBOT_REAL_FRANKENLEW, // a real robot (LEW ZEALAND)
+    ROBOT_REAL_JANICE, // a real robot (JANICE)
     ROBOT_REPLAY, // data file replay (could be on real bot or simulation)
     ROBOT_SIM, // simulation
     ROBOT_FOOTBALL // Football for simulating
@@ -62,6 +65,21 @@ public final class Constants {
     public static final int kBackRightEncoder = 52;
 
     public static final int kPowerDistributionHub = 50;
+    
+    public static int kMaxFrontLeftDrivingCanId = 24;
+    public static int kMaxFrontRightDrivingCanId = 26;
+    public static int kMaxRearLeftDrivingCanId = 22;
+    public static int kMaxRearRightDrivingCanId = 28;
+    
+    public static int kMaxFrontLeftTurningCanId = 23;
+    public static int kMaxFrontRightTurningCanId = 25;
+    public static int kMaxRearLeftTurningCanId = 21;
+    public static int kMaxRearRightTurningCanId = 27;
+
+    public static final int kLeftChain = 10;
+    public static final int kRightChain = 9;
+    //fill in properly later
+    public static final int elevatorEncoder = -1;
 
     public static final int kIntakeMotor = 0;
   }
@@ -122,10 +140,21 @@ public final class Constants {
     public static final int kDrivingMotorCurrentLimit = 90; // amps
     public static final int kTurningMotorCurrentLimit = 40; // amps
     public static final int kMotorSupplyCurrentLimit = 35; //amps
+  }
 
-    // SDS MK4i L2 Modules
-    public static final double kDRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-    public static final double kTURN_GEAR_RATIO = 150.0 / 7.0;
+  public static final class ElevatorConstants{
+    public static final double ElevatorCurrentLimit = 35.0;
+    public static double kElevatorP = 10;
+    public static double kElevatorI = 0;
+    public static double kElevatorD = 0;
+    public static double ElevatorMaxAccelerationRad = 1000;
+    public static double ElevatorMaxVelocityRad = 1000;
+    public static double maxHeight = 100000;
+    public static double minHeight = -100000;
+
+    public static int elevatorLimitSwitchChannel = 1;
+
+    public static double kElevatorGearRatio = 1.0;
   }
 
   public static final class IntakeConstants {
@@ -156,8 +185,17 @@ public final class Constants {
   public static final class VisionConstants {
     // both of these are the translation of the two cameras from the center of the bot
     // need to check which camera is - and which is +
-    public static Translation2d cameraOnePosition = new Translation2d(-0.3, -0.3);
+    public static Transform3d cameraOnePosition = new Transform3d(-0.3, 0, 0.5, new Rotation3d(0, 0, -Math.PI / 2));
     public static Translation2d cameraTwoPosition = new Translation2d(-0.3, 0.3);
     public static double cameraOneAngle = Units.degreesToRadians(45);
+
+    public static final int initVisionCountTreshold = 100;
+    public static final double visionDistanceUpdateThreshold = 1.0; //meters
+
+
+    public static final double tranlationPhotonStdDevs = 0.01;
+    public static final double rotationPhotonStdDevs = 0.005;
+
+    public static final int visionStatsNumBuffer = 100;
   }
 }

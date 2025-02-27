@@ -3,15 +3,15 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Time;
@@ -25,19 +25,25 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RobotType;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
+
 import frc.robot.commands.VisionCommands.ColorInfo;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
+
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONAVX;
 import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -49,14 +55,16 @@ import frc.robot.util.LoggedTunableNumber;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
+
+  public final Drive drive;
+  public final Elevator elevator;
   private final Intake intake;
+
   //private PowerDistribution pdh;
-  ColorInfo colorInfo = null;
+  //ColorInfo colorInfo = null;
 
   // shuffleboard
-  ShuffleboardTab boomerangTab;
-  public static GenericEntry hasNote;
+  ShuffleboardTab shuffleBoardTab;
 
   // Controller
   public static CommandXboxController driveController = new CommandXboxController(0);
@@ -83,22 +91,37 @@ public class RobotContainer {
       new LoggedTunableNumber("Start Theta1(deg)", 0.0);
 
   // Auto Commands
-  //private final AutoCommands autoCommands;
+  final AutoCommands autoCommands;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case ROBOT_REAL:
+      case ROBOT_REAL_FRANKENLEW:
         // Real robot, instantiate hardware IO implementations
         //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
-        colorInfo = new ColorInfo();
+        //colorInfo = new ColorInfo();
         drive =
             new Drive(
-                new GyroIORedux(),
+                new GyroIONAVX(),
+                new ModuleIOMaxSwerve(0),
+                new ModuleIOMaxSwerve(1),
+                new ModuleIOMaxSwerve(2),
+                new ModuleIOMaxSwerve(3));
+                elevator = new Elevator(new ElevatorIOSim());
+        break;
+
+      case ROBOT_REAL_JANICE:
+        // Real robot, instantiate hardware IO implementations
+        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        //colorInfo = new ColorInfo();
+        drive =
+            new Drive(
+                new GyroIONAVX(),
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
+        elevator = new Elevator(new ElevatorIOSim());
         intake = new Intake(new IntakeIOReal());
         break;
 
@@ -111,7 +134,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-                intake = new Intake(new IntakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       case ROBOT_FOOTBALL:
@@ -122,11 +146,12 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-                intake = new Intake(new IntakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
+      case ROBOT_REPLAY:
       default:
-        // case ROBOT_REPLAY:
         // Replayed robot, disable IO implementations since the replay
         // will supply the data.
         drive =
@@ -136,15 +161,17 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-                intake = new Intake(new IntakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
+
     }
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Create auto commands
-    //autoCommands = new AutoCommands(drive);
+    autoCommands = new AutoCommands(drive);
 
     // autoChooser.addOption("Wait 5 seconds", new WaitCommand(5.0));
 
@@ -163,14 +190,14 @@ public class RobotContainer {
 
   private void initShuffleboard() {
     // Configure the Shuffleboard
-    boomerangTab = Shuffleboard.getTab("Boomerang");
+    shuffleBoardTab = Shuffleboard.getTab("Boomerang");
     // this is where display booleans will go
   }
 
   public void updateShuffleboard() {
-    if (RobotType.ROBOT_REAL == Constants.getRobot()) {
-      colorInfo.pvCornerOne();
-    }
+    // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
+    //   colorInfo.pvCornerOne();
+    // }
   }
 
   // changes robot pose with dashboard tunables
@@ -279,6 +306,10 @@ public class RobotContainer {
                 () -> -90,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
+    //operatorController.a().onTrue(elevator.runGoToPosCommand(10));
+    operatorController.b().onTrue(elevator.runGoToPosCommand(0));
+    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(-operatorController.getLeftY()), elevator));
+
     operatorController.a().onTrue(new InstantCommand(intake::startIntake));
     operatorController.a().whileTrue(new InstantCommand(intake::intakePeriodic));
     operatorController.a().onFalse(new InstantCommand(intake::stopIntake));
@@ -335,12 +366,12 @@ public class RobotContainer {
     //     "Module Turn Ramp Test",
     //     new VoltageCommandRamp(drive, drive::runTurnCommandRampVolts, 0.5, 5.0));
 
-    // autoChooser.addOption(
-    //     "Spline Test",
-    //     autoCommands.splineToPose(
-    //         new Pose2d(
-    //             new Translation2d(4, 3),
-    //             new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+    autoChooser.addOption(
+        "DriveToPos",
+        autoCommands.splineToPose(
+            new Pose2d(
+                new Translation2d(4, 3),
+                new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
 
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot

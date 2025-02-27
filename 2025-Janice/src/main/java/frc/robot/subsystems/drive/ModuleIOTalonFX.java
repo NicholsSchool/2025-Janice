@@ -59,34 +59,44 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Voltage> turnAppliedVolts;
   private final StatusSignal<Current> turnCurrent;
 
-  // Gear ratios for SDS MK4i L2, adjust as necessary
-  private final double DRIVE_GEAR_RATIO = Constants.ModuleConstants.kDRIVE_GEAR_RATIO;
-  private final double TURN_GEAR_RATIO = Constants.ModuleConstants.kTURN_GEAR_RATIO;
-
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
+
+  // SDS MK4i L2+ (rears) turn: 150/7:1 drive: 5.9.1
+  // SDS MK4n L2+ (fronts) turn 18.75:1 drive: 5.9:1
+  public static final double kDRIVE_GEAR_RATIO = 5.9;
+  public static final double kTURN_GEAR_RATIO_FRONT = 18.75;
+  public static final double kTURN_GEAR_RATIO_REAR = 150.0 / 7.0;
+  private double turnGearRatio = 0.0;
+  private double driveGearRatio = kDRIVE_GEAR_RATIO;
+
+
 
   public ModuleIOTalonFX(int index) {
     switch (index) {
       case 0: // front left
+        turnGearRatio = kTURN_GEAR_RATIO_FRONT;
         driveTalon = new TalonFX(Constants.CAN.kFrontLeftDrive);
         turnTalon = new TalonFX(Constants.CAN.kFrontLeftPivot);
         cancoder = new CANcoder(Constants.CAN.kFrontLeftEncoder);
         absoluteEncoderOffset = new Rotation2d(Math.toRadians(117.0)); // MUST BE CALIBRATED
         break;
       case 1: // front right
+        turnGearRatio = kTURN_GEAR_RATIO_FRONT;
         driveTalon = new TalonFX(Constants.CAN.kFrontRightDrive);
         turnTalon = new TalonFX(Constants.CAN.kFrontRightPivot);
         cancoder = new CANcoder(Constants.CAN.kFrontRightEncoder);
         absoluteEncoderOffset = new Rotation2d(Math.toRadians(112.0)); // MUST BE CALIBRATED
         break;
       case 2: // back left
+        turnGearRatio = kTURN_GEAR_RATIO_REAR;
         driveTalon = new TalonFX(Constants.CAN.kBackLeftDrive);
         turnTalon = new TalonFX(Constants.CAN.kBackLeftPivot);
         cancoder = new CANcoder(Constants.CAN.kBackLeftEncoder);
         absoluteEncoderOffset = new Rotation2d(Math.toRadians(-147.0)); // MUST BE CALIBRATED
         break;
       case 3: // back right
+        turnGearRatio = kTURN_GEAR_RATIO_REAR;
         driveTalon = new TalonFX(Constants.CAN.kBackRightDrive);
         turnTalon = new TalonFX(Constants.CAN.kBackRightPivot);
         cancoder = new CANcoder(Constants.CAN.kBackRightEncoder);
@@ -154,9 +164,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         turnCurrent);
 
     inputs.drivePositionRad =
-        Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;
+        Units.rotationsToRadians(drivePosition.getValueAsDouble()) / driveGearRatio;
     inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / DRIVE_GEAR_RATIO;
+        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / driveGearRatio;
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
@@ -164,9 +174,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
             .minus(absoluteEncoderOffset);
     inputs.turnPosition =
-        Rotation2d.fromRotations(turnPosition.getValueAsDouble() / TURN_GEAR_RATIO);
+        Rotation2d.fromRotations(turnPosition.getValueAsDouble() / turnGearRatio);
     inputs.turnVelocityRadPerSec =
-        Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / TURN_GEAR_RATIO;
+        Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / turnGearRatio;
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.turnCurrentAmps = new double[] {turnCurrent.getValueAsDouble()};
   }

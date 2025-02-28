@@ -29,16 +29,19 @@ import frc.robot.Constants;
  */
 public class ModuleIOSim implements ModuleIO {
 
+  public static double kDRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+  public static double kTURN_GEAR_RATIO = 150.0 / 7.0;
+
   private static final DCMotor driveMotorModel = DCMotor.getKrakenX60(1);
   private static final DCMotor turnMotorModel = DCMotor.getKrakenX60(1);
 
   private final DCMotorSim driveSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(driveMotorModel, 0.025, (45.0 * 22) / (12 * 15)),
+          LinearSystemId.createDCMotorSystem(driveMotorModel, 0.025, kDRIVE_GEAR_RATIO),
           driveMotorModel);
   private final DCMotorSim turnSim =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(turnMotorModel, 0.004, 1.0),
+          LinearSystemId.createDCMotorSystem(turnMotorModel, 0.004, kTURN_GEAR_RATIO),
           turnMotorModel);
 
   private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);

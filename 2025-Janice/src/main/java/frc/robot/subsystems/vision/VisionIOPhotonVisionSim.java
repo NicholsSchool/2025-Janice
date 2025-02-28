@@ -48,6 +48,10 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
 
     // Add sim camera
     var cameraProperties = new SimCameraProperties();
+    // set simulated FPS and generate some noise in the vision data.
+    cameraProperties.setFPS(30);
+    cameraProperties.setCalibError(0, 0.1);
+    
     cameraSim = new PhotonCameraSim(camera, cameraProperties);
     visionSim.addCamera(cameraSim, robotToCamera);
   }

@@ -51,8 +51,8 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
     // set simulated FPS and generate some noise in the vision data.
     cameraProperties.setFPS(30);
     cameraProperties.setCalibError(0, 0.1);
-    
-    cameraSim = new PhotonCameraSim(camera, cameraProperties);
+
+    cameraSim = new PhotonCameraSim(camera, cameraProperties, 0.0, 4.0);
     visionSim.addCamera(cameraSim, robotToCamera);
   }
 

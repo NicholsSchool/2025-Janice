@@ -37,6 +37,8 @@ import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -62,6 +64,7 @@ public class RobotContainer {
   public final Drive drive;
   public final Elevator elevator;
   private final Outtake outtake;
+  private final Climber climber;
 
   //private PowerDistribution pdh;
   //ColorInfo colorInfo = null;
@@ -110,8 +113,9 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(1),
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
-                elevator = new Elevator(new ElevatorIOSim());
-                outtake = new Outtake(new OuttakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_REAL_JANICE:
@@ -127,6 +131,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_SIM:
@@ -140,6 +145,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_FOOTBALL:
@@ -152,6 +158,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_REPLAY:
@@ -167,6 +174,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
     }
@@ -326,6 +334,8 @@ public class RobotContainer {
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     driveController.a().whileTrue(new DriveToHumanPlayer(drive));
+
+    operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     
   }
 

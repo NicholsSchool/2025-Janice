@@ -12,8 +12,7 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     public void updateInputs(CLimberIOInputs inputs) {
-    
-
+        inputs.extended = climber.get();
     }
 
     public void setClimbState(boolean extended){

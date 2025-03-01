@@ -34,7 +34,7 @@ public class OuttakeIOReal implements OuttakeIO {
         inputs.motorVoltage = outtakeMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentAmps = outtakeMotor.getStatorCurrent().getValueAsDouble();
         inputs.supplyVoltage = outtakeMotor.getSupplyVoltage().getValueAsDouble();
-        inputs.hasCoral = seesCoral;
+        inputs.hasCoral = seesCoral();
     }
 
     @Override
@@ -42,10 +42,9 @@ public class OuttakeIOReal implements OuttakeIO {
         outtakeMotor.setVoltage(voltage);
     }
 
-    @Override
     public boolean seesCoral(){
-        return intakeSensor.getRange < Constants.OuttakeConstants.kCoralDistanceFarBound &&
-        intakeSensor.getRange > Constants.OuttakeConstants.kCoralDistanceCloseBound
+        return intakeSensor.getRange() < Constants.OuttakeConstants.kCoralDistanceFarBound &&
+        intakeSensor.getRange() > Constants.OuttakeConstants.kCoralDistanceCloseBound;
     }
 
 }

@@ -40,7 +40,6 @@ import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
-
 import java.util.ArrayDeque;
 
 import javax.xml.crypto.dsig.Transform;

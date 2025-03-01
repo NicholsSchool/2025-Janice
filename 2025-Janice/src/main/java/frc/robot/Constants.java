@@ -117,6 +117,9 @@ public final class Constants {
     public static final double kTRACK_WIDTH_Y = 0.5969;
 
     public static final double lowGearScaler = 0.6;
+    //TODO: tune this
+    public static final double reefLeftShift = 0.4;
+    public static final double reefRightShift = 0.4;
   }
 
   // REV MAXSwerve Modules

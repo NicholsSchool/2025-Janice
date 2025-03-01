@@ -32,7 +32,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
-
+import frc.robot.subsystems.Outtake.Outtake;
+import frc.robot.subsystems.Outtake.OuttakeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -57,7 +58,7 @@ public class RobotContainer {
 
   public final Drive drive;
   public final Elevator elevator;
-  private final Intake intake;
+  private final Outtake outtake;
 
   //private PowerDistribution pdh;
   //ColorInfo colorInfo = null;
@@ -107,7 +108,7 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
                 elevator = new Elevator(new ElevatorIOSim());
-                intake = new Intake(new IntakeIOSim());
+                outtake = new Outtake(new OuttakeIOSim());
         break;
 
       case ROBOT_REAL_JANICE:
@@ -122,7 +123,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOSim());
-        intake = new Intake(new IntakeIOReal());
+        outtake = new Outtake(new OuttakeIOSim());
         break;
 
       case ROBOT_SIM:
@@ -135,7 +136,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
-        intake = new Intake(new IntakeIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
         break;
 
       case ROBOT_FOOTBALL:
@@ -147,7 +148,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
-        intake = new Intake(new IntakeIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
         break;
 
       case ROBOT_REPLAY:
@@ -162,7 +163,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIOSim());
-        intake = new Intake(new IntakeIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
         break;
 
     }
@@ -251,7 +252,7 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+            () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
             () -> -driveController.getRightX() * 0.55,
             () -> Constants.driveRobotRelative));
@@ -261,7 +262,7 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDrive(
                 drive,
-                () -> -driveController.getLeftY(),
+                () -> driveController.getLeftY(),
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
@@ -271,7 +272,7 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveWithAngle(
                 drive,
-                () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
                 () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
                 () -> 180,
                 () -> drive.getYaw(),
@@ -281,7 +282,7 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveWithAngle(
                 drive,
-                () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
                 () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
                 () -> 0,
                 () -> drive.getYaw(),
@@ -291,7 +292,7 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveWithAngle(
                 drive,
-                () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
                 () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
                 () -> 90,
                 () -> drive.getYaw(),
@@ -301,18 +302,21 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveWithAngle(
                 drive,
-                () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
                 () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
                 () -> -90,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
-    //operatorController.a().onTrue(elevator.runGoToPosCommand(10));
-    operatorController.b().onTrue(elevator.runGoToPosCommand(0));
-    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(-operatorController.getLeftY()), elevator));
 
-    operatorController.a().onTrue(new InstantCommand(intake::startIntake));
-    operatorController.a().whileTrue(new InstantCommand(intake::intakePeriodic));
-    operatorController.a().onFalse(new InstantCommand(intake::stopIntake));
+    operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
+    operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
+    operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
+    operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
+
+    elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
+
+    operatorController.leftTrigger(0.8).whileTrue(new InstantCommand(() -> outtake.outtake()));
+    operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
   }
 
   // /**

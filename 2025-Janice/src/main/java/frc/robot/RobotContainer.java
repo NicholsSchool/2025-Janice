@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveToPose;
+import frc.robot.commands.DriveToReef;
 
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
@@ -277,16 +279,16 @@ public class RobotContainer {
                 () -> 180,
                 () -> drive.getYaw(),
                 () -> Constants.driveRobotRelative));
-    driveController
-        .y()
-        .whileTrue(
-            DriveCommands.joystickDriveWithAngle(
-                drive,
-                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
-                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-                () -> 0,
-                () -> drive.getYaw(),
-                () -> Constants.driveRobotRelative));
+    // driveController
+    //     .y()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 0,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
     driveController
         .x()
         .whileTrue(
@@ -317,12 +319,16 @@ public class RobotContainer {
 
     operatorController.leftTrigger(0.8).whileTrue(new InstantCommand(() -> outtake.outtake()));
     operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
+
+    driveController.y().whileTrue(new DriveToPose(drive, () -> drive.closestReefTagWithOffset()));
+
   }
 
   // /**
   //  * @return the command to run in autonomous
   //  */
   public Command getAutonomousCommand() {
+
 
      try{
         // Load the path you want to follow using its name in the GUI
@@ -350,7 +356,7 @@ public class RobotContainer {
   }
 
   private void addAutos() {}
-
+  
   private void addTestingAutos() {
     autoChooser.addOption("Wait Auto", new WaitCommand(Time.ofBaseUnits(5, Seconds)) );
     // Pathplanner Auto Testing
@@ -369,16 +375,16 @@ public class RobotContainer {
     // autoChooser.addOption(
     //     "Module Turn Ramp Test",
     //     new VoltageCommandRamp(drive, drive::runTurnCommandRampVolts, 0.5, 5.0));
-
-    autoChooser.addOption(
-        "DriveToPos",
-        autoCommands.splineToPose(
-            new Pose2d(
-                new Translation2d(4, 3),
-                new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
-
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot
+
+    autoChooser.addOption(
+      "DriveToPos",
+      autoCommands.splineToPose(
+          new Pose2d(
+              new Translation2d(4, 3),
+              new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+
   }
 
   private void registerNamedCommands() {

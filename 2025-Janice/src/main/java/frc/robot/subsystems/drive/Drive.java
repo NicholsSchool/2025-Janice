@@ -19,6 +19,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -32,9 +33,12 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.LimelightHelpers;
+import frc.robot.commands.DriveToPose;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.BradyMathLib;
@@ -386,6 +390,37 @@ public class Drive extends SubsystemBase {
   public double getYawVelocity() {
     return gyroInputs.yawVelocityRadPerSec;
   }
+
+  @AutoLogOutput
+  public Pose2d closestReefTagWithOffset(){
+    double distance = Double.MAX_VALUE;
+    int tagListOffset;
+    Pose2d desiredPose = new Pose2d();
+
+    if (DriverStation.getAlliance().isPresent()
+    && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      tagListOffset = 6;
+    }else{
+      tagListOffset = 17;
+    }
+
+    for(int i = 0; i < 6; i++){
+      Pose3d tagPose = FieldConstants.aprilTags.getTagPose(i + tagListOffset).get();
+      double distFromITag = getPose().getTranslation().getDistance(tagPose.getTranslation().toTranslation2d());
+      if(distance > distFromITag){
+        distance = distFromITag;
+        desiredPose = tagPose.toPose2d();
+      }
+    }
+
+    // double offsetDistance = Constants.RobotConstants.bumperThickness + Constants.RobotConstants.robotSideLengthInches;
+    
+    // Transform2d tagTransform = new Transform2d(desiredPose.getRotation().getCos() * offsetDistance,
+    // desiredPose.getRotation().getSin() * (offsetDistance), new Rotation2d(Math.PI / 2));
+    
+    return desiredPose;
+  }
+
   /**
    * gets the field velocity in the universal x and y direction
    *
@@ -397,7 +432,7 @@ public class Drive extends SubsystemBase {
         fieldVelocity.dx * Math.sin(getYaw()) + fieldVelocity.dy * Math.cos(getYaw()),
         fieldVelocity.dtheta));
   }
-
+  
   @AutoLogOutput
   public double getYaw() {
     // return odometryPose.getRotation().getRadians();

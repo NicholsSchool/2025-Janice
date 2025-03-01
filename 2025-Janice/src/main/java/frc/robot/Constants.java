@@ -107,6 +107,8 @@ public final class Constants {
       MOI, 
       moduleConfig,
       Units.inchesToMeters(robotSideLengthInches));
+
+      public static final double bumperThickness = Units.inchesToMeters(3.5);
   }
 
   public static final class DriveConstants {

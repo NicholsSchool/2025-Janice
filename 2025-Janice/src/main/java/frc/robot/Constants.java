@@ -129,7 +129,7 @@ public final class Constants {
   //TODO: Fix these constants MUST BE DONE BEFORE COMP
   public static final class ClimberConstants {
   
-    public static final int kLChannel = -0;
+    public static final int kChannel = -0;
     public static final int kRChannel = -0;
   }
 

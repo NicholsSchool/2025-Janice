@@ -10,4 +10,7 @@ public interface ClimberIO {
     }
 
     public default void updateInputs (CLimberIOInputs inputs) {}
-}
+
+    public default void setClimbState(boolean extended) {};
+    }
+

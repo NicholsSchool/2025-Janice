@@ -35,4 +35,8 @@ public class Climber extends SubsystemBase {
     private void updateTunables() {
 
     }
+
+    public void setClimbState(boolean extended){
+        io.setClimbState(extended);
+    }
 }

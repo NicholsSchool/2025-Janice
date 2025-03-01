@@ -5,16 +5,18 @@ import frc.robot.Constants;
 
 public class ClimberIOReal implements ClimberIO {
 
-    private Solenoid lClimber;
-    private Solenoid rClimber;
+    private Solenoid climber;
 
     public ClimberIOReal() {
-        lClimber = new Solenoid(null, Constants.ClimberConstants.kLChannel);
-        rClimber = new Solenoid(null, Constants.ClimberConstants.kRChannel);
+        climber = new Solenoid(null, Constants.ClimberConstants.kChannel);
     }
 
     public void updateInputs(CLimberIOInputs inputs) {
     
 
+    }
+
+    public void setClimbState(boolean extended){
+        climber.set(extended);
     }
 }

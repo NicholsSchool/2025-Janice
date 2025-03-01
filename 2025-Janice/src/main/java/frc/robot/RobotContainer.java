@@ -30,8 +30,7 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToReef;
-import frc.robot.commands.DriveToReefLeft;
-import frc.robot.commands.DriveToReefRight;
+import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
@@ -322,10 +321,9 @@ public class RobotContainer {
     operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
 
     // drive to closest reef
-    driveController.y().whileTrue(new DriveToReef(drive));
-    driveController.x().whileTrue(new DriveToReefLeft(drive));
-    driveController.b().whileTrue(new DriveToReefRight(drive));
-
+    driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
+    driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
+    driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
   }
 
   // /**

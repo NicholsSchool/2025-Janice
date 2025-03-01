@@ -17,9 +17,13 @@ public class DriveToReef extends DriveToPose {
     
   private static final LoggedTunableNumber robotRotationOffset =
       new LoggedTunableNumber("DriveToReef/RobotRotationOffset", Math.PI/2);
-
+public static enum ReefDirection{
+  CENTER,
+  LEFT,
+  RIGHT
+}
 // Drives to the closest reef to the bot.
-public DriveToReef(Drive drive) {
+public DriveToReef(Drive drive, ReefDirection reefDirection) {
     super(
         drive,
         () -> {
@@ -47,12 +51,32 @@ public DriveToReef(Drive drive) {
 
             // calculate offset from target pose for robot width and bumpers. This should put robot
             // right against the reef base.
-            double offsetDistance = Constants.RobotConstants.bumperThicknessMeters + 
+            double offsetDistanceBumper = Constants.RobotConstants.bumperThicknessMeters + 
                         Units.inchesToMeters(Constants.RobotConstants.robotSideLengthInches / 2);
+            double leftRightOffset = 0.0;
+            double angleOffset = 0.0;
+
+            switch(reefDirection){
+              case CENTER:
+              leftRightOffset = 0.0;
+              angleOffset = 0.0;
+              break;
+
+              case LEFT:
+              leftRightOffset = Constants.DriveConstants.reefLeftShift;
+              angleOffset = - Math.PI / 2;
+              break;
+
+              case RIGHT:
+              leftRightOffset = Constants.DriveConstants.reefRightShift;
+              angleOffset = Math.PI / 2;
+              break;
+            }
 
             Pose2d offsetPose = new Pose2d(
-                new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistance,
-                targetPose.getY() + Math.sin(targetPose.getRotation().getRadians()) * offsetDistance), targetPose.getRotation().plus(new Rotation2d(robotRotationOffset.get())));
+              new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistanceBumper + Math.cos(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset,
+              targetPose.getY() + Math.sin(targetPose.getRotation().getRadians()) * offsetDistanceBumper + Math.sin(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset),
+               targetPose.getRotation().plus(new Rotation2d(robotRotationOffset.get())));
 
             Logger.recordOutput("DriveToReef/TargetedTag", targetTag);
             Logger.recordOutput("DriveToReef/TargetedPose", targetPose);

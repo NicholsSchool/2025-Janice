@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -195,9 +196,21 @@ public class RobotContainer {
   }
 
   public void updateShuffleboard() {
-    // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
-    //   colorInfo.pvCornerOne();
-    // }
+// This isn't actually done, Literally just copied and pasted from LewZealand. No other changes
+
+    if (Constants.getRobot() == RobotType.ROBOT_REAL) {
+      SmartDashboard.putNumber("PDH/Voltage", pdh.getVoltage());
+      SmartDashboard.putNumber("PDH/Current", pdh.getTotalCurrent());
+      SmartDashboard.putNumber("PDH/Power", pdh.getTotalPower());
+      SmartDashboard.putNumber("PDH/Energy", pdh.getTotalEnergy());
+
+      int numChannels = pdh.getNumChannels();
+      for (int i = 0; i < numChannels; i++) {
+        SmartDashboard.putNumber("PDH/Channel " + i, pdh.getCurrent(i));
+      }
+    }
+
+    resetPosWithDashboard();
   }
 
   // changes robot pose with dashboard tunables

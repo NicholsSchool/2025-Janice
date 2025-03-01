@@ -28,12 +28,17 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-
+import frc.robot.commands.DriveToHumanPlayer;
+import frc.robot.commands.DriveToPose;
+import frc.robot.commands.DriveToReef;
+import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -59,6 +64,7 @@ public class RobotContainer {
   public final Drive drive;
   public final Elevator elevator;
   private final Outtake outtake;
+  private final Climber climber;
 
   //private PowerDistribution pdh;
   //ColorInfo colorInfo = null;
@@ -107,8 +113,9 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(1),
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
-                elevator = new Elevator(new ElevatorIOSim());
-                outtake = new Outtake(new OuttakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_REAL_JANICE:
@@ -124,6 +131,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_SIM:
@@ -137,6 +145,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_FOOTBALL:
@@ -149,6 +158,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       case ROBOT_REPLAY:
@@ -164,6 +174,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
     }
@@ -267,46 +278,46 @@ public class RobotContainer {
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
 
-    driveController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveWithAngle(
-                drive,
-                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
-                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-                () -> 180,
-                () -> drive.getYaw(),
-                () -> Constants.driveRobotRelative));
-    driveController
-        .y()
-        .whileTrue(
-            DriveCommands.joystickDriveWithAngle(
-                drive,
-                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
-                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-                () -> 0,
-                () -> drive.getYaw(),
-                () -> Constants.driveRobotRelative));
-    driveController
-        .x()
-        .whileTrue(
-            DriveCommands.joystickDriveWithAngle(
-                drive,
-                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
-                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-                () -> 90,
-                () -> drive.getYaw(),
-                () -> Constants.driveRobotRelative));
-    driveController
-        .b()
-        .whileTrue(
-            DriveCommands.joystickDriveWithAngle(
-                drive,
-                () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
-                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-                () -> -90,
-                () -> drive.getYaw(),
-                () -> Constants.driveRobotRelative));
+    // driveController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 180,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .y()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 0,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .x()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 90,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .b()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -90,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
 
     operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
     operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
@@ -317,12 +328,22 @@ public class RobotContainer {
 
     operatorController.leftTrigger(0.8).whileTrue(new InstantCommand(() -> outtake.outtake()));
     operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
+
+    // drive to closest reef
+    driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
+    driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
+    driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
+    driveController.a().whileTrue(new DriveToHumanPlayer(drive));
+
+    operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
+    
   }
 
   // /**
   //  * @return the command to run in autonomous
   //  */
   public Command getAutonomousCommand() {
+
 
      try{
         // Load the path you want to follow using its name in the GUI
@@ -350,7 +371,7 @@ public class RobotContainer {
   }
 
   private void addAutos() {}
-
+  
   private void addTestingAutos() {
     autoChooser.addOption("Wait Auto", new WaitCommand(Time.ofBaseUnits(5, Seconds)) );
     // Pathplanner Auto Testing
@@ -369,16 +390,16 @@ public class RobotContainer {
     // autoChooser.addOption(
     //     "Module Turn Ramp Test",
     //     new VoltageCommandRamp(drive, drive::runTurnCommandRampVolts, 0.5, 5.0));
-
-    autoChooser.addOption(
-        "DriveToPos",
-        autoCommands.splineToPose(
-            new Pose2d(
-                new Translation2d(4, 3),
-                new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
-
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot
+
+    autoChooser.addOption(
+      "DriveToPos",
+      autoCommands.splineToPose(
+          new Pose2d(
+              new Translation2d(4, 3),
+              new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+
   }
 
   private void registerNamedCommands() {

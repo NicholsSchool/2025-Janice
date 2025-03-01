@@ -156,7 +156,12 @@ public final class Constants {
 
     public static int elevatorLimitSwitchChannel = 1;
 
-    public static double kElevatorGearRatio = 1.0;
+    public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    
+    public static double kArmL1 = -1.0;
+    public static double kArmL2 = 0.0;
+    public static double kArmL3 = 1.0;
+    public static double kArmL4 = 2.0;
   }
 
   public static final class IntakeConstants {

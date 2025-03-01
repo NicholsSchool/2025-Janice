@@ -23,10 +23,10 @@ public class Outtake extends SubsystemBase {
         
     }
     public void outtake() {
-        io.setVoltage(-1);
+        io.setVoltage(-1.0);
     }
     
     public void stop() {
-        io.setVoltage(0);
+        io.setVoltage(0.0);
     }
 }

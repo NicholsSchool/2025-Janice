@@ -1,70 +1,64 @@
 package frc.robot.commands;
 
-import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.GeomUtil;
+import frc.robot.util.LoggedTunableNumber;
 
-public class DriveToReef extends InstantCommand {
-  private Drive drive;
-
-  public DriveToReef( Drive drive) {
-    this.drive = drive;
-    hasRequirement(drive);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
-    var currentPose = drive.getPose();
-    int desiredTag = closestReefTag(currentPose);
-
-     //gets the tag pose from the nearest tag id 
-     Pose2d desiredTagPose = FieldConstants.aprilTags.getTagPose(desiredTag).get().toPose2d();
-     double offsetDistance = Constants.RobotConstants.bumperThicknessMeters + Constants.RobotConstants.robotSideLengthInches;
-     
-     Transform2d tagTransform = new Transform2d(desiredTagPose.getRotation().getCos() * offsetDistance,
-     desiredTagPose.getRotation().getSin() * (offsetDistance), new Rotation2d(Math.PI / 2));
-     //.transformBy(tagTransform)
-     // puts itself right in front of a tag on the reef and rotates 90 so the outtake is pointed at it 
+public class DriveToReef extends DriveToPose {
     
-      
-  }
+  private static final LoggedTunableNumber robotRotationOffset =
+      new LoggedTunableNumber("DriveToReef/RobotRotationOffset", Math.PI/2);
 
-   public int closestReefTag(Pose2d drivePose){
-    double distance = Double.MAX_VALUE;
-    int tagListOffset;
-    int desiredTag = 1;
+// Drives to the closest reef to the bot.
+public DriveToReef(Drive drive) {
+    super(
+        drive,
+        () -> {
+            double distance = Double.MAX_VALUE;
+            int tagListOffset;
+            int targetTag = -1;
+            Pose2d targetPose = new Pose2d();
+        
+            if (DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+              tagListOffset = 6;
+            }else{
+              tagListOffset = 17;
+            }
+        
+            for(int i = 0; i < 6; i++){
+              Pose3d tagPose = FieldConstants.aprilTags.getTagPose(i + tagListOffset).get();
+              double distFromITag = drive.getPose().getTranslation().getDistance(tagPose.getTranslation().toTranslation2d());
+              if(distance > distFromITag){
+                distance = distFromITag;
+                targetPose = tagPose.toPose2d();
+                targetTag = i + tagListOffset;
+              }
+            }
 
-    if (DriverStation.getAlliance().isPresent()
-    && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      tagListOffset = 6;
-    }else{
-      tagListOffset = 17;
-    }
+            // calculate offset from target pose for robot width and bumpers. This should put robot
+            // right against the reef base.
+            double offsetDistance = Constants.RobotConstants.bumperThicknessMeters + 
+                        Units.inchesToMeters(Constants.RobotConstants.robotSideLengthInches / 2);
 
-    for(int i = 0; i < 6; i++){
-      double distFromITag = drivePose.getTranslation().getDistance(FieldConstants.aprilTags.getTagPose(i + tagListOffset).get().getTranslation().toTranslation2d());
-      if(distance > distFromITag){
-        distance = distFromITag;
-        desiredTag = i + tagListOffset;
-      }
-    }
+            Pose2d offsetPose = new Pose2d(
+                new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistance,
+                targetPose.getY() + Math.sin(targetPose.getRotation().getRadians()) * offsetDistance), targetPose.getRotation().plus(new Rotation2d(robotRotationOffset.get())));
 
-    return desiredTag;
-    
+            Logger.recordOutput("DriveToReef/TargetedTag", targetTag);
+            Logger.recordOutput("DriveToReef/TargetedPose", targetPose);
+            Logger.recordOutput("DriveToReef/OffsetPose", targetPose);
+            
+            return offsetPose;
+        });
   }
 }

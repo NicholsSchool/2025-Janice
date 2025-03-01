@@ -320,7 +320,8 @@ public class RobotContainer {
     operatorController.leftTrigger(0.8).whileTrue(new InstantCommand(() -> outtake.outtake()));
     operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
 
-    driveController.y().whileTrue(new DriveToPose(drive, () -> drive.closestReefTagWithOffset()));
+    // drive to closest reef
+    driveController.y().whileTrue(new DriveToReef(drive));
 
   }
 

@@ -13,17 +13,12 @@ import frc.robot.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.LoggedTunableNumber;
 
-public class DriveToReef extends DriveToPose {
+public class DriveToHumanPlayer extends DriveToPose {
     
   private static final LoggedTunableNumber robotRotationOffset =
-      new LoggedTunableNumber("DriveToReef/RobotRotationOffset", Math.PI/2);
-public static enum ReefDirection{
-  CENTER,
-  LEFT,
-  RIGHT
-}
-// Drives to the closest reef to the bot.
-public DriveToReef(Drive drive, ReefDirection reefDirection) {
+      new LoggedTunableNumber("DriveToHumanPlayer/RobotRotationOffset", 0.0);
+// Drives to the closest HumanPlayer to the bot.
+public DriveToHumanPlayer(Drive drive) {
     super(
         drive,
         () -> {
@@ -34,12 +29,12 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
         
             if (DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-              tagListOffset = 6;
+              tagListOffset = 1;
             }else{
-              tagListOffset = 17;
+              tagListOffset = 12;
             }
         
-            for(int i = 0; i < 6; i++){
+            for(int i = 0; i < 2; i++){
               Pose3d tagPose = FieldConstants.aprilTags.getTagPose(i + tagListOffset).get();
               double distFromITag = drive.getPose().getTranslation().getDistance(tagPose.getTranslation().toTranslation2d());
               if(distance > distFromITag){
@@ -50,37 +45,17 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
             }
 
             // calculate offset from target pose for robot width and bumpers. This should put robot
-            // right against the reef base.
+            // right against the HumanPlayer base.
             double offsetDistanceBumper = Constants.RobotConstants.robotGoToPosBuffer;
-            
-            double leftRightOffset = 0.0;
-            double angleOffset = 0.0;
-
-            switch(reefDirection){
-              case CENTER:
-              leftRightOffset = 0.0;
-              angleOffset = 0.0;
-              break;
-
-              case LEFT:
-              leftRightOffset = Constants.DriveConstants.reefLeftShift;
-              angleOffset = - Math.PI / 2;
-              break;
-
-              case RIGHT:
-              leftRightOffset = Constants.DriveConstants.reefRightShift;
-              angleOffset = Math.PI / 2;
-              break;
-            }
 
             Pose2d offsetPose = new Pose2d(
-              new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistanceBumper + Math.cos(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset,
-              targetPose.getY() + Math.sin(targetPose.getRotation().getRadians()) * offsetDistanceBumper + Math.sin(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset),
+              new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistanceBumper,
+              targetPose.getY() + Math.sin(targetPose.getRotation().getRadians()) * offsetDistanceBumper),
                targetPose.getRotation().plus(new Rotation2d(robotRotationOffset.get())));
 
-            Logger.recordOutput("DriveToReef/TargetedTag", targetTag);
-            Logger.recordOutput("DriveToReef/TargetedPose", targetPose);
-            Logger.recordOutput("DriveToReef/OffsetPose", targetPose);
+            Logger.recordOutput("DriveToHumanPlayer/TargetedTag", targetTag);
+            Logger.recordOutput("DriveToHumanPlayer/TargetedPose", targetPose);
+            Logger.recordOutput("DriveToHumanPlayer/OffsetPose", targetPose);
             
             return offsetPose;
         });

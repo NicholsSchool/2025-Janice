@@ -109,6 +109,8 @@ public final class Constants {
       Units.inchesToMeters(robotSideLengthInches));
 
       public static final double bumperThicknessMeters = Units.inchesToMeters(3.5);
+
+      public static final double robotGoToPosBuffer = Units.inchesToMeters(robotSideLengthInches) / 2 + bumperThicknessMeters;
   }
 
   public static final class DriveConstants {

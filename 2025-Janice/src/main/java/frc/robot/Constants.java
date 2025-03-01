@@ -89,7 +89,7 @@ public final class Constants {
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        33.0; // why do we need a +1 buffer? J-Burnett
+        33.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -108,7 +108,7 @@ public final class Constants {
       moduleConfig,
       Units.inchesToMeters(robotSideLengthInches));
 
-      public static final double bumperThickness = Units.inchesToMeters(3.5);
+      public static final double bumperThicknessMeters = Units.inchesToMeters(3.5);
   }
 
   public static final class DriveConstants {

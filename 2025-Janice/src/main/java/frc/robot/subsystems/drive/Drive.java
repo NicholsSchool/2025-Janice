@@ -30,6 +30,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -412,13 +413,17 @@ public class Drive extends SubsystemBase {
         desiredPose = tagPose.toPose2d();
       }
     }
+    double offsetDistance = Constants.RobotConstants.bumperThicknessMeters + Units.inchesToMeters(Constants.RobotConstants.robotSideLengthInches / 2);
+    
+    Transform2d tagTransform = new Transform2d(Math.cos(desiredPose.getRotation().getRadians()) * offsetDistance,
+    Math.sin(desiredPose.getRotation().getRadians()) * (offsetDistance), new Rotation2d());
 
-    // double offsetDistance = Constants.RobotConstants.bumperThickness + Constants.RobotConstants.robotSideLengthInches;
-    
-    // Transform2d tagTransform = new Transform2d(desiredPose.getRotation().getCos() * offsetDistance,
-    // desiredPose.getRotation().getSin() * (offsetDistance), new Rotation2d(Math.PI / 2));
-    
-    return desiredPose;
+    // System.out.println(" x " + tagTransform.getX());
+    // System.out.println(" y " + tagTransform.getY());
+
+    return new Pose2d(
+      new Translation2d(desiredPose.getX() + Math.cos(desiredPose.getRotation().getRadians()) * offsetDistance,
+       desiredPose.getY() + Math.sin(desiredPose.getRotation().getRadians()) * offsetDistance), desiredPose.getRotation());
   }
 
   /**

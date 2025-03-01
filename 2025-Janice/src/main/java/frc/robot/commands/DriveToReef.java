@@ -34,7 +34,7 @@ public class DriveToReef extends InstantCommand {
 
      //gets the tag pose from the nearest tag id 
      Pose2d desiredTagPose = FieldConstants.aprilTags.getTagPose(desiredTag).get().toPose2d();
-     double offsetDistance = Constants.RobotConstants.bumperThickness + Constants.RobotConstants.robotSideLengthInches;
+     double offsetDistance = Constants.RobotConstants.bumperThicknessMeters + Constants.RobotConstants.robotSideLengthInches;
      
      Transform2d tagTransform = new Transform2d(desiredTagPose.getRotation().getCos() * offsetDistance,
      desiredTagPose.getRotation().getSin() * (offsetDistance), new Rotation2d(Math.PI / 2));

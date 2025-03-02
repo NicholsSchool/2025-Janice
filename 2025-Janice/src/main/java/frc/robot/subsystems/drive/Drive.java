@@ -315,7 +315,7 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry rotation. */
   @AutoLogOutput
   public Rotation2d getRotation() {
-    return pose.getRotation();
+    return kalman.getEstimatedPosition().getRotation();
   }
 
   /** Resets the current odometry pose. */

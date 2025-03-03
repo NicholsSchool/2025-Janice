@@ -82,12 +82,14 @@ public final class Constants {
     public static final int elevatorEncoder = -1;
 
     public static final int kIntakeMotor = 0;
+    //TODO find real value
+    public static final int kOuttakeMotor = -1;
   }
 
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        33.0; // why do we need a +1 buffer? J-Burnett
+        33.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -105,6 +107,10 @@ public final class Constants {
       MOI, 
       moduleConfig,
       Units.inchesToMeters(robotSideLengthInches));
+
+      public static final double bumperThicknessMeters = Units.inchesToMeters(3.5);
+
+      public static final double robotGoToPosBuffer = Units.inchesToMeters(robotSideLengthInches) / 2 + bumperThicknessMeters;
   }
 
   public static final class DriveConstants {
@@ -113,6 +119,9 @@ public final class Constants {
     public static final double kTRACK_WIDTH_Y = 0.5969;
 
     public static final double lowGearScaler = 0.6;
+    //TODO: tune this
+    public static final double reefLeftShift = 0.4;
+    public static final double reefRightShift = 0.4;
   }
 
   // REV MAXSwerve Modules
@@ -154,7 +163,12 @@ public final class Constants {
 
     public static int elevatorLimitSwitchChannel = 1;
 
-    public static double kElevatorGearRatio = 1.0;
+    public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    
+    public static double kArmL1 = -1.0;
+    public static double kArmL2 = 0.0;
+    public static double kArmL3 = 1.0;
+    public static double kArmL4 = 2.0;
   }
 
   public static final class IntakeConstants {
@@ -171,6 +185,21 @@ public final class Constants {
 
   }
 
+  public static final class OuttakeConstants {
+
+    //TODO set new current limits
+    public static final double kOuttakeCurrentLimit = 0;
+    public static final double kCoralDistanceFarBound = 400;
+    public static final double kCoralDistanceCloseBound = 300;
+  }
+
+  //TODO: Fix these constants MUST BE DONE BEFORE COMP
+  public static final class ClimberConstants {
+  
+      public static final int kChannel = -0;
+      public static final int kRChannel = -0;
+  }
+    
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;

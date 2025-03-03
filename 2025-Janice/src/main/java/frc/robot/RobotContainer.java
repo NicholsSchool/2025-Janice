@@ -208,7 +208,8 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
         climber = new Climber(new ClimberIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        // (Use same number of dummy implementations as the real robot)
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
 
     }

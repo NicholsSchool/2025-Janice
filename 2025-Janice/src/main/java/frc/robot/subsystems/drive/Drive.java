@@ -492,7 +492,7 @@ public class Drive extends SubsystemBase {
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
-        visionPose = new Pose2d(visionRobotPoseMeters.getTranslation(), new Rotation2d(visionRobotPoseMeters.getRotation().getRadians() + Math.PI));
+        visionPose = visionRobotPoseMeters;
         kalman.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }

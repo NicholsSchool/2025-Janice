@@ -19,7 +19,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -30,21 +29,18 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.FieldConstants;
 import frc.robot.LimelightHelpers;
-import frc.robot.commands.DriveToPose;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
+
 import java.util.ArrayDeque;
 
 import javax.xml.crypto.dsig.Transform;
@@ -345,7 +341,7 @@ public class Drive extends SubsystemBase {
   /** Returns the current estimated rotation. */
   @AutoLogOutput
   public Rotation2d getRotation() {
-    return getPose().getRotation();
+    return kalman.getEstimatedPosition().getRotation();
   }
 
   public Pose2d getfilteredPhotonPose2d() {
@@ -398,41 +394,6 @@ public class Drive extends SubsystemBase {
   public double getYawVelocity() {
     return gyroInputs.yawVelocityRadPerSec;
   }
-
-  @AutoLogOutput
-  public Pose2d closestReefTagWithOffset(){
-    double distance = Double.MAX_VALUE;
-    int tagListOffset;
-    Pose2d desiredPose = new Pose2d();
-
-    if (DriverStation.getAlliance().isPresent()
-    && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      tagListOffset = 6;
-    }else{
-      tagListOffset = 17;
-    }
-
-    for(int i = 0; i < 6; i++){
-      Pose3d tagPose = FieldConstants.aprilTags.getTagPose(i + tagListOffset).get();
-      double distFromITag = getPose().getTranslation().getDistance(tagPose.getTranslation().toTranslation2d());
-      if(distance > distFromITag){
-        distance = distFromITag;
-        desiredPose = tagPose.toPose2d();
-      }
-    }
-    double offsetDistance = Constants.RobotConstants.bumperThicknessMeters + Units.inchesToMeters(Constants.RobotConstants.robotSideLengthInches / 2);
-    
-    Transform2d tagTransform = new Transform2d(Math.cos(desiredPose.getRotation().getRadians()) * offsetDistance,
-    Math.sin(desiredPose.getRotation().getRadians()) * (offsetDistance), new Rotation2d());
-
-    // System.out.println(" x " + tagTransform.getX());
-    // System.out.println(" y " + tagTransform.getY());
-
-    return new Pose2d(
-      new Translation2d(desiredPose.getX() + Math.cos(desiredPose.getRotation().getRadians()) * offsetDistance,
-       desiredPose.getY() + Math.sin(desiredPose.getRotation().getRadians()) * offsetDistance), desiredPose.getRotation());
-  }
-
   /**
    * gets the field velocity in the universal x and y direction
    *
@@ -444,7 +405,7 @@ public class Drive extends SubsystemBase {
         fieldVelocity.dx * Math.sin(getYaw()) + fieldVelocity.dy * Math.cos(getYaw()),
         fieldVelocity.dtheta));
   }
-  
+
   @AutoLogOutput
   public double getYaw() {
     // return odometryPose.getRotation().getRadians();
@@ -531,7 +492,7 @@ public class Drive extends SubsystemBase {
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
-        visionPose = visionRobotPoseMeters;
+        visionPose = new Pose2d(visionRobotPoseMeters.getTranslation(), new Rotation2d(visionRobotPoseMeters.getRotation().getRadians() + Math.PI));
         kalman.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }

@@ -28,6 +28,7 @@ public class DriveToPose extends Command {
   private final Drive drive;
   private final boolean slowMode;
   private final Supplier<Pose2d> poseSupplier;
+  private Pose2d targetPose;
 
   private boolean running = false;
   private final ProfiledPIDController driveController =
@@ -125,6 +126,7 @@ public class DriveToPose extends Command {
   public void initialize() {
     // Reset all controllers
     var currentPose = drive.getPose();
+    targetPose = poseSupplier.get();
     driveController.reset(
         currentPose.getTranslation().getDistance(poseSupplier.get().getTranslation()),
         Math.min(
@@ -179,11 +181,11 @@ public class DriveToPose extends Command {
 
     // Get current and target pose
     var currentPose = drive.getPose();
-    var targetPose = poseSupplier.get();
+    // var targetPose = poseSupplier.get();
 
     // Calculate drive speed
     double currentDistance =
-        currentPose.getTranslation().getDistance(poseSupplier.get().getTranslation());
+        currentPose.getTranslation().getDistance(targetPose.getTranslation());
     double ffScaler =
         MathUtil.clamp(
             (currentDistance - ffMinRadius.get()) / (ffMaxRadius.get() - ffMinRadius.get()),

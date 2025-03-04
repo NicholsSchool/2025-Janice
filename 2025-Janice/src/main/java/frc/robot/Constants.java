@@ -48,21 +48,20 @@ public final class Constants {
   public static final class CAN {
     public static final int kReduxGyro = 11;
 
-    public static final int kFrontLeftDrive = 20;
-    public static final int kFrontLeftPivot = 21;
-    public static final int kFrontLeftEncoder = 22;
+    public static final int kFrontLeftDrive = 21;
+    public static final int kBackLeftDrive = 22;
+    public static final int kFrontRightDrive = 23;
+    public static final int kBackRightDrive = 24;
 
-    public static final int kFrontRightDrive = 30;
-    public static final int kFrontRightPivot = 31;
-    public static final int kFrontRightEncoder = 32;
+    public static final int kFrontLeftPivot = 25;
+    public static final int kBackLeftPivot = 26;
+    public static final int kFrontRightPivot = 27;
+    public static final int kBackRightPivot = 28;
 
-    public static final int kBackLeftDrive = 40;
-    public static final int kBackLeftPivot = 41;
-    public static final int kBackLeftEncoder = 42;
-
-    public static final int kBackRightDrive = 50;
-    public static final int kBackRightPivot = 51;
-    public static final int kBackRightEncoder = 52;
+    public static final int kFrontLeftEncoder = 29;
+    public static final int kBackLeftEncoder = 30;
+    public static final int kFrontRightEncoder = 31;
+    public static final int kBackRightEncoder = 32;
 
     public static final int kPowerDistributionHub = 50;
     
@@ -76,20 +75,18 @@ public final class Constants {
     public static int kMaxRearLeftTurningCanId = 21;
     public static int kMaxRearRightTurningCanId = 27;
 
-    public static final int kLeftChain = 10;
-    public static final int kRightChain = 9;
+    public static final int kLeftChain = 41;
+    public static final int kRightChain = 42;
     //fill in properly later
     public static final int elevatorEncoder = -1;
-
-    public static final int kIntakeMotor = 0;
     //TODO find real value
-    public static final int kOuttakeMotor = -1;
+    public static final int kOuttakeMotor = 51;
   }
 
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        33.0; // why do we need a +1 buffer? J-Burnett
+        33.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -107,6 +104,10 @@ public final class Constants {
       MOI, 
       moduleConfig,
       Units.inchesToMeters(robotSideLengthInches));
+
+      public static final double bumperThicknessMeters = Units.inchesToMeters(3.5);
+
+      public static final double robotGoToPosBuffer = Units.inchesToMeters(robotSideLengthInches) / 2 + bumperThicknessMeters;
   }
 
   public static final class DriveConstants {
@@ -115,6 +116,9 @@ public final class Constants {
     public static final double kTRACK_WIDTH_Y = 0.5969;
 
     public static final double lowGearScaler = 0.6;
+    //TODO: tune this
+    public static final double reefLeftShift = 0.4;
+    public static final double reefRightShift = 0.4;
   }
 
   // REV MAXSwerve Modules
@@ -156,7 +160,12 @@ public final class Constants {
 
     public static int elevatorLimitSwitchChannel = 1;
 
-    public static double kElevatorGearRatio = 1.0;
+    public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    
+    public static double kArmL1 = -1.0;
+    public static double kArmL2 = 0.0;
+    public static double kArmL3 = 1.0;
+    public static double kArmL4 = 2.0;
   }
 
   public static final class IntakeConstants {
@@ -181,6 +190,13 @@ public final class Constants {
     public static final double kCoralDistanceCloseBound = 300;
   }
 
+  //TODO: Fix these constants MUST BE DONE BEFORE COMP
+  public static final class ClimberConstants {
+  
+      public static final int kChannel = -0;
+      public static final int kRChannel = -0;
+  }
+    
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;

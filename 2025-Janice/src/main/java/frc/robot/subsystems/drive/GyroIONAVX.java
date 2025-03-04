@@ -16,7 +16,7 @@ public class GyroIONAVX implements GyroIO {
     switch (robotType) {
       case ROBOT_REAL_FRANKENLEW:
       case ROBOT_REAL_JANICE:
-        navx = new AHRS(NavXComType.kUSB1);
+        navx = new AHRS(NavXComType.kMXP_SPI);
         break;
       default:  
         throw new RuntimeException("Invalid robot for NAVX");

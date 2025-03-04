@@ -20,7 +20,7 @@ public class OuttakeIOReal implements OuttakeIO {
     public OuttakeIOReal(){
         outtakeMotor = new TalonFX(CAN.kOuttakeMotor);
         intakeSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
-        outtakeSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
+        outtakeSensor = new Rev2mDistanceSensor(Port.kMXP, Unit.kMillimeters, RangeProfile.kHighAccuracy);
 
          var config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = Constants.OuttakeConstants.kOuttakeCurrentLimit;

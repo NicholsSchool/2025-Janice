@@ -40,6 +40,7 @@ import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
+
 import java.util.ArrayDeque;
 
 import javax.xml.crypto.dsig.Transform;
@@ -73,10 +74,11 @@ public class Drive extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Pose2d odometryPose = new Pose2d();
+  private Pose2d visionPose = new Pose2d();  
   private Rotation2d lastGyroRotation = new Rotation2d();
   private Pose2d filteredPhotonPose2d = new Pose2d();
 
-  private PhotonVision photonCam;
+  //private PhotonVision photonCam;
   private int initVisionCount;
   private ArrayDeque<Pose2d> visionStatsBuffer;
   private PoseVisionStats poseVisionStats;
@@ -109,7 +111,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
       
-    photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
+    //photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
 
     // This is related to PathPlanner configuration.
     // This RobotConfig is currently not used.
@@ -327,18 +329,19 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput
   public Pose2d getRawPhotonPose(){
-    return photonCam.getLocalizedPose().toPose2d();
+    //return photonCam.getLocalizedPose().toPose2d();
+    return visionPose;
   }
-  /** returns the filtered odometryPose*/
+  /** returns the filtered extimated pose */
   @AutoLogOutput
   public Pose2d getPose(){
     return kalman.getEstimatedPosition();
   }
 
-  /** Returns the current odometry rotation. */
+  /** Returns the current estimated rotation. */
   @AutoLogOutput
   public Rotation2d getRotation() {
-    return odometryPose.getRotation();
+    return kalman.getEstimatedPosition().getRotation();
   }
 
   public Pose2d getfilteredPhotonPose2d() {
@@ -346,8 +349,13 @@ public class Drive extends SubsystemBase {
   }
 
   /** Resets the current odometry odometryPose. */
+  /** If using vision for localization, then the robot's pose should not be
+   *  set. The pose will immediately be overwritten with the latest vision pose.
+   *  So for now, comment out.
+   */
   public void setPose(Pose2d odometryPose) {
-    this.odometryPose = odometryPose;
+    System.out.print("Drive::setPose is being called!!");
+    //this.odometryPose = odometryPose;
   }
 
   public void resetFieldHeading() {
@@ -405,43 +413,43 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateEstimatedPose(SwerveModulePosition[] wheelAbsolutes) {
-    if (LimelightHelpers.getTV("limelight")) {
-     //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
-    }      
+    // if (LimelightHelpers.getTV("limelight")) {
+    //  //kalman.addVisionMeasurement(new Pose2d(getRawLimelightPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp()); //trust yaw little, our gyro is much more accurate
+    // }      
 
-    if (usePhotonPose()) {
-      // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
-      filteredPhotonPose2d = getRawPhotonPose();
-      kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(getDistanceToTag()) );
-    }
+    // if (usePhotonPose()) {
+    //   // kalman.addVisionMeasurement(new Pose2d(getPhotonPose().getTranslation(), new Rotation2d(getYaw())), Timer.getFPGATimestamp());
+    //   filteredPhotonPose2d = getRawPhotonPose();
+    //   kalman.addVisionMeasurement(filteredPhotonPose2d, Timer.getFPGATimestamp(), getVisionStdDevs(getDistanceToTag()) );
+    // }
     kalman.updateWithTime(Timer.getFPGATimestamp(), lastGyroRotation, wheelAbsolutes);
     // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
   }
 
-  private boolean usePhotonPose(){
+  // private boolean usePhotonPose(){
 
-    boolean targetDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
+  //   boolean targetDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
 
-    if( !targetDetected )
-      return false;
+  //   if( !targetDetected )
+  //     return false;
 
-    Pose2d kalmanPose = kalman.getEstimatedPosition();
-    Pose2d rawPhotonPose = getRawPhotonPose();
+  //   Pose2d kalmanPose = kalman.getEstimatedPosition();
+  //   Pose2d rawPhotonPose = getRawPhotonPose();
 
-    //runVisionStats(rawPhotonPose); //comment out for better performance
+  //   //runVisionStats(rawPhotonPose); //comment out for better performance
 
-    //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
-    if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
-      initVisionCount++;
-      return true;
-    }
+  //   //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
+  //   if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
+  //     initVisionCount++;
+  //     return true;
+  //   }
 
-    Translation2d kalmanTranslation = kalmanPose.getTranslation();
-    Translation2d rawPhotonTranslation = rawPhotonPose.getTranslation();
+  //   Translation2d kalmanTranslation = kalmanPose.getTranslation();
+  //   Translation2d rawPhotonTranslation = rawPhotonPose.getTranslation();
 
-    //Check to see if the photon pose is too far away from the estimated pose 
-    return kalmanTranslation.getDistance(rawPhotonTranslation) < VisionConstants.visionDistanceUpdateThreshold;
-  }
+  //   //Check to see if the photon pose is too far away from the estimated pose 
+  //   return kalmanTranslation.getDistance(rawPhotonTranslation) < VisionConstants.visionDistanceUpdateThreshold;
+  // }
 
   private void runVisionStats( Pose2d newVisionPose ) {
       //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
@@ -461,20 +469,31 @@ public class Drive extends SubsystemBase {
     return poseVisionStats;
   }
 
-  @AutoLogOutput
-  private double getDistanceToTag() {
-    if( !photonCam.getLatestPipeline().hasTargets() )
-      return -1.0;
+  // @AutoLogOutput
+  // private double getDistanceToTag() {
+  //   if( !photonCam.getLatestPipeline().hasTargets() )
+  //     return -1.0;
       
-    Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
-    return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
-  }
+  //   Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
+  //   return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
+  // }
 
-  private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
-    double xStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
-    double yStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
-    double yawStdDevs = VisionConstants.rotationPhotonStdDevs * distanceToTag; //rad
+  // private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
+  //   double xStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
+  //   double yStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
+  //   double yawStdDevs = VisionConstants.rotationPhotonStdDevs * distanceToTag; //rad
 
-    return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
+  //   return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
+  // }
+
+  /** Adds a new timestamped vision measurement. */
+  public void addVisionMeasurement(
+      Pose2d visionRobotPoseMeters,
+      double timestampSeconds,
+      Matrix<N3, N1> visionMeasurementStdDevs) {
+
+        visionPose = visionRobotPoseMeters;
+        kalman.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 }

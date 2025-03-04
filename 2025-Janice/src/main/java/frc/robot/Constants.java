@@ -48,21 +48,20 @@ public final class Constants {
   public static final class CAN {
     public static final int kReduxGyro = 11;
 
-    public static final int kFrontLeftDrive = 20;
-    public static final int kFrontLeftPivot = 21;
-    public static final int kFrontLeftEncoder = 22;
+    public static final int kFrontLeftDrive = 21;
+    public static final int kBackLeftDrive = 22;
+    public static final int kFrontRightDrive = 23;
+    public static final int kBackRightDrive = 24;
 
-    public static final int kFrontRightDrive = 30;
-    public static final int kFrontRightPivot = 31;
-    public static final int kFrontRightEncoder = 32;
+    public static final int kFrontLeftPivot = 25;
+    public static final int kBackLeftPivot = 26;
+    public static final int kFrontRightPivot = 27;
+    public static final int kBackRightPivot = 28;
 
-    public static final int kBackLeftDrive = 40;
-    public static final int kBackLeftPivot = 41;
-    public static final int kBackLeftEncoder = 42;
-
-    public static final int kBackRightDrive = 50;
-    public static final int kBackRightPivot = 51;
-    public static final int kBackRightEncoder = 52;
+    public static final int kFrontLeftEncoder = 29;
+    public static final int kBackLeftEncoder = 30;
+    public static final int kFrontRightEncoder = 31;
+    public static final int kBackRightEncoder = 32;
 
     public static final int kPowerDistributionHub = 50;
     
@@ -76,14 +75,12 @@ public final class Constants {
     public static int kMaxRearLeftTurningCanId = 21;
     public static int kMaxRearRightTurningCanId = 27;
 
-    public static final int kLeftChain = 10;
-    public static final int kRightChain = 9;
+    public static final int kLeftChain = 41;
+    public static final int kRightChain = 42;
     //fill in properly later
     public static final int elevatorEncoder = -1;
-
-    public static final int kIntakeMotor = 0;
     //TODO find real value
-    public static final int kOuttakeMotor = -1;
+    public static final int kOuttakeMotor = 51;
   }
 
   public static final class RobotConstants {

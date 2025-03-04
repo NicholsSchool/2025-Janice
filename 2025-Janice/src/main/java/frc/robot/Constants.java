@@ -75,6 +75,8 @@ public final class Constants {
     public static int kMaxRearLeftTurningCanId = 21;
     public static int kMaxRearRightTurningCanId = 27;
 
+    public static int kIntakeMotor;
+
     public static final int kLeftChain = 41;
     public static final int kRightChain = 42;
     //fill in properly later

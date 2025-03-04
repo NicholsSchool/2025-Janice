@@ -298,7 +298,7 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+            () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
             () -> -driveController.getRightX() * 0.55,
             () -> Constants.driveRobotRelative));
@@ -308,7 +308,7 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDrive(
                 drive,
-                () -> driveController.getLeftY(),
+                () -> -driveController.getLeftY(),
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));

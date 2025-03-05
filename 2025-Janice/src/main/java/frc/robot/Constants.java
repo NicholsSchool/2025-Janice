@@ -202,6 +202,11 @@ public final class Constants {
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;
+
+
+    public static final double SplineV5LinearMultiplier = 1.5;
+    public static final double SplineV5CircularMultiplier = 2.0;
+    public static final double dotProductThreshold = 0.05;
   }
 
   public static final class FiddleSongs {

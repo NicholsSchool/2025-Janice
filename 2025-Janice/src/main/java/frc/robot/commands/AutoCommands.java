@@ -85,12 +85,15 @@ public class AutoCommands {
       desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
     }
     //-π/6 is a multiplier that converts clock angles to radians
-    Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
-     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getX(), 
-     Math.sin(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d()))
-     , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius)));
+    double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;
+    Translation2d circleAllianceFlipped = AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle);
 
-    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), new InstantCommand(() -> outtake.outtake()).until(outtake.noCoral()), new InstantCommand(() -> outtake.stop()));
+    Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
+     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getX(), 
+     Math.sin(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d(reefNormalAngle + Math.PI / 2)))
+     , () -> new Circle(circleAllianceFlipped, Constants.AutoConstants.reefAutoRadius)));
+
+    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()));
   }
 
   

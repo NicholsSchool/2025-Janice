@@ -31,6 +31,7 @@ public class SplineV5ToPose extends Command {
   private final Drive drive;
   private final boolean slowMode;
   private final Supplier<Pose2d> poseSupplier;
+  private Supplier<Circle> avoidanceCircleSupplier;
   private Circle avoidanceCircle;
 
   private boolean running = false;
@@ -108,22 +109,22 @@ public class SplineV5ToPose extends Command {
 
   /** Drives to the specified pose under full software control. */
   public SplineV5ToPose(Drive drive, boolean slowMode, Pose2d pose, Circle circle) {
-    this(drive, slowMode, () -> pose, circle);
+    this(drive, slowMode, () -> pose, () -> circle);
   }
 
   /** Drives to the specified pose under full software control. */
   public SplineV5ToPose(Drive drive, Supplier<Pose2d> poseSupplier, Circle circle) {
-    this(drive, false, poseSupplier, circle);
+    this(drive, false, poseSupplier, () -> circle);
   }
 
   /** Drives to the specified pose under full software control. */
-  public SplineV5ToPose(Drive drive, boolean slowMode, Supplier<Pose2d> poseSupplier, Circle circle) {
+  public SplineV5ToPose(Drive drive, boolean slowMode, Supplier<Pose2d> poseSupplier, Supplier<Circle> circle) {
     this.drive = drive;
     this.slowMode = slowMode;
     this.poseSupplier = poseSupplier;
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    this.avoidanceCircle = circle;
+    this.avoidanceCircleSupplier = circle;
   }
 
   @Override
@@ -185,6 +186,7 @@ public class SplineV5ToPose extends Command {
     // Get current and target pose
     var currentPose = drive.getPose();
     var targetPose = poseSupplier.get();
+    avoidanceCircle = avoidanceCircleSupplier.get();
 
     // Calculate drive speed
     double currentDistance =

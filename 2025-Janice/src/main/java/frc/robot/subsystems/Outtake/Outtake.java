@@ -3,7 +3,6 @@ package frc.robot.subsystems.Outtake;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIO.OuttakeIOInputs;
 
@@ -30,14 +29,14 @@ public class Outtake extends SubsystemBase {
         
     }
     public void outtake() {
-        this.appliedVolts = Constants.OuttakeConstants.outtakeVoltage;
+        io.setVoltage(-1.0);
     }
     
     public void stop() {
-        this.appliedVolts = 0.0;
+        io.setVoltage(0.0);
     }
 
-    public BooleanSupplier noCoral(){
+    public BooleanSupplier hasCoral(){
         return () -> inputs.hasCoral;
      }
 }

@@ -1,5 +1,10 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -8,18 +13,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.AllianceFlipUtil;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.util.*;
 
 public class AutoCommands {
   // Subsystems
   private Drive drive;
+  private Elevator elevator;
+  private Outtake outtake;
 
-  public AutoCommands(Drive drive) {
+  public AutoCommands(Drive drive, Elevator elevator, Outtake outtake) {
     this.drive = drive;
+    this.elevator = elevator;
+    this.outtake = outtake;
   }
 
   public Command driveToPose(Pose2d pose) {
@@ -52,12 +64,35 @@ public class AutoCommands {
   //   return weaveToPos.until(() -> objectArea > VisionConstants.weaveToPoseBreakArea);
   // }
 
-  public Command splineV5ToPose(Pose2d pose, Circle circle) {
+  public Command splineV5ToPose(Supplier<Pose2d> pose, Supplier<Circle> circle) {
     var splToPose =
         new SplineV5ToPose(
-            this.drive,() -> {return pose;}, circle);
+            this.drive,() -> {return pose.get();}, circle.get());
     return splToPose.until(splToPose::atGoal);
   }
+
+  public Command autoReefRoutine(IntSupplier reefPosition, IntSupplier coralLevel, BooleanSupplier shortestPath, Supplier<DriveToReef.ReefDirection> reefDirection){
+    DoubleSupplier desiredArmHeight = () -> 0.0;
+    switch(coralLevel.getAsInt()){
+      case 1:
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; 
+      case 2: 
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2; 
+      case 3:
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3; 
+      case 4: 
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
+    }
+    //15/2π is a multiplier that converts clock angles to radians
+    Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
+     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * 15 / Math.PI) * Constants.AutoConstants.reefAutoRadius, 
+     Math.sin(reefPosition.getAsInt() * 15 / Math.PI) * Constants.AutoConstants.reefAutoRadius), new Rotation2d()))
+     , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoX), Constants.AutoConstants.reefAutoY, Constants.AutoConstants.reefAutoRadius)));
+
+    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), outtake.outtakeAuto());
+  }
+
+  
 
   public Command TenFootTest(Drive drive) {
     return new DriveToPose(drive, new Pose2d(new Translation2d(3.048, 0), new Rotation2d(0)));

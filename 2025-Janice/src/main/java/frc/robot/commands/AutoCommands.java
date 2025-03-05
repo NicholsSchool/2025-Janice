@@ -83,10 +83,10 @@ public class AutoCommands {
       case 4: 
       desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
     }
-    //15/2π is a multiplier that converts clock angles to radians
+    //30/ 180 * 2π is a multiplier that converts clock angles to radians
     Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
-     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * 15 / Math.PI) * Constants.AutoConstants.reefAutoRadius, 
-     Math.sin(reefPosition.getAsInt() * 15 / Math.PI) * Constants.AutoConstants.reefAutoRadius), new Rotation2d()))
+     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * 30 / 180 *  Math.PI) * Constants.AutoConstants.reefAutoRadius, 
+     Math.sin(reefPosition.getAsInt() * 30 / 180 *  Math.PI) * Constants.AutoConstants.reefAutoRadius), new Rotation2d()))
      , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoX), Constants.AutoConstants.reefAutoY, Constants.AutoConstants.reefAutoRadius)));
 
     return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), outtake.outtakeAuto());

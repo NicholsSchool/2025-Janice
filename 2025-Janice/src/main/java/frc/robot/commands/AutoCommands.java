@@ -86,11 +86,11 @@ public class AutoCommands {
     }
     //-π/6 is a multiplier that converts clock angles to radians
     Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
-     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoX, 
-     Math.sin(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoX), new Rotation2d()))
-     , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoX), Constants.AutoConstants.reefAutoY, Constants.AutoConstants.reefAutoRadius)));
+     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getX(), 
+     Math.sin(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d()))
+     , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius)));
 
-    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), new InstantCommand(() -> outtake.outtakeAuto()));
+    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), new InstantCommand(() -> outtake.outtake()).until(outtake.noCoral()), new InstantCommand(() -> outtake.stop()));
   }
 
   

@@ -17,6 +17,7 @@ public class OuttakeIOSim implements OuttakeIO {
     public void updateInputs(OuttakeIOInputs inputs){
         inputs.supplyVoltage = outtakeMotor.getInputVoltage();
         inputs.currentAmps = outtakeMotor.getCurrentDrawAmps();
+        inputs.hasCoral = true;
     }
 
     public void setVoltage(double voltage) {

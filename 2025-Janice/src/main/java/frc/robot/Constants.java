@@ -203,12 +203,13 @@ public final class Constants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;
 
-
+    public static final double splineFinishThreshold = 0.4; // TODO: tune these
+    public static final double splineAngleFinishThreshold = Math.PI / 12.0;
     public static final double SplineV5LinearMultiplier = 1.5;
     public static final double SplineV5CircularMultiplier = 2.0;
     public static final double dotProductThreshold = 0.05;
 
-    public static final double reefAutoRadius = 2.5;
+    public static final double reefAutoRadius = 1.7;
     public static final double reefAutoX = 4.45;
     public static final double reefAutoY = 4.1;
   }

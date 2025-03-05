@@ -305,8 +305,8 @@ public class SplineV5ToPose extends Command {
   public boolean isFinished() {
     running =
         this.withinTolerance(
-            Constants.AutoConstants.driveFinishThreshold,
-            new Rotation2d(Constants.AutoConstants.angleFinishThreshold));
+            Constants.AutoConstants.splineFinishThreshold,
+            new Rotation2d(Constants.AutoConstants.splineAngleFinishThreshold));
     return running;
   }
 }

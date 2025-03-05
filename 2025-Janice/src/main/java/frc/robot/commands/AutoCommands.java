@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -83,13 +84,13 @@ public class AutoCommands {
       case 4: 
       desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
     }
-    //30/ 180 * 2π is a multiplier that converts clock angles to radians
+    //-π/6 is a multiplier that converts clock angles to radians
     Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
-     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * 30 / 180 *  Math.PI) * Constants.AutoConstants.reefAutoRadius, 
-     Math.sin(reefPosition.getAsInt() * 30 / 180 *  Math.PI) * Constants.AutoConstants.reefAutoRadius), new Rotation2d()))
+     splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoX, 
+     Math.sin(reefPosition.getAsInt() * -Math.PI / 6) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoX), new Rotation2d()))
      , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoX), Constants.AutoConstants.reefAutoY, Constants.AutoConstants.reefAutoRadius)));
 
-    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), outtake.outtakeAuto());
+    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()), new InstantCommand(() -> outtake.outtakeAuto()));
   }
 
   

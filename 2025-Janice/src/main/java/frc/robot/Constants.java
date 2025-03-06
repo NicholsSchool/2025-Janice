@@ -80,9 +80,12 @@ public final class Constants {
     public static final int kLeftChain = 41;
     public static final int kRightChain = 42;
     //fill in properly later
-    public static final int elevatorEncoder = -1;
+    public static final int elevatorEncoder = 43;
     //TODO find real value
     public static final int kOuttakeMotor = 51;
+
+    public static final int kDeAlgifierMotor = 39;
+    //TODO someone check this please.
   }
 
   public static final class RobotConstants {
@@ -191,6 +194,11 @@ public final class Constants {
     public static final double kCoralDistanceFarBound = 400;
     public static final double kCoralDistanceCloseBound = 300;
   }
+
+public static final class DeAlgifierConstants {
+  public static final double kDeAlgifierCurrentLimit = 0;
+  public static final double kIndexerGearRatio = 0; //TODO find gear ratio
+}
 
   //TODO: Fix these constants MUST BE DONE BEFORE COMP
   public static final class ClimberConstants {

@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static final RobotType robot = RobotType.ROBOT_REAL_FRANKENLEW;
+  private static final RobotType robot = RobotType.ROBOT_REAL_JANICE;
   public static final boolean driveRobotRelative =
       false; // set to true to override all field relative and instead command in robot-relative.
 
@@ -50,18 +50,18 @@ public final class Constants {
 
     public static final int kFrontLeftDrive = 21;
     public static final int kBackLeftDrive = 22;
-    public static final int kFrontRightDrive = 23;
-    public static final int kBackRightDrive = 24;
+    public static final int kFrontRightDrive = 24;
+    public static final int kBackRightDrive = 23;
 
     public static final int kFrontLeftPivot = 25;
     public static final int kBackLeftPivot = 26;
-    public static final int kFrontRightPivot = 27;
-    public static final int kBackRightPivot = 28;
+    public static final int kFrontRightPivot = 28;
+    public static final int kBackRightPivot = 27;
 
     public static final int kFrontLeftEncoder = 29;
     public static final int kBackLeftEncoder = 30;
-    public static final int kFrontRightEncoder = 31;
-    public static final int kBackRightEncoder = 32;
+    public static final int kFrontRightEncoder = 32;
+    public static final int kBackRightEncoder = 31;
 
     public static final int kPowerDistributionHub = 50;
     

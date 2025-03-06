@@ -124,13 +124,13 @@ public class Elevator extends SubsystemBase {
     return new InstantCommand(() -> setTargetPos(targetHeight), this);
   }
 
-  public void runManualPos(double inputVoltage){
-    if(Math.abs(inputVoltage) > Constants.JOYSTICK_DEADBAND ){
+  public void runManualPos(double stickPosition){
+    if(Math.abs(stickPosition) > Constants.JOYSTICK_DEADBAND ){
       elevatorMode = ElevatorMode.kManual;
     }else{
       elevatorMode = ElevatorMode.kGoToPos;
     }
-    voltageCmdManual = inputVoltage;
+    voltageCmdManual = stickPosition * 5 / 12;
   }
 
   public void setReachedTarget(boolean hasReachedTarget) {

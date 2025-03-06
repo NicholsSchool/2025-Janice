@@ -147,8 +147,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        elevator = new Elevator(new ElevatorIOSim());
-        outtake = new Outtake(new OuttakeIOSim());
+        elevator = new Elevator(new ElevatorIOReal());
+        outtake = new Outtake(new OuttakeIOReal());
         climber = new Climber(new ClimberIOSim());
         vision =
              new Vision(

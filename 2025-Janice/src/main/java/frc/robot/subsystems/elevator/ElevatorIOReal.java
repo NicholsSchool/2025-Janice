@@ -1,11 +1,15 @@
 package frc.robot.subsystems.elevator;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Constants.CAN;
@@ -17,9 +21,9 @@ public class ElevatorIOReal implements ElevatorIO{
     private final CANcoder elevatorEncoder;
 
     public ElevatorIOReal() {
-    lShoulder = new TalonFX(CAN.kLeftChain);
-    rShoulder = new TalonFX(CAN.kRightChain);
-    elevatorEncoder = new CANcoder(CAN.elevatorEncoder);
+    lShoulder = new TalonFX(CAN.kLeftChain, "Elevator");
+    rShoulder = new TalonFX(CAN.kRightChain, "Elevator");
+    elevatorEncoder = new CANcoder(CAN.elevatorEncoder, "Elevator");
 
     var talonConfig = new TalonFXConfiguration();
     talonConfig.CurrentLimits.StatorCurrentLimit = Constants.ElevatorConstants.ElevatorCurrentLimit;
@@ -32,8 +36,8 @@ public class ElevatorIOReal implements ElevatorIO{
   }
 
   private double getHeight(){
-    if(elevatorLimitSwitch.get()){
-      //put in the reset encoder code here
+    if(!elevatorLimitSwitch.get()){
+      elevatorEncoder.setPosition(0.0);
     }
     //TODO: we need to figure out what the conversion is between this and the actual height is 
     return elevatorEncoder.getPosition().getValueAsDouble();
@@ -49,7 +53,17 @@ public class ElevatorIOReal implements ElevatorIO{
 
   @Override
   public void setVoltage(double voltage) {
-    lShoulder.setVoltage(-voltage);
+    lShoulder.setVoltage(voltage);
+  }
+
+  @AutoLogOutput
+  public boolean getLimitSwitch() {
+    return !elevatorLimitSwitch.get();
+  }
+
+  @AutoLogOutput
+  public double getElevatorHeight() {
+    return elevatorEncoder.getPosition().getValueAsDouble();
   }
   
 }

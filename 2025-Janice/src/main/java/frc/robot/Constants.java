@@ -80,7 +80,7 @@ public final class Constants {
     public static final int kLeftChain = 41;
     public static final int kRightChain = 42;
     //fill in properly later
-    public static final int elevatorEncoder = -1;
+    public static final int elevatorEncoder = 43;
     //TODO find real value
     public static final int kOuttakeMotor = 51;
   }
@@ -160,14 +160,15 @@ public final class Constants {
     public static double maxHeight = 100000;
     public static double minHeight = -100000;
 
-    public static int elevatorLimitSwitchChannel = 1;
+    public static int elevatorLimitSwitchChannel = 0;
 
     public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
-    public static double kArmL1 = -1.0;
-    public static double kArmL2 = 0.0;
-    public static double kArmL3 = 1.0;
-    public static double kArmL4 = 2.0;
+    public static double kArmL1 = 0.0;
+    public static double kArmL2 = -2.2;
+    public static double kArmL3 = -3.7;
+    public static double kArmL4 = -1.0;
+
   }
 
   public static final class IntakeConstants {

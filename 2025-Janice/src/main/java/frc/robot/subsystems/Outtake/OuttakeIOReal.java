@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Outtake;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,12 +17,11 @@ import frc.robot.Constants.CAN;
 public class OuttakeIOReal implements OuttakeIO {
 
     private TalonFX outtakeMotor;
-    private Rev2mDistanceSensor intakeSensor, outtakeSensor;
+    private Rev2mDistanceSensor outtakeSensor;
 
     public OuttakeIOReal(){
-        outtakeMotor = new TalonFX(CAN.kOuttakeMotor);
-        intakeSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
-        outtakeSensor = new Rev2mDistanceSensor(Port.kMXP, Unit.kMillimeters, RangeProfile.kHighAccuracy);
+        outtakeMotor = new TalonFX(CAN.kOuttakeMotor, "Elevator");
+        outtakeSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
 
          var config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = Constants.OuttakeConstants.kOuttakeCurrentLimit;
@@ -43,8 +44,13 @@ public class OuttakeIOReal implements OuttakeIO {
     }
 
     public boolean seesCoral(){
-        return intakeSensor.getRange() < Constants.OuttakeConstants.kCoralDistanceFarBound &&
-        intakeSensor.getRange() > Constants.OuttakeConstants.kCoralDistanceCloseBound;
+        return outtakeSensor.getRange() < Constants.OuttakeConstants.kCoralDistanceFarBound &&
+        outtakeSensor.getRange() > Constants.OuttakeConstants.kCoralDistanceCloseBound;
+    }
+
+    @AutoLogOutput
+    public double getOuttakeSensor() {
+        return outtakeSensor.getRange();
     }
 
 }

@@ -130,7 +130,7 @@ public class Elevator extends SubsystemBase {
     }else{
       elevatorMode = ElevatorMode.kGoToPos;
     }
-    voltageCmdManual = stickPosition * 5 / 12;
+    voltageCmdManual = stickPosition * 5;
   }
 
   public void setReachedTarget(boolean hasReachedTarget) {

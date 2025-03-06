@@ -24,6 +24,7 @@ public class Outtake extends SubsystemBase {
     }
     public void outtake() {
         io.setVoltage(-1.0);
+        System.out.println("Outtaking");
     }
     
     public void stop() {

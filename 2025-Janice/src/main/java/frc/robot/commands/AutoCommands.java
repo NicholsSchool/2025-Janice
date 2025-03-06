@@ -10,6 +10,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +18,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
@@ -86,14 +89,31 @@ public class AutoCommands {
     }
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;
-    Translation2d circleAllianceFlipped = AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle);
 
     Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
      splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getX(), 
      Math.sin(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d(reefNormalAngle + Math.PI / 2)))
-     , () -> new Circle(circleAllianceFlipped, Constants.AutoConstants.reefAutoRadius)));
+     , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius)));
 
     return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()));
+  }
+
+  public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){
+
+    int tagIndex = topHumanPlayer.getAsBoolean() ? 13 : 12;
+    Pose2d humanTagPose = FieldConstants.aprilTags.getTagPose(tagIndex).get().toPose2d();
+    humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
+    Constants.RobotConstants.robotGoToPosBuffer * Math.sin(humanTagPose.getRotation().getRadians())), new Rotation2d()));
+
+    Command orbit = 
+     splineV5ToPose(() -> AllianceFlipUtil.apply(humanTagPose),
+      () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius));
+
+    return orbit;
+  }
+
+  public Command autoRoutine(){
+    return new SequentialCommandGroup(autoReefRoutine(() -> 12, () -> 3, () -> true, () -> ReefDirection.LEFT), autoHumanRoutine(() -> true, () -> true));
   }
 
   

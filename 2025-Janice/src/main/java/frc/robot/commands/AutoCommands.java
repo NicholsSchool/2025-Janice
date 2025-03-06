@@ -90,12 +90,12 @@ public class AutoCommands {
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;
 
-    Command armAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
+    Command elevatorAndPose = new ParallelCommandGroup(elevator.runGoToPosCommand(desiredArmHeight.getAsDouble()),
      splineV5ToPose(() -> AllianceFlipUtil.apply(new Pose2d(new Translation2d(Math.cos(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getX(), 
      Math.sin(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d(reefNormalAngle + Math.PI / 2)))
-     , () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius)));
+     , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius)));
 
-    return new SequentialCommandGroup(armAndPose, new DriveToReef(drive, reefDirection.get()));
+    return new SequentialCommandGroup(elevatorAndPose, new DriveToReef(drive, reefDirection.get()));
   }
 
   public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){

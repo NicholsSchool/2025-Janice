@@ -36,7 +36,7 @@ public class ElevatorIOReal implements ElevatorIO{
       //put in the reset encoder code here
     }
     //TODO: we need to figure out what the conversion is between this and the actual height is 
-    return elevatorEncoder.getPosition().getValueAsDouble();
+    return elevatorEncoder.getPositionSinceBoot().getValueAsDouble();
   }
 
   @Override

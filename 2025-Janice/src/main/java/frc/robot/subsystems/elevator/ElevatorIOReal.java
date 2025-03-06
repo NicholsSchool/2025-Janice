@@ -26,7 +26,7 @@ public class ElevatorIOReal implements ElevatorIO{
     talonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     talonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     lShoulder.getConfigurator().apply(talonConfig);
-    rShoulder.setControl(new Follower(CAN.kLeftChain, true));
+    rShoulder.setControl(new Follower(CAN.kLeftChain, false));
 
     elevatorLimitSwitch = new DigitalInput(Constants.ElevatorConstants.elevatorLimitSwitchChannel);
   }
@@ -49,7 +49,7 @@ public class ElevatorIOReal implements ElevatorIO{
 
   @Override
   public void setVoltage(double voltage) {
-    lShoulder.setVoltage(voltage);
+    lShoulder.setVoltage(-voltage);
   }
   
 }

@@ -157,8 +157,8 @@ public final class Constants {
     public static double kElevatorD = 0;
     public static double ElevatorMaxAccelerationRad = 1000;
     public static double ElevatorMaxVelocityRad = 1000;
-    public static double maxHeight = 100000;
-    public static double minHeight = -100000;
+    public static double maxHeight = 4.0;
+    public static double minHeight = 0.0;
 
     public static int elevatorLimitSwitchChannel = 0;
 

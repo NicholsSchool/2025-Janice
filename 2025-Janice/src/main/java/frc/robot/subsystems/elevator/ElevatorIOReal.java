@@ -49,6 +49,7 @@ public class ElevatorIOReal implements ElevatorIO{
     inputs.appliedVolts = new double[] {lShoulder.getMotorVoltage().getValueAsDouble(), rShoulder.getMotorVoltage().getValueAsDouble()};
     inputs.velocityRadPerSec = new double[] {lShoulder.getVelocity().getValueAsDouble(), rShoulder.getVelocity().getValueAsDouble()};
     inputs.currentAmps = new double[] {lShoulder.getStatorCurrent().getValueAsDouble(), lShoulder.getStatorCurrent().getValueAsDouble()};
+    inputs.limitSwitch = getLimitSwitch();
   }
 
   @Override

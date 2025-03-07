@@ -24,6 +24,7 @@ public class Elevator extends SubsystemBase {
     private double voltageCmdPid = 0.0;
     private boolean reachedTargetPos = true;
     private double voltageCmdManual = 0.0;
+    private boolean hasHitLimitSwitch = false;
 
     private enum ElevatorMode{
       kManual,
@@ -63,6 +64,7 @@ public class Elevator extends SubsystemBase {
         elevatorPidController.setD(elevatorKd.get());
 
         this.elevatorMode = ElevatorMode.kGoToPos;
+        setTargetPos(getHeight());
     }
 
     @Override
@@ -75,7 +77,7 @@ public class Elevator extends SubsystemBase {
 
         switch(elevatorMode){
           case kGoToPos:
-          voltageCmdPid = elevatorPidController.calculate( this.getHeight() );
+          voltageCmdPid = hasHitLimitSwitch ? elevatorPidController.calculate( this.getHeight()) : 0.0;
           voltageCmdManual = 0.0;
           break;
           case kManual:
@@ -87,6 +89,11 @@ public class Elevator extends SubsystemBase {
             reachedTargetPos = elevatorPidController.atGoal();
             if (reachedTargetPos) System.out.println("elevator Move to Pos Reached Goal!");
           }
+        
+          if(inputs.limitSwitch){
+            hasHitLimitSwitch = true;
+          }
+
         io.setVoltage(voltageCmdManual + voltageCmdPid);
     }
 
@@ -116,7 +123,7 @@ public class Elevator extends SubsystemBase {
   
   public Command runGoToPosCommand(double targetHeight){
     elevatorMode = ElevatorMode.kGoToPos;
-    if (targetHeight > ElevatorConstants.maxHeight || targetHeight < ElevatorConstants.minHeight) {
+    if ((targetHeight > ElevatorConstants.maxHeight || targetHeight < ElevatorConstants.minHeight) && hasHitLimitSwitch) {
       System.out.println("Soft Limited Elevator");
       return new InstantCommand();
     }
@@ -130,7 +137,12 @@ public class Elevator extends SubsystemBase {
     }else{
       elevatorMode = ElevatorMode.kGoToPos;
     }
-    voltageCmdManual = stickPosition * 5;
+    // if((stickPosition < 0 && getHeight() < ElevatorConstants.minHeight) || (stickPosition > 0 && getHeight() > ElevatorConstants.maxHeight)){
+    //   voltageCmdManual = 0.0;
+    // }else{
+      voltageCmdManual = stickPosition * 5;
+    //}
+    
   }
 
   public void setReachedTarget(boolean hasReachedTarget) {

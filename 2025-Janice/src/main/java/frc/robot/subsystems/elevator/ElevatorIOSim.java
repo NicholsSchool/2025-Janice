@@ -29,6 +29,7 @@ public class ElevatorIOSim implements ElevatorIO{
         inputs.velocityRadPerSec = new double[] {lSim.getAngularVelocityRadPerSec(),rSim.getAngularVelocityRadPerSec()};
         inputs.currentHeight = this.getCurrentHeight();
         inputs.currentAmps = new double[] {lSim.getCurrentDrawAmps(), rSim.getCurrentDrawAmps()};
+        inputs.limitSwitch = false;
     }
 
     private double getCurrentHeight(){

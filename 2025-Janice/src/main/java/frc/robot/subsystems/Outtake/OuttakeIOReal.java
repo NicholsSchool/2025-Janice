@@ -21,13 +21,14 @@ public class OuttakeIOReal implements OuttakeIO {
 
     public OuttakeIOReal(){
         outtakeMotor = new TalonFX(CAN.kOuttakeMotor, "Elevator");
-        outtakeSensor = new Rev2mDistanceSensor(Port.kMXP, Unit.kMillimeters, RangeProfile.kHighAccuracy);
+        outtakeSensor = new Rev2mDistanceSensor(Port.kMXP);
 
          var config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = Constants.OuttakeConstants.kOuttakeCurrentLimit;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         outtakeMotor.getConfigurator().apply(config);
+        outtakeSensor.setAutomaticMode(true);
 
     }
 
@@ -52,5 +53,4 @@ public class OuttakeIOReal implements OuttakeIO {
     public double getOuttakeSensor() {
         return outtakeSensor.getRange();
     }
-
 }

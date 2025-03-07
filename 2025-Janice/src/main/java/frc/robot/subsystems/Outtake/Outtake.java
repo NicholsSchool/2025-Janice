@@ -23,7 +23,11 @@ public class Outtake extends SubsystemBase {
         
     }
     public void outtake() {
-        io.setVoltage(-2.0);
+        // if(inputs.hasCoral){
+            io.setVoltage(-2.0);
+        // }else{
+            // io.setVoltage(-0.3);
+        //}
         System.out.println("Outtaking");
     }
     

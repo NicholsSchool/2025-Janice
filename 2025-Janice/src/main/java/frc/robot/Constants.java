@@ -189,8 +189,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 400;
-    public static final double kCoralDistanceCloseBound = 300;
+    public static final double kCoralDistanceFarBound = 3;
+    public static final double kCoralDistanceCloseBound = 1;
   }
 
   //TODO: Fix these constants MUST BE DONE BEFORE COMP

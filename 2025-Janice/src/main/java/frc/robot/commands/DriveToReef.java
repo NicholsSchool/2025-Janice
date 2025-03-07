@@ -16,7 +16,7 @@ import frc.robot.util.LoggedTunableNumber;
 public class DriveToReef extends DriveToPose {
     
   private static final LoggedTunableNumber robotRotationOffset =
-      new LoggedTunableNumber("DriveToReef/RobotRotationOffset", Math.PI/2);
+      new LoggedTunableNumber("DriveToReef/RobotRotationOffset", -Math.PI/2);
 public static enum ReefDirection{
   CENTER,
   LEFT,

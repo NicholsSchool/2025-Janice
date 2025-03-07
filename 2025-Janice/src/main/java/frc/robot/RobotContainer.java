@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotType;
@@ -361,8 +362,9 @@ public class RobotContainer {
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
-    operatorController.leftTrigger(0.8).whileTrue(new InstantCommand(() -> outtake.outtake()));
-    operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
+    outtake.setDefaultCommand(new InstantCommand(() -> outtake.processCoral(), outtake ) );
+    operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
+    //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // drive to closest reef
     driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));

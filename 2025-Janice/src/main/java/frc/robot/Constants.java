@@ -188,7 +188,7 @@ public final class Constants {
   public static final class OuttakeConstants {
 
     //TODO set new current limits
-    public static final double kOuttakeCurrentLimit = 0;
+    public static final double kOuttakeCurrentLimit = 35.0;
     public static final double kCoralDistanceFarBound = 400;
     public static final double kCoralDistanceCloseBound = 300;
   }

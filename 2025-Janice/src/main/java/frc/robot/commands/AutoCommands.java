@@ -71,7 +71,7 @@ public class AutoCommands {
   public Command splineV5ToPose(Supplier<Pose2d> pose, Supplier<Circle> circle) {
     var splToPose =
         new SplineV5ToPose(
-            this.drive,() -> {return pose.get();}, circle.get());
+            this.drive,() -> {return pose.get();}, () -> {return circle.get();});
     return splToPose.until(splToPose::atGoal);
   }
 

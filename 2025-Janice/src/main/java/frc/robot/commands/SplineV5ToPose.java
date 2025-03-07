@@ -113,18 +113,18 @@ public class SplineV5ToPose extends Command {
   }
 
   /** Drives to the specified pose under full software control. */
-  public SplineV5ToPose(Drive drive, Supplier<Pose2d> poseSupplier, Circle circle) {
-    this(drive, false, poseSupplier, () -> circle);
+  public SplineV5ToPose(Drive drive, Supplier<Pose2d> poseSupplier, Supplier<Circle> circleSupplier) {
+    this(drive, false, poseSupplier, circleSupplier);
   }
 
   /** Drives to the specified pose under full software control. */
-  public SplineV5ToPose(Drive drive, boolean slowMode, Supplier<Pose2d> poseSupplier, Supplier<Circle> circle) {
+  public SplineV5ToPose(Drive drive, boolean slowMode, Supplier<Pose2d> poseSupplier, Supplier<Circle> circleSupplier) {
     this.drive = drive;
     this.slowMode = slowMode;
     this.poseSupplier = poseSupplier;
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    this.avoidanceCircleSupplier = circle;
+    this.avoidanceCircleSupplier = circleSupplier;
   }
 
   @Override

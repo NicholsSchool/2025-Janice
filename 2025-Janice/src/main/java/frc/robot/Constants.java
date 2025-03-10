@@ -83,6 +83,10 @@ public final class Constants {
     public static final int elevatorEncoder = 43;
     //TODO find real value
     public static final int kOuttakeMotor = 51;
+
+    public static final int kDeAlgifierKicker = 39;
+    public static final int kDeAlgifierArm = 38;
+    //TODO someone check this please.
   }
 
   public static final class RobotConstants {
@@ -192,6 +196,21 @@ public final class Constants {
     public static final double kCoralDistanceFarBound = 3;
     public static final double kCoralDistanceCloseBound = 1;
   }
+
+public static final class DeAlgifierConstants {
+  public static final double kDeAlgifierCurrentLimit = 30;
+  public static final double kArmGearRatio = 28;
+  public static final double kKickerGearRatio = 1; //TODO find gear ratio
+
+  public static final double kArmAlgaeSetpointRad = 2.0;
+  public static final double kKickerSetpointRPM = 3000;
+
+  public static final double ARM_P = 3.0;
+  public static final double ARM_D = 0.0;
+  public static final double KICKER_P = 0.0012;
+  public static final double KICKER_D = 0.0;
+}
+
 
   //TODO: Fix these constants MUST BE DONE BEFORE COMP
   public static final class ClimberConstants {

@@ -6,6 +6,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -29,6 +31,7 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         SparkMaxConfig config2 = new SparkMaxConfig();
         config2.alternateEncoder.inverted(false);
         config2.alternateEncoder.velocityConversionFactor(DeAlgifierConstants.kKickerGearRatio);
+        kicker.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void updateInputs(DeAlgifierIOInputs inputs){

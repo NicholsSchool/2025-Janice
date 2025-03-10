@@ -28,6 +28,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.AllianceFlipUtil;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class DriveCommands {
   private DriveCommands() {}
@@ -142,11 +143,14 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      Translation2d facingPose,
-      DoubleSupplier robotYawSupplier) {
+      Supplier<Translation2d> facingPose,
+      DoubleSupplier robotYawSupplier,
+      DoubleSupplier angleOffset, 
+      BooleanSupplier robotRelative) {
     return Commands.run(
         () -> {
           // Apply deadband
+          Translation2d flippedFacingPose = AllianceFlipUtil.apply(facingPose.get());
           double linearMagnitude =
               MathUtil.applyDeadband(
                   Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()),
@@ -158,8 +162,8 @@ public class DriveCommands {
           Pose2d robotPose = drive.getPose();
           double desiredAngle =
               Math.atan2(
-                  facingPose.getY() - robotPose.getY(),
-                  AllianceFlipUtil.apply(facingPose.getX()) - robotPose.getX());
+                  flippedFacingPose.getY() - robotPose.getY(),
+                  AllianceFlipUtil.apply(facingPose.get().getX()) - robotPose.getX()) + angleOffset.getAsDouble();
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;
@@ -169,10 +173,14 @@ public class DriveCommands {
               new Pose2d(new Translation2d(), linearDirection)
                   .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
                   .getTranslation();
-          if (DriverStation.getAlliance().isPresent()
-              && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            linearVelocity = linearVelocity.rotateBy(Rotation2d.fromRadians(Math.PI));
-          }
+          
+                  if (!robotRelative.getAsBoolean()) {
+                    if (DriverStation.getAlliance().isPresent()
+                        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                      linearVelocity = linearVelocity.rotateBy(Rotation2d.fromRadians(Math.PI));
+                    }
+                  }
+
           double angularRotation =
               angleToVelocity(desiredAngle * 180 / Math.PI, robotYawSupplier.getAsDouble());
           // Convert to field relative speeds & send command

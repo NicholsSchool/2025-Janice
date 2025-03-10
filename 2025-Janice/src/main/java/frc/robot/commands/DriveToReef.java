@@ -25,7 +25,7 @@ public static enum ReefDirection{
 // Drives to the closest reef to the bot.
 public DriveToReef(Drive drive, ReefDirection reefDirection) {
     super(
-        drive,
+        drive, true,
         () -> {
             double distance = Double.MAX_VALUE;
             int tagListOffset;

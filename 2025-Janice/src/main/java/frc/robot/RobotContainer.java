@@ -374,6 +374,20 @@ public class RobotContainer {
 
     operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     
+    driveController
+        .rightStick()
+        .toggleOnTrue(
+            DriveCommands.joystickDriveFacingPoint(
+                drive,
+                () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+                () -> Constants.AutoConstants.reefAutoCircle,
+                () -> drive.getYaw(),
+                () -> Math.PI / 2,
+                () -> Constants.driveRobotRelative));
+
+    operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
+    
   }
 
   // /**

@@ -119,8 +119,8 @@ public final class Constants {
 
     public static final double lowGearScaler = 0.6;
     //TODO: tune this
-    public static final double reefLeftShift = 0.2 - Units.inchesToMeters(4);
-    public static final double reefRightShift = 0.2 + Units.inchesToMeters(4);
+    public static final double reefLeftShift = 0.2 - Units.inchesToMeters(6.0);
+    public static final double reefRightShift = 0.2 + Units.inchesToMeters(3.2);
   }
 
   // REV MAXSwerve Modules
@@ -203,6 +203,15 @@ public final class Constants {
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;
+
+    public static final double splineFinishThreshold = 0.4; // TODO: tune these
+    public static final double splineAngleFinishThreshold = Math.PI / 12.0;
+    public static final double SplineV5LinearMultiplier = 1.5;
+    public static final double SplineV5CircularMultiplier = 2.0;
+    public static final double dotProductThreshold = 0.05;
+
+    public static final double reefAutoRadius = 2.0;
+    public static final Translation2d reefAutoCircle = new Translation2d(4.45, 4.1);
   }
 
   public static final class FiddleSongs {

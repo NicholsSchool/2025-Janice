@@ -26,7 +26,10 @@ public class DeAlgifier extends SubsystemBase{
         io.updateInputs(inputs);
         Logger.processInputs("DeAlgifier", inputs);
         
-        if (DriverStation.isDisabled()) { this.stop(); } 
+        if (DriverStation.isDisabled()) {
+             io.setArmVoltage(0.0);
+             io.setKickerVoltage(0.0);
+        } 
         else {
             io.setArmVoltage(armPidController.calculate(armSetpointRad));
             io.setKickerVoltage(kickerPidController.calculate(kickerSetpointRPM));

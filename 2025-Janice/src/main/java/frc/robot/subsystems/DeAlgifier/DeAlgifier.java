@@ -37,9 +37,14 @@ public class DeAlgifier extends SubsystemBase{
         armSetpointRad = DeAlgifierConstants.kArmAlgaeSetpointRad;
         kickerSetpointRPM = DeAlgifierConstants.kKickerSetpointRPM;
     }
+
+    public void resetToZero() {
+        armSetpointRad = 0.0;
+        kickerSetpointRPM = 0.0;
+    }
     
     public void stop() {
-        io.setArmVoltage(0.0);
-        io.setKickerVoltage(0.0);
+        armSetpointRad = inputs.armPositionRad;
+        kickerSetpointRPM = 0.0;
     }
 }

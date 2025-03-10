@@ -23,7 +23,7 @@ import java.util.List;
  * Width refers to the <i>y</i> direction (as described by wpilib)*
  */
 public final class FieldConstants {
-  public static final double fieldLength = Units.inchesToMeters(653.2 + 36);
+  public static final double fieldLength = Units.inchesToMeters(57 * 12);
   public static final double fieldWidth = Units.inchesToMeters(323.28);
   public static final double tapeWidth = Units.inchesToMeters(2.0);
 

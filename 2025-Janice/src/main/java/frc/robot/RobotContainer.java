@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotType;
@@ -32,6 +33,10 @@ import frc.robot.commands.DriveToHumanPlayer;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
+import frc.robot.subsystems.DeAlgifier.DeAlgifier;
+import frc.robot.subsystems.DeAlgifier.DeAlgifierIO;
+import frc.robot.subsystems.DeAlgifier.DeAlgifierIOReal;
+import frc.robot.subsystems.DeAlgifier.DeAlgifierIOSim;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
@@ -63,6 +68,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import java.lang.annotation.Repeatable;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -76,6 +83,7 @@ public class RobotContainer {
   public final Elevator elevator;
   private final Outtake outtake;
   private final Climber climber;
+  private final DeAlgifier deAlgifier;
   private final Vision vision;
 
 
@@ -129,6 +137,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
         vision =
               new Vision(
                 drive::addVisionMeasurement,
@@ -150,6 +159,8 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOReal());
+
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -169,6 +180,8 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
+
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -187,6 +200,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -208,6 +222,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
         climber = new Climber(new ClimberIO() {});
+        deAlgifier = new DeAlgifier(new DeAlgifierIO() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
@@ -363,6 +378,9 @@ public class RobotContainer {
 
     operatorController.leftTrigger(0.8).whileTrue(new InstantCommand(() -> outtake.outtake()));
     operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
+
+    operatorController.rightTrigger(0.8).onTrue( new InstantCommand( () -> deAlgifier.deAlgify() ) );
+    operatorController.rightTrigger(0.8).onFalse(new InstantCommand( () -> deAlgifier.resetToZero() ));
 
     // drive to closest reef
     driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));

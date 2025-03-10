@@ -84,8 +84,8 @@ public final class Constants {
     //TODO find real value
     public static final int kOuttakeMotor = 51;
 
-    public static final int kDeAlgifierKicker = 38;
-    public static final int kDeAlgifierArm = 39;
+    public static final int kDeAlgifierKicker = 39;
+    public static final int kDeAlgifierArm = 38;
     //TODO someone check this please.
   }
 
@@ -198,14 +198,15 @@ public final class Constants {
 
 public static final class DeAlgifierConstants {
   public static final double kDeAlgifierCurrentLimit = 30;
+  public static final double kArmGearRatio = 28;
   public static final double kKickerGearRatio = 1; //TODO find gear ratio
 
-  public static final double kArmAlgaeSetpointRad = Math.toRadians(120);
+  public static final double kArmAlgaeSetpointRad = 2.0;
   public static final double kKickerSetpointRPM = 3000;
 
-  public static final double ARM_P = 1.0;
+  public static final double ARM_P = 3.0;
   public static final double ARM_D = 0.0;
-  public static final double KICKER_P = 10.0;
+  public static final double KICKER_P = 0.0012;
   public static final double KICKER_D = 0.0;
 }
 

@@ -20,12 +20,14 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
     private SparkMax kicker;
 
     public DeAlgifierIOReal() {
-        arm = new TalonFX(CAN.kDeAlgifierArm);
+        arm = new TalonFX(CAN.kDeAlgifierArm, "Elevator");
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = DeAlgifierConstants.kDeAlgifierCurrentLimit;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kArmGearRatio;
         arm.getConfigurator().apply(config);
+        arm.setPosition(0.0);
 
         kicker = new SparkMax(CAN.kDeAlgifierKicker, MotorType.kBrushless );
         SparkMaxConfig config2 = new SparkMaxConfig();
@@ -55,5 +57,4 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
     public void setKickerVoltage( double voltage ) {
         kicker.setVoltage(voltage);
     }
-
 }

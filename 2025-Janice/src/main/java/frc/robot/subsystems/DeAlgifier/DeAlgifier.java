@@ -12,14 +12,13 @@ public class DeAlgifier extends SubsystemBase{
 
     private final PIDController armPidController;
     private final PIDController kickerPidController;
-
-    private static double kickerSetpointRPM = 0.0;
-    private static double armSetpointRad = 0.0;
     
     public DeAlgifier(DeAlgifierIO io){
         this.io = io;
         this.armPidController = new PIDController(DeAlgifierConstants.ARM_P, 0, DeAlgifierConstants.ARM_D);
         this.kickerPidController = new PIDController(DeAlgifierConstants.KICKER_P, 0, DeAlgifierConstants.KICKER_D);
+        armPidController.reset();
+        kickerPidController.reset();
     }
     
     public void periodic(){
@@ -31,23 +30,25 @@ public class DeAlgifier extends SubsystemBase{
              io.setKickerVoltage(0.0);
         } 
         else {
-            io.setArmVoltage(armPidController.calculate(armSetpointRad));
-            io.setKickerVoltage(kickerPidController.calculate(kickerSetpointRPM));
+            io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
+            io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 );
+            System.out.println(kickerPidController.getSetpoint());
         }
     }
 
     public void deAlgify() {
-        armSetpointRad = DeAlgifierConstants.kArmAlgaeSetpointRad;
-        kickerSetpointRPM = DeAlgifierConstants.kKickerSetpointRPM;
+        armPidController.setSetpoint(DeAlgifierConstants.kArmAlgaeSetpointRad);
+        kickerPidController.setSetpoint(DeAlgifierConstants.kKickerSetpointRPM);
+        System.out.println("Dealgifying");
     }
 
     public void resetToZero() {
-        armSetpointRad = 0.0;
-        kickerSetpointRPM = 0.0;
+        armPidController.setSetpoint(0.0);
+        kickerPidController.setSetpoint(0.0);
     }
     
     public void stop() {
-        armSetpointRad = inputs.armPositionRad;
-        kickerSetpointRPM = 0.0;
+        armPidController.setSetpoint(inputs.armPositionRad);
+        kickerPidController.setSetpoint(0.0);
     }
 }

@@ -199,7 +199,16 @@ public final class Constants {
 public static final class DeAlgifierConstants {
   public static final double kDeAlgifierCurrentLimit = 30;
   public static final double kKickerGearRatio = 1; //TODO find gear ratio
+
+  public static final double kArmAlgaeSetpointRad = Math.toRadians(120);
+  public static final double kKickerSetpointRPM = 3000;
+
+  public static final double ARM_P = 1.0;
+  public static final double ARM_D = 0.0;
+  public static final double KICKER_P = 10.0;
+  public static final double KICKER_D = 0.0;
 }
+
 
   //TODO: Fix these constants MUST BE DONE BEFORE COMP
   public static final class ClimberConstants {

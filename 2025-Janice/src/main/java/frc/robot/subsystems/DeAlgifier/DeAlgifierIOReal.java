@@ -5,15 +5,10 @@ import static edu.wpi.first.units.Units.Radian;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.jni.CANSparkJNI;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DeAlgifierConstants;
 
@@ -24,7 +19,7 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
 
     public DeAlgifierIOReal() {
         arm = new TalonFX(CAN.kDeAlgifierArm);
-         var config = new TalonFXConfiguration();
+        TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = DeAlgifierConstants.kDeAlgifierCurrentLimit;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;

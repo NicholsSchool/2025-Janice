@@ -46,5 +46,4 @@ public class OuttakeIOReal implements OuttakeIO {
         return intakeSensor.getRange() < Constants.OuttakeConstants.kCoralDistanceFarBound &&
         intakeSensor.getRange() > Constants.OuttakeConstants.kCoralDistanceCloseBound;
     }
-
 }

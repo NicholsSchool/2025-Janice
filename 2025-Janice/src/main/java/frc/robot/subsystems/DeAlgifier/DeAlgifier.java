@@ -31,7 +31,7 @@ public class DeAlgifier extends SubsystemBase{
         } 
         else {
             io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
-            io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 );
+            io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
             System.out.println(kickerPidController.getSetpoint());
         }
     }

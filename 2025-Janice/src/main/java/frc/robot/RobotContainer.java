@@ -365,11 +365,21 @@ public class RobotContainer {
     operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.stop()));
 
     // drive to closest reef
-    driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
+    // driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     // driveController.a().whileTrue(new DriveToHumanPlayer(drive));
-    driveController.a().whileTrue(autoCommands.autoRoutine());
+    driveController.y().whileTrue(autoCommands.autoRoutine());
+    driveController
+        .a()
+        .toggleOnTrue(
+            DriveCommands.joystickDriveFacingPoint(
+                drive,
+                () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+                () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+                () -> Constants.AutoConstants.reefAutoCircle,
+                () -> drive.getYaw(),
+                () -> Constants.driveRobotRelative));
 
     operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     

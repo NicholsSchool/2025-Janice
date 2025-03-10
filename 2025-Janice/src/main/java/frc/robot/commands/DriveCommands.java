@@ -144,7 +144,8 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       Supplier<Translation2d> facingPose,
-      DoubleSupplier robotYawSupplier, 
+      DoubleSupplier robotYawSupplier,
+      DoubleSupplier angleOffset, 
       BooleanSupplier robotRelative) {
     return Commands.run(
         () -> {
@@ -162,7 +163,7 @@ public class DriveCommands {
           double desiredAngle =
               Math.atan2(
                   flippedFacingPose.getY() - robotPose.getY(),
-                  AllianceFlipUtil.apply(facingPose.get().getX()) - robotPose.getX());
+                  AllianceFlipUtil.apply(facingPose.get().getX()) - robotPose.getX()) + angleOffset.getAsDouble();
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;

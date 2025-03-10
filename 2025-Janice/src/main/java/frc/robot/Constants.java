@@ -210,7 +210,7 @@ public final class Constants {
     public static final double SplineV5CircularMultiplier = 2.0;
     public static final double dotProductThreshold = 0.05;
 
-    public static final double reefAutoRadius = 1.7;
+    public static final double reefAutoRadius = 2.0;
     public static final Translation2d reefAutoCircle = new Translation2d(4.45, 4.1);
   }
 

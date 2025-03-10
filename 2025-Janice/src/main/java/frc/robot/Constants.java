@@ -84,7 +84,8 @@ public final class Constants {
     //TODO find real value
     public static final int kOuttakeMotor = 51;
 
-    public static final int kDeAlgifierMotor = 39;
+    public static final int kDeAlgifierKicker = 38;
+    public static final int kDeAlgifierArm = 39;
     //TODO someone check this please.
   }
 
@@ -196,8 +197,8 @@ public final class Constants {
   }
 
 public static final class DeAlgifierConstants {
-  public static final double kDeAlgifierCurrentLimit = 0;
-  public static final double kIndexerGearRatio = 0; //TODO find gear ratio
+  public static final double kDeAlgifierCurrentLimit = 30;
+  public static final double kKickerGearRatio = 1; //TODO find gear ratio
 }
 
   //TODO: Fix these constants MUST BE DONE BEFORE COMP

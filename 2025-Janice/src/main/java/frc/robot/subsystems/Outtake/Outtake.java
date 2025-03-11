@@ -2,6 +2,9 @@ package frc.robot.subsystems.Outtake;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Outtake extends SubsystemBase {
@@ -30,5 +33,9 @@ public class Outtake extends SubsystemBase {
         if( inputs.hasCoral )
             this.stop();
         else io.setVoltage(-0.4);
+    }
+
+    public BooleanSupplier hasCoral(){
+        return () -> inputs.hasCoral;
     }
 }

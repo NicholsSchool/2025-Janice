@@ -80,4 +80,15 @@ public class BradyMathLib {
    * Holds the meanPose2d and stdDeviationPose2d in an object. Records have default private final fields.
    */
   public record PoseVisionStats( Pose2d meanPose2d, Pose2d stdDevPose2d ) {}
+
+
+  public static double clip(double input, double lowerBound, double upperBound){
+    if(input < lowerBound){
+      return lowerBound;
+    } else if (input > upperBound){
+      return upperBound;
+    }else{
+      return input;
+    }
+  }
 }

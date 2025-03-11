@@ -219,7 +219,7 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Create auto commands
-    autoCommands = new AutoCommands(drive);
+    autoCommands = new AutoCommands(drive, elevator, outtake);
 
     // autoChooser.addOption("Wait 5 seconds", new WaitCommand(5.0));
 
@@ -384,9 +384,10 @@ public class RobotContainer {
 
      try{
         // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-        System.out.println("ACTIVE PATH CALL BACK 3");
-        return AutoBuilder.followPath(path);
+        // PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+        // System.out.println("ACTIVE PATH CALL BACK 3");
+        // return AutoBuilder.followPath(path);
+        return autoCommands.autoRoutine();
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
@@ -430,12 +431,12 @@ public class RobotContainer {
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot
 
-    autoChooser.addOption(
-      "DriveToPos",
-      autoCommands.splineToPose(
-          new Pose2d(
-              new Translation2d(4, 3),
-              new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+    // autoChooser.addOption(
+    //   "DriveToPos",
+    //   autoCommands.splineToPose(
+    //       new Pose2d(
+    //           new Translation2d(4, 3),
+    //           new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
 
   }
 

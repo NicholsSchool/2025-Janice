@@ -115,7 +115,7 @@ public class AutoCommands {
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 2, () -> 2, () -> true, () -> ReefDirection.LEFT),
+    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
      autoHumanRoutine(() -> true, () -> true), autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
   }
 

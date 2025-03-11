@@ -16,7 +16,7 @@ import frc.robot.util.LoggedTunableNumber;
 public class DriveToHumanPlayer extends DriveToPose {
     
   private static final LoggedTunableNumber robotRotationOffset =
-      new LoggedTunableNumber("DriveToHumanPlayer/RobotRotationOffset", 0.0);
+      new LoggedTunableNumber("DriveToHumanPlayer/RobotRotationOffset", Math.PI);
 // Drives to the closest HumanPlayer to the bot.
 public DriveToHumanPlayer(Drive drive) {
     super(

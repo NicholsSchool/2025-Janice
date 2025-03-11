@@ -123,8 +123,8 @@ public final class Constants {
 
     public static final double lowGearScaler = 0.6;
     //TODO: tune this
-    public static final double reefLeftShift = 0.2 - Units.inchesToMeters(4);
-    public static final double reefRightShift = 0.2 + Units.inchesToMeters(4);
+    public static final double reefLeftShift = 0.2 - Units.inchesToMeters(6.0);
+    public static final double reefRightShift = 0.2 + Units.inchesToMeters(3.2);
   }
 
   // REV MAXSwerve Modules
@@ -168,9 +168,9 @@ public final class Constants {
 
     public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
-    public static double kArmL1 = 0.0;
+    public static double kArmL1 = -0.05;
     public static double kArmL2 = -2.2;
-    public static double kArmL3 = -3.7;
+    public static double kArmL3 = -3.8;
     public static double kArmL4 = -1.0;
 
   }
@@ -222,6 +222,15 @@ public static final class DeAlgifierConstants {
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075; // TODO: tune these
     public static final double angleFinishThreshold = Math.PI / 12.0;
+
+    public static final double splineFinishThreshold = 0.4; // TODO: tune these
+    public static final double splineAngleFinishThreshold = Math.PI / 12.0;
+    public static final double SplineV5LinearMultiplier = 1.5;
+    public static final double SplineV5CircularMultiplier = 2.0;
+    public static final double dotProductThreshold = 0.05;
+
+    public static final double reefAutoRadius = 2.0;
+    public static final Translation2d reefAutoCircle = new Translation2d(4.45, 4.1);
   }
 
   public static final class FiddleSongs {

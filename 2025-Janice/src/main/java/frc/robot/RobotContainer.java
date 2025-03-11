@@ -233,7 +233,7 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Create auto commands
-    autoCommands = new AutoCommands(drive);
+    autoCommands = new AutoCommands(drive, elevator, outtake);
 
     // autoChooser.addOption("Wait 5 seconds", new WaitCommand(5.0));
 
@@ -370,9 +370,9 @@ public class RobotContainer {
     //             () -> Constants.driveRobotRelative));
 
     operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
-    operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
-    operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
-    operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
+    operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
+    operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
+    // operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
@@ -384,7 +384,7 @@ public class RobotContainer {
     operatorController.rightTrigger(0.8).onFalse(new InstantCommand( () -> deAlgifier.resetToZero() ));
 
     // drive to closest reef
-    driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
+    //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     driveController.a().whileTrue(new DriveToHumanPlayer(drive));
@@ -401,9 +401,10 @@ public class RobotContainer {
 
      try{
         // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-        System.out.println("ACTIVE PATH CALL BACK 3");
-        return AutoBuilder.followPath(path);
+        // PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+        // System.out.println("ACTIVE PATH CALL BACK 3");
+        // return AutoBuilder.followPath(path);
+        return autoCommands.autoRoutine();
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
@@ -447,12 +448,12 @@ public class RobotContainer {
     // autoChooser.addOption( // drives 10 ft for odometry testing
     //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot
 
-    autoChooser.addOption(
-      "DriveToPos",
-      autoCommands.splineToPose(
-          new Pose2d(
-              new Translation2d(4, 3),
-              new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+    // autoChooser.addOption(
+    //   "DriveToPos",
+    //   autoCommands.splineToPose(
+    //       new Pose2d(
+    //           new Translation2d(4, 3),
+    //           new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
 
   }
 

@@ -356,9 +356,9 @@ public class RobotContainer {
     //             () -> Constants.driveRobotRelative));
 
     operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
-    operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
-    operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
-    operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
+    operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
+    operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
+    // operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
@@ -367,7 +367,7 @@ public class RobotContainer {
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // drive to closest reef
-    driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
+    //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     driveController.a().whileTrue(new DriveToHumanPlayer(drive));

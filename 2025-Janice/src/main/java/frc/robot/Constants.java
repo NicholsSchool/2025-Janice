@@ -164,9 +164,9 @@ public final class Constants {
 
     public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
-    public static double kArmL1 = 0.0;
+    public static double kArmL1 = -0.05;
     public static double kArmL2 = -2.2;
-    public static double kArmL3 = -3.7;
+    public static double kArmL3 = -3.8;
     public static double kArmL4 = -1.0;
 
   }

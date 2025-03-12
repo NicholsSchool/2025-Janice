@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Outtake;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.BooleanSupplier;
@@ -38,4 +40,14 @@ public class Outtake extends SubsystemBase {
     public BooleanSupplier hasCoral(){
         return () -> inputs.hasCoral;
     }
+
+
+    public Command commandOuttake() {   
+        return new FunctionalCommand(
+            () -> System.out.println("Outtaking"),
+            () -> outtake(),
+            interrupted -> stop(),
+            () -> !inputs.hasCoral,
+            this);
+    }    
 }

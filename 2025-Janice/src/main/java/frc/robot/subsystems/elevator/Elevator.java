@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 
@@ -122,8 +123,8 @@ public class Elevator extends SubsystemBase {
   
   public Command runGoToPosCommand(double targetHeight){
     elevatorMode = ElevatorMode.kGoToPos;
-    if ((targetHeight > ElevatorConstants.maxHeight || targetHeight < ElevatorConstants.minHeight) && hasHitLimitSwitch) {
-      System.out.println("Soft Limited Elevator");
+    if ((targetHeight < ElevatorConstants.maxHeight || targetHeight > ElevatorConstants.minHeight) && hasHitLimitSwitch) {
+      System.out.println("Soft Limited Elevator:" + targetHeight);
       return new InstantCommand();
     }
     System.out.println("Setting go to pos:" + targetHeight );
@@ -131,6 +132,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void runManualPos(double stickPosition){
+    System.out.println("Running manual pos:" + stickPosition );
     if(Math.abs(stickPosition) > Constants.JOYSTICK_DEADBAND ){
       elevatorMode = ElevatorMode.kManual;
     }else{
@@ -183,4 +185,22 @@ public class Elevator extends SubsystemBase {
     return elevatorPidController.atGoal();
   }
 
+  public void startGoToPos(double targetHeight){
+    elevatorMode = ElevatorMode.kGoToPos;
+    if ((targetHeight < ElevatorConstants.maxHeight || targetHeight > ElevatorConstants.minHeight) && hasHitLimitSwitch) {
+      System.out.println("Soft Limited Elevator: " + targetHeight);
+    } else {
+      System.out.println("Starting go to pos:" + targetHeight );
+      setTargetPos(targetHeight);
+    }
+  }
+
+  public Command commandGoToPos(double targetHeight) {   
+    return new FunctionalCommand(
+      () -> startGoToPos(targetHeight),
+      () -> elevatorMode = ElevatorMode.kGoToPos,
+      interrupted -> setTargetPos(inputs.currentHeight),
+      () -> this.isAtGoal(),
+      this);
+  }
 }

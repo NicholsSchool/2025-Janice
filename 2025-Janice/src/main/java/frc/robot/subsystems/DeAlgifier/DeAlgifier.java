@@ -33,14 +33,14 @@ public class DeAlgifier extends SubsystemBase{
         else {
             //io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
             io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
-            System.out.println(kickerPidController.getSetpoint());
+            //System.out.println(kickerPidController.getSetpoint());
         }
     }
 
     public void deAlgify(double input) {
         io.setArmVoltage(input);
         kickerPidController.setSetpoint(Math.abs(input) > Constants.JOYSTICK_DEADBAND ? DeAlgifierConstants.kKickerSetpointRPM : 0.0);
-        System.out.println("Dealgifying");
+        //System.out.println("Dealgifying");
     }
 
     public void resetToZero() {

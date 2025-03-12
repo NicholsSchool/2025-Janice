@@ -115,8 +115,9 @@ public class AutoCommands {
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
-     autoHumanRoutine(() -> true, () -> true), autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
+    // return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
+    //  autoHumanRoutine(() -> true, () -> true), autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
+    return elevator.runGoToPosCommand(10);
   }
 
   public Command TenFootTest(Drive drive) {

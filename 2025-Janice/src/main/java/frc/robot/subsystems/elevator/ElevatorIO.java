@@ -9,7 +9,7 @@ public interface ElevatorIO {
         public double[] appliedVolts = {0.0, 0.0};
         public double[] velocityRadPerSec = {0.0, 0.0};
         public double currentHeight = 0.0;
-        public boolean limitSwitch = false;
+        public boolean limitSwitch = true;
     }
       /** Updates the set of loggable inputs. */
   public default void updateInputs(ElevatorIOInputs inputs) {};

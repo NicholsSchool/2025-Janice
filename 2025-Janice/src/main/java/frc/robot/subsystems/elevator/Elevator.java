@@ -2,12 +2,14 @@ package frc.robot.subsystems.elevator;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.drive.Drive;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +26,7 @@ public class Elevator extends SubsystemBase {
     private boolean reachedTargetPos = true;
     private double voltageCmdManual = 0.0;
     private boolean hasHitLimitSwitch = false;
+    private boolean isAuto = false;
 
     private enum ElevatorMode{
       kManual,
@@ -76,7 +79,7 @@ public class Elevator extends SubsystemBase {
 
         switch(elevatorMode){
           case kGoToPos:
-          voltageCmdPid = hasHitLimitSwitch ? elevatorPidController.calculate( this.getHeight()) : 0.0;
+          voltageCmdPid = (hasHitLimitSwitch || isAuto) ? elevatorPidController.calculate( this.getHeight()) : 0.0;
           voltageCmdManual = 0.0;
           break;
           case kManual:
@@ -127,6 +130,7 @@ public class Elevator extends SubsystemBase {
       return new InstantCommand();
     }
     System.out.println("Setting go to pos:" + targetHeight );
+    isAuto = DriverStation.isAutonomous();
     return new InstantCommand(() -> setTargetPos(targetHeight), this);
   }
 

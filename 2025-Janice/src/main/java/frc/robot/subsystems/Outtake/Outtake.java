@@ -34,7 +34,7 @@ public class Outtake extends SubsystemBase {
     public void processCoral() {
         if( inputs.hasCoral )
             this.stop();
-        else io.setVoltage(-0.4);
+        else io.setVoltage(-0.6);
     }
 
     public BooleanSupplier hasCoral(){
@@ -46,7 +46,7 @@ public class Outtake extends SubsystemBase {
             () -> System.out.println("Outtaking"),
             () -> outtake(),
             interrupted -> stop(),
-            () -> !inputs.hasCoral,
-            this);
+            () -> false,
+            this).withTimeout(0.5);
     } 
 }

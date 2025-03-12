@@ -92,7 +92,7 @@ public final class Constants {
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        33.0; 
+        34.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -169,7 +169,7 @@ public final class Constants {
     public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
     public static double kArmL1 = -0.05;
-    public static double kArmL2 = -2.2;
+    public static double kArmL2 = -2.3;
     public static double kArmL3 = -3.8;
     public static double kArmL4 = -2.0;
 

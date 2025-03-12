@@ -99,7 +99,7 @@ public class AutoCommands {
     Command orbitToPose = splineV5ToPose(() -> AllianceFlipUtil.apply(orbitPose).transformBy(new Transform2d(new Translation2d(), new Rotation2d(-Math.PI / 2)))
      , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius));
 
-    return new SequentialCommandGroup(orbitToPose, new DriveToReef(drive, reefDirection.get()), elevator.runGoToPosCommand(desiredArmHeight),new InstantCommand().until(() -> elevator.isAtGoal()),
+    return new SequentialCommandGroup(orbitToPose, new DriveToReef(drive, reefDirection.get()), elevator.runGoToPosCommand(desiredArmHeight),new InstantCommand().repeatedly().until(() -> elevator.isAtGoal()),
      new InstantCommand(() -> outtake.outtake()).repeatedly().until(() -> !outtake.hasCoral().getAsBoolean()));
   }
 
@@ -114,11 +114,11 @@ public class AutoCommands {
      splineV5ToPose(() -> AllianceFlipUtil.apply(humanTagPose),
       () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius))
       .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
-    return new ParallelCommandGroup(orbit, elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
+    return new ParallelCommandGroup(orbit, elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1), new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT));
+    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT), autoHumanRoutine(() -> true, () -> true));
   }
 
   public Command TenFootTest(Drive drive) {

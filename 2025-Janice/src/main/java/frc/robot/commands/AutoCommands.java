@@ -5,21 +5,16 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.drive.Drive;
@@ -78,14 +73,10 @@ public class AutoCommands {
   public Command autoReefRoutine(IntSupplier reefPosition, IntSupplier coralLevel, BooleanSupplier shortestPath, Supplier<DriveToReef.ReefDirection> reefDirection){
     DoubleSupplier desiredArmHeight = () -> 0.0;
     switch(coralLevel.getAsInt()){
-      case 1:
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; break;
-      case 2: 
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2; break;
-      case 3:
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3; break;
-      case 4: 
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; break;
+      case 1 -> desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1;
+      case 2 -> desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2;
+      case 3 -> desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3;
+      case 4 -> desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4;
     }
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;

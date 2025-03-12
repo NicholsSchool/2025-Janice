@@ -123,27 +123,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case ROBOT_REAL_FRANKENLEW:
-        // Real robot, instantiate hardware IO implementations
-        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
-        //colorInfo = new ColorInfo();
-        drive =
-            new Drive(
-                new GyroIONAVX(),
-                new ModuleIOMaxSwerve(0),
-                new ModuleIOMaxSwerve(1),
-                new ModuleIOMaxSwerve(2),
-                new ModuleIOMaxSwerve(3));
-        elevator = new Elevator(new ElevatorIOSim());
-        outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
-        vision =
-              new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
-        break;
 
       case ROBOT_REAL_JANICE:
         // Real robot, instantiate hardware IO implementations
@@ -165,7 +144,29 @@ public class RobotContainer {
              new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+                new VisionIOPhotonVision(camera2Name, robotToCamera2));
+        break;
+        
+      case ROBOT_REAL_FRANKENLEW:
+        // Real robot, instantiate hardware IO implementations
+        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        //colorInfo = new ColorInfo();
+        drive =
+            new Drive(
+                new GyroIONAVX(),
+                new ModuleIOMaxSwerve(0),
+                new ModuleIOMaxSwerve(1),
+                new ModuleIOMaxSwerve(2),
+                new ModuleIOMaxSwerve(3));
+        elevator = new Elevator(new ElevatorIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
+        vision =
+              new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2));
         break;
 
       case ROBOT_SIM:
@@ -379,9 +380,9 @@ public class RobotContainer {
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.processCoral(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
+    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgify(operatorController.getRightY()), deAlgifier));
 
-    operatorController.rightTrigger(0.8).onTrue( new InstantCommand( () -> deAlgifier.deAlgify() ) );
-    operatorController.rightTrigger(0.8).onFalse(new InstantCommand( () -> deAlgifier.resetToZero() ));
+
 
     // drive to closest reef
     //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));

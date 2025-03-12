@@ -2,6 +2,7 @@ package frc.robot.subsystems.DeAlgifier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DeAlgifierConstants;
 
 import org.littletonrobotics.junction.Logger;
@@ -30,15 +31,15 @@ public class DeAlgifier extends SubsystemBase{
              io.setKickerVoltage(0.0);
         } 
         else {
-            io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
+            //io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
             io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
             System.out.println(kickerPidController.getSetpoint());
         }
     }
 
-    public void deAlgify() {
-        armPidController.setSetpoint(DeAlgifierConstants.kArmAlgaeSetpointRad);
-        kickerPidController.setSetpoint(DeAlgifierConstants.kKickerSetpointRPM);
+    public void deAlgify(double input) {
+        io.setArmVoltage(input);
+        kickerPidController.setSetpoint(Math.abs(input) > Constants.JOYSTICK_DEADBAND ? DeAlgifierConstants.kKickerSetpointRPM : 0.0);
         System.out.println("Dealgifying");
     }
 

@@ -9,6 +9,7 @@ public interface OuttakeIO {
         public double supplyVoltage = 0.0;
         public double currentAmps = 0.0;
         public boolean hasCoral = false;
+        public double distance = -1.0;
     }
 
     /** Updates the set of loggable inputs. */

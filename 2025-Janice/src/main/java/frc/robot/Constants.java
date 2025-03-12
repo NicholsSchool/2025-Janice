@@ -161,8 +161,8 @@ public final class Constants {
     public static double kElevatorD = 0;
     public static double ElevatorMaxAccelerationRad = 1000;
     public static double ElevatorMaxVelocityRad = 1000;
-    public static double maxHeight = 4.0;
-    public static double minHeight = 0.0;
+    public static double maxHeight = -4.0;
+    public static double minHeight = -0.0;
 
     public static int elevatorLimitSwitchChannel = 0;
 
@@ -193,7 +193,7 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 3;
+    public static final double kCoralDistanceFarBound = 2;
     public static final double kCoralDistanceCloseBound = 1;
   }
 
@@ -203,7 +203,7 @@ public static final class DeAlgifierConstants {
   public static final double kKickerGearRatio = 1; //TODO find gear ratio
 
   public static final double kArmAlgaeSetpointRad = 2.0;
-  public static final double kKickerSetpointRPM = 3000;
+  public static final double kKickerSetpointRPM = 6000;
 
   public static final double ARM_P = 3.0;
   public static final double ARM_D = 0.0;

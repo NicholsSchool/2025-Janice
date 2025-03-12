@@ -76,16 +76,20 @@ public class AutoCommands {
   }
 
   public Command autoReefRoutine(IntSupplier reefPosition, IntSupplier coralLevel, BooleanSupplier shortestPath, Supplier<DriveToReef.ReefDirection> reefDirection){
-    DoubleSupplier desiredArmHeight = () -> 0.0;
+    double desiredArmHeight = 0.0;
     switch(coralLevel.getAsInt()){
       case 1:
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; 
+      desiredArmHeight = Constants.ElevatorConstants.kArmL1; 
+      break;
       case 2: 
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2; 
+      desiredArmHeight = Constants.ElevatorConstants.kArmL2; 
+      break;
       case 3:
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3; 
+      desiredArmHeight = Constants.ElevatorConstants.kArmL3; 
+      break;
       case 4: 
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
+      desiredArmHeight = Constants.ElevatorConstants.kArmL4; 
+      break;
     }
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;
@@ -95,8 +99,7 @@ public class AutoCommands {
     Command orbitToPose = splineV5ToPose(() -> AllianceFlipUtil.apply(orbitPose).transformBy(new Transform2d(new Translation2d(), new Rotation2d(-Math.PI / 2)))
      , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius));
 
-    return new SequentialCommandGroup(orbitToPose, new DriveToReef(drive, reefDirection.get()), elevator.runGoToPosCommand(desiredArmHeight.
-    getAsDouble()),new InstantCommand().until(() -> elevator.isAtGoal()),
+    return new SequentialCommandGroup(orbitToPose, new DriveToReef(drive, reefDirection.get()), elevator.runGoToPosCommand(desiredArmHeight),new InstantCommand().until(() -> elevator.isAtGoal()),
      new InstantCommand(() -> outtake.outtake()).repeatedly().until(() -> !outtake.hasCoral().getAsBoolean()));
   }
 
@@ -115,9 +118,7 @@ public class AutoCommands {
   }
 
   public Command autoRoutine(){
-    // return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
-    //  autoHumanRoutine(() -> true, () -> true), autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
-    return elevator.runGoToPosCommand(10);
+    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT));
   }
 
   public Command TenFootTest(Drive drive) {

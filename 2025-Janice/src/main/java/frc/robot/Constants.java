@@ -171,7 +171,7 @@ public final class Constants {
     public static double kArmL1 = -0.05;
     public static double kArmL2 = -2.2;
     public static double kArmL3 = -3.8;
-    public static double kArmL4 = -1.0;
+    public static double kArmL4 = -2.0;
 
   }
 

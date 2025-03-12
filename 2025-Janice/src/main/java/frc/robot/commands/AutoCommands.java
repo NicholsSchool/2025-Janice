@@ -110,11 +110,11 @@ public class AutoCommands {
 
     int tagIndex = topHumanPlayer.getAsBoolean() ? 13 : 12;
     Pose2d humanTagPose = FieldConstants.aprilTags.getTagPose(tagIndex).get().toPose2d();
-    humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * 1.5 * Math.cos(humanTagPose.getRotation().getRadians()),
-    Constants.RobotConstants.robotGoToPosBuffer * 1.5 * Math.sin(humanTagPose.getRotation().getRadians())), new Rotation2d()));
+    Pose2d desiredPose = humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
+    Constants.RobotConstants.robotGoToPosBuffer * Math.sin(humanTagPose.getRotation().getRadians())), new Rotation2d()));
 
     Command orbit = 
-     splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((humanTagPose.getTranslation())), humanTagPose.getRotation().rotateBy(new Rotation2d(Math.PI))),
+     splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), desiredPose.getRotation().rotateBy(new Rotation2d(Math.PI))),
       () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), true)
       .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
     return new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1), new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());

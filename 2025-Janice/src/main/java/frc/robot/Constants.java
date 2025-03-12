@@ -193,8 +193,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 2;
-    public static final double kCoralDistanceCloseBound = 1;
+    public static final double kCoralDistanceFarBound = 2.4;
+    public static final double kCoralDistanceCloseBound = 0.0;
   }
 
 public static final class DeAlgifierConstants {

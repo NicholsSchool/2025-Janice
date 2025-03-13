@@ -92,7 +92,7 @@ public final class Constants {
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        33.0; 
+        30.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -156,7 +156,7 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double ElevatorCurrentLimit = 35.0;
-    public static double kElevatorP = 10;
+    public static double kElevatorP = 13;
     public static double kElevatorI = 0;
     public static double kElevatorD = 0;
     public static double ElevatorMaxAccelerationRad = 1000;
@@ -169,9 +169,9 @@ public final class Constants {
     public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
     public static double kArmL1 = -0.05;
-    public static double kArmL2 = -2.2;
+    public static double kArmL2 = -2.3;
     public static double kArmL3 = -3.8;
-    public static double kArmL4 = -1.0;
+    public static double kArmL4 = -2.0;
 
   }
 
@@ -193,8 +193,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 2;
-    public static final double kCoralDistanceCloseBound = 1;
+    public static final double kCoralDistanceFarBound = 1.7;
+    public static final double kCoralDistanceCloseBound = 1.3;
   }
 
 public static final class DeAlgifierConstants {

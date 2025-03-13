@@ -377,7 +377,7 @@ public class RobotContainer {
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
-    outtake.setDefaultCommand(new InstantCommand(() -> outtake.processCoral(), outtake ) );
+    outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
     deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgify(operatorController.getRightY()), deAlgifier));

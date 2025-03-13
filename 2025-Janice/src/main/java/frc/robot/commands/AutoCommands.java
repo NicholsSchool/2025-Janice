@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.Constants.VisionConstants;
@@ -68,7 +69,7 @@ public class AutoCommands {
   //   return weaveToPos.until(() -> objectArea > VisionConstants.weaveToPoseBreakArea);
   // }
 
-  public Command splineV5ToPose(Supplier<Pose2d> pose, Supplier<Circle> circle) {
+  public Command splineV5ToPose(Supplier<Pose2d> pose, Supplier<Circle> circle, boolean slowmode) {
     var splToPose =
         new SplineV5ToPose(
             this.drive,() -> {return pose.get();}, () -> {return circle.get();});
@@ -80,12 +81,16 @@ public class AutoCommands {
     switch(coralLevel.getAsInt()){
       case 1:
       desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; 
+      break;
       case 2: 
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2; 
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2 - 0.1; 
+      break;
       case 3:
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3; 
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3 - 0.1; 
+      break;
       case 4: 
-      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
+      desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4 - 0.1; 
+      break;
     }
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;
@@ -93,30 +98,31 @@ public class AutoCommands {
      Math.sin(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d(reefNormalAngle));
 
     Command orbitToPose = splineV5ToPose(() -> AllianceFlipUtil.apply(orbitPose).transformBy(new Transform2d(new Translation2d(), new Rotation2d(-Math.PI / 2)))
-     , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius));
+     , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius), false);
 
-    return new SequentialCommandGroup(orbitToPose, new DriveToReef(drive, reefDirection.get()), elevator.runGoToPosCommand(desiredArmHeight.
-    getAsDouble()),new InstantCommand().until(() -> elevator.isAtGoal()),
-     new InstantCommand(() -> outtake.outtake()).repeatedly().until(() -> !outtake.hasCoral().getAsBoolean()));
+     return new SequentialCommandGroup(orbitToPose, 
+     new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())),
+     outtake.commandOuttake());
   }
 
   public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){
 
     int tagIndex = topHumanPlayer.getAsBoolean() ? 13 : 12;
     Pose2d humanTagPose = FieldConstants.aprilTags.getTagPose(tagIndex).get().toPose2d();
-    humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
+    Pose2d desiredPose = humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
     Constants.RobotConstants.robotGoToPosBuffer * Math.sin(humanTagPose.getRotation().getRadians())), new Rotation2d()));
 
     Command orbit = 
-     splineV5ToPose(() -> AllianceFlipUtil.apply(humanTagPose),
-      () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius))
+     splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), desiredPose.getRotation().rotateBy(new Rotation2d(Math.PI))),
+      () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), false)
       .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
-    return new ParallelCommandGroup(orbit, elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
+    return new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1), new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
   }
 
   public Command autoRoutine(){
     return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
-     autoHumanRoutine(() -> true, () -> true), autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
+     autoHumanRoutine(() -> true, () -> true),
+      autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
   }
 
   public Command TenFootTest(Drive drive) {

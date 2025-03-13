@@ -2,13 +2,16 @@ package frc.robot.subsystems.elevator;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.drive.Drive;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
@@ -24,6 +27,7 @@ public class Elevator extends SubsystemBase {
     private boolean reachedTargetPos = true;
     private double voltageCmdManual = 0.0;
     private boolean hasHitLimitSwitch = false;
+    private boolean isAuto = false;
 
     private enum ElevatorMode{
       kManual,
@@ -76,7 +80,7 @@ public class Elevator extends SubsystemBase {
 
         switch(elevatorMode){
           case kGoToPos:
-          voltageCmdPid = hasHitLimitSwitch ? elevatorPidController.calculate( this.getHeight()) : 0.0;
+          voltageCmdPid = (hasHitLimitSwitch || isAuto) ? elevatorPidController.calculate( this.getHeight()) : 0.0;
           voltageCmdManual = 0.0;
           break;
           case kManual:
@@ -127,11 +131,12 @@ public class Elevator extends SubsystemBase {
       return new InstantCommand();
     }
     System.out.println("Setting go to pos:" + targetHeight );
+    isAuto = DriverStation.isAutonomous();
     return new InstantCommand(() -> setTargetPos(targetHeight), this);
   }
 
   public void runManualPos(double stickPosition){
-    if(Math.abs(stickPosition) > Constants.JOYSTICK_DEADBAND ){
+    if(Math.abs(stickPosition) > Constants.JOYSTICK_DEADBAND){
       elevatorMode = ElevatorMode.kManual;
     }else{
       elevatorMode = ElevatorMode.kGoToPos;
@@ -139,7 +144,11 @@ public class Elevator extends SubsystemBase {
     // if((stickPosition < 0 && getHeight() < ElevatorConstants.minHeight) || (stickPosition > 0 && getHeight() > ElevatorConstants.maxHeight)){
     //   voltageCmdManual = 0.0;
     // }else{
+    if(inputs.limitSwitch && stickPosition > 0.0){
+      voltageCmdManual = 0.0;
+    }else{
       voltageCmdManual = stickPosition * 5;
+    }
     //}
     
   }
@@ -181,6 +190,25 @@ public class Elevator extends SubsystemBase {
   @AutoLogOutput
   public boolean isAtGoal() {
     return elevatorPidController.atGoal();
+  }
+
+  public void startGoToPos(double targetHeight){
+    elevatorMode = ElevatorMode.kGoToPos;
+    if ((targetHeight < ElevatorConstants.maxHeight || targetHeight > ElevatorConstants.minHeight)) {
+      System.out.println("Soft Limited Elevator: " + targetHeight);
+    } else {
+      System.out.println("Starting go to pos:" + targetHeight );
+      setTargetPos(targetHeight);
+    }
+  }
+
+  public Command commandGoToPos(double targetHeight) {   
+    return new FunctionalCommand(
+      () -> startGoToPos(targetHeight),
+      () -> elevatorMode = ElevatorMode.kGoToPos,
+      interrupted -> setTargetPos(inputs.currentHeight),
+      () -> this.isAtGoal(),
+      this);
   }
 
 }

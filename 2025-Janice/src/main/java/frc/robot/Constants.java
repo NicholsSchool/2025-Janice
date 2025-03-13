@@ -209,6 +209,10 @@ public static final class DeAlgifierConstants {
   public static final double ARM_D = 0.0;
   public static final double KICKER_P = 0.0012;
   public static final double KICKER_D = 0.0;
+
+  public static final double kDeAlgifierDownSetpointRAD = 0.95;
+  public static final double kDeAlgifierMidSetpointRAD = 2.56;
+  public static final double kDeAlgifierUpSetpointRAD = 2.95;
 }
 
 

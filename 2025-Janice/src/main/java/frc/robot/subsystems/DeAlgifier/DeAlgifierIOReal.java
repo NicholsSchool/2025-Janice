@@ -24,15 +24,12 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits.StatorCurrentLimit = DeAlgifierConstants.kDeAlgifierCurrentLimit;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        config.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kArmGearRatio;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         arm.getConfigurator().apply(config);
-        arm.setPosition(0.0);
 
         kicker = new SparkMax(CAN.kDeAlgifierKicker, MotorType.kBrushless );
         SparkMaxConfig config2 = new SparkMaxConfig();
-        config2.alternateEncoder.inverted(false);
-        config2.alternateEncoder.velocityConversionFactor(DeAlgifierConstants.kKickerGearRatio);
+        config2.absoluteEncoder.positionConversionFactor(1.0);
         kicker.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -40,7 +37,7 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         inputs.armMotorVoltage = arm.getMotorVoltage().getValueAsDouble();
         inputs.armCurrentAmps = arm.getStatorCurrent().getValueAsDouble();
         inputs.armSupplyVoltage = arm.getSupplyVoltage().getValueAsDouble();
-        inputs.armPositionRad = arm.getPosition().getValue().in(Radian);
+        inputs.armPositionRad = kicker.getAbsoluteEncoder().getPosition() * Math.PI * 2;
 
         inputs.kickerMotorVoltage = kicker.getAppliedOutput();
         inputs.kickerSupplyVoltage = kicker.getBusVoltage();

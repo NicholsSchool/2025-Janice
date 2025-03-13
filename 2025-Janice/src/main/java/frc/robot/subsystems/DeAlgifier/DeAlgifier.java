@@ -31,20 +31,30 @@ public class DeAlgifier extends SubsystemBase{
              io.setKickerVoltage(0.0);
         } 
         else {
-            //io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
-            // io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
-            // System.out.println(kickerPidController.getSetpoint());
+            io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
+            io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
+            System.out.println(armPidController.getSetpoint());
         }
     }
 
-    public void deAlgify(double input) {
+    public void deAlgifyManual(double input) {
         io.setArmVoltage(input);
         kickerPidController.setSetpoint(Math.abs(input) > Constants.JOYSTICK_DEADBAND ? DeAlgifierConstants.kKickerSetpointRPM : 0.0);
         // System.out.println("Dealgifying");
     }
 
+    public void deAlgifyAuto() {
+        armPidController.setSetpoint(DeAlgifierConstants.kDeAlgifierUpSetpointRAD);
+        kickerPidController.setSetpoint(300);
+    }
+
+    public void predeAlgifyAuto() {
+        armPidController.setSetpoint(DeAlgifierConstants.kDeAlgifierMidSetpointRAD);
+        kickerPidController.setSetpoint(300);
+    }
+
     public void resetToZero() {
-        armPidController.setSetpoint(0.0);
+        armPidController.setSetpoint(DeAlgifierConstants.kDeAlgifierDownSetpointRAD);
         kickerPidController.setSetpoint(0.0);
     }
     

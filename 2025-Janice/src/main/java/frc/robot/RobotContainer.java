@@ -380,7 +380,10 @@ public class RobotContainer {
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
-    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgify(operatorController.getRightY()), deAlgifier));
+    // deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgifyManual(operatorController.getRightY()), deAlgifier));
+    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.resetToZero(), deAlgifier));
+    operatorController.rightTrigger().whileTrue(new InstantCommand(() -> deAlgifier.predeAlgifyAuto(), deAlgifier).repeatedly());
+    operatorController.rightBumper().whileTrue(new InstantCommand(() -> deAlgifier.deAlgifyAuto(), deAlgifier).repeatedly());
 
 
 

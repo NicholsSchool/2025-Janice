@@ -138,7 +138,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
         climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOReal());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
 
         vision =
              new Vision(

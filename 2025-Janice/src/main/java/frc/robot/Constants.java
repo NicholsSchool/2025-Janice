@@ -30,7 +30,7 @@ public final class Constants {
   public static final double MeterPerInch = 0.0254;
   public static final double KgPerLb = 0.453592;
 
-  public static final double JOYSTICK_DEADBAND = 0.05;
+  public static final double JOYSTICK_DEADBAND = 0.08;
 
   public static RobotType getRobot() {
     return RobotBase.isReal() ? robot : RobotType.ROBOT_SIM;

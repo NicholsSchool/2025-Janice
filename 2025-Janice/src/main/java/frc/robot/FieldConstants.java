@@ -44,27 +44,27 @@ public final class FieldConstants {
                       Units.inchesToMeters(291.20),
                       Units.inchesToMeters(58.50),
                       new Rotation3d(0, 0.0, Units.degreesToRadians(234)))),
-              new AprilTag(
-                  3,
-                  new Pose3d(
-                      Units.inchesToMeters(455.15),
-                      Units.inchesToMeters(317.15),
-                      Units.inchesToMeters(51.25),
-                      new Rotation3d(0, 0.0, Units.degreesToRadians(270)))),
-              new AprilTag(
-                  4,
-                  new Pose3d(
-                      Units.inchesToMeters(365.20),
-                      Units.inchesToMeters(241.64),
-                      Units.inchesToMeters(73.54),
-                      new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(0)))),
-              new AprilTag(
-                  5,
-                  new Pose3d(
-                      Units.inchesToMeters(365.20),
-                      Units.inchesToMeters(75.39),
-                      Units.inchesToMeters(73.54),
-                      new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(0)))),
+            //   new AprilTag(
+            //       3,
+            //       new Pose3d(
+            //           Units.inchesToMeters(455.15),
+            //           Units.inchesToMeters(317.15),
+            //           Units.inchesToMeters(51.25),
+            //           new Rotation3d(0, 0.0, Units.degreesToRadians(270)))),
+            //   new AprilTag(
+            //       4,
+            //       new Pose3d(
+            //           Units.inchesToMeters(365.20),
+            //           Units.inchesToMeters(241.64),
+            //           Units.inchesToMeters(73.54),
+            //           new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(0)))),
+            //   new AprilTag(
+            //       5,
+            //       new Pose3d(
+            //           Units.inchesToMeters(365.20),
+            //           Units.inchesToMeters(75.39),
+            //           Units.inchesToMeters(73.54),
+            //           new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(0)))),
               new AprilTag(
                   6,
                   new Pose3d(
@@ -121,27 +121,27 @@ public final class FieldConstants {
                       Units.inchesToMeters(291.20),
                       Units.inchesToMeters(58.50),
                       new Rotation3d(0, 0.0, Units.degreesToRadians(306)))),
-              new AprilTag(
-                  14,
-                  new Pose3d(
-                      Units.inchesToMeters(325.68),
-                      Units.inchesToMeters(241.64),
-                      Units.inchesToMeters(73.54),
-                      new Rotation3d(0.0, Units.degreesToRadians(30), Units.degreesToRadians(180)))),
-              new AprilTag(
-                  15,
-                  new Pose3d(
-                      Units.inchesToMeters(325.68),
-                      Units.inchesToMeters(75.39),
-                      Units.inchesToMeters(73.54),
-                      new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(180)))),
-              new AprilTag(
-                  16,
-                  new Pose3d(
-                      Units.inchesToMeters(235.73),
-                      Units.inchesToMeters(-0.15),
-                      Units.inchesToMeters(51.25),
-                      new Rotation3d(0, 0.0, Units.degreesToRadians(90)))),
+            //   new AprilTag(
+            //       14,
+            //       new Pose3d(
+            //           Units.inchesToMeters(325.68),
+            //           Units.inchesToMeters(241.64),
+            //           Units.inchesToMeters(73.54),
+            //           new Rotation3d(0.0, Units.degreesToRadians(30), Units.degreesToRadians(180)))),
+            //   new AprilTag(
+            //       15,
+            //       new Pose3d(
+            //           Units.inchesToMeters(325.68),
+            //           Units.inchesToMeters(75.39),
+            //           Units.inchesToMeters(73.54),
+            //           new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(180)))),
+            //   new AprilTag(
+            //       16,
+            //       new Pose3d(
+            //           Units.inchesToMeters(235.73),
+            //           Units.inchesToMeters(-0.15),
+            //           Units.inchesToMeters(51.25),
+            //           new Rotation3d(0, 0.0, Units.degreesToRadians(90)))),
                 new AprilTag(
                         17,
                         new Pose3d(

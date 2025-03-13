@@ -116,7 +116,9 @@ public class AutoCommands {
      splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), AllianceFlipUtil.apply(desiredPose.getRotation()).rotateBy(new Rotation2d(Math.PI))),
       () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), true)
       .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
-    return new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1), new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1))
+      , new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(() -> (outtake.hasCoral().getAsBoolean())).withTimeout(1.5);
   }
 
   public Command autoRoutine(){

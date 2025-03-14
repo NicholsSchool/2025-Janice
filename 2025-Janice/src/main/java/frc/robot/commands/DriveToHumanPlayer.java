@@ -20,13 +20,12 @@ public class DriveToHumanPlayer extends DriveToPose {
 // Drives to the closest HumanPlayer to the bot.
 public DriveToHumanPlayer(Drive drive) {
     super(
-        drive,
+        drive, true,
         () -> {
             double distance = Double.MAX_VALUE;
             int tagListOffset;
             int targetTag = -1;
             Pose2d targetPose = new Pose2d();
-        
             if (DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
               tagListOffset = 1;
@@ -46,7 +45,7 @@ public DriveToHumanPlayer(Drive drive) {
 
             // calculate offset from target pose for robot width and bumpers. This should put robot
             // right against the HumanPlayer base.
-            double offsetDistanceBumper = Constants.RobotConstants.robotGoToPosBuffer;
+            double offsetDistanceBumper = Constants.RobotConstants.robotGoToPosBuffer + 0.5;
 
             Pose2d offsetPose = new Pose2d(
               new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistanceBumper,

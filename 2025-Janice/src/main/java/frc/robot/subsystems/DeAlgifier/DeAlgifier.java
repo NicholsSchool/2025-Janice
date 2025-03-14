@@ -38,9 +38,13 @@ public class DeAlgifier extends SubsystemBase{
     }
 
     public void deAlgifyManual(double input) {
+        if(input < 0 && inputs.armPositionRad < 0.07 * 2 * Math.PI){
+            stop();
+        }else{
         io.setArmVoltage(input);
         kickerPidController.setSetpoint(Math.abs(input) > Constants.JOYSTICK_DEADBAND ? DeAlgifierConstants.kKickerSetpointRPM : 0.0);
         // System.out.println("Dealgifying");
+        }
     }
 
     public void deAlgifyAuto() {

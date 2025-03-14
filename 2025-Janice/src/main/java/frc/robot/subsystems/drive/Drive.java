@@ -496,4 +496,10 @@ public class Drive extends SubsystemBase {
         kalman.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
+
+  public void setDriveBrakeMode( boolean enable ) {
+    for( Module io : modules) {
+      io.setBrakeMode(enable);
+    } 
+  }
 }

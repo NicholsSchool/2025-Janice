@@ -329,6 +329,8 @@ public class RobotContainer {
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
 
+    driveController.y().onTrue( new InstantCommand( () -> drive.setDriveBrakeMode(false)));
+
     // driveController
     //     .a()
     //     .whileTrue(
@@ -381,9 +383,10 @@ public class RobotContainer {
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
     // deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgifyManual(operatorController.getRightY()), deAlgifier));
-    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.resetToZero(), deAlgifier));
+    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgifyManual(-operatorController.getRightY()), deAlgifier));
     operatorController.rightTrigger().whileTrue(new InstantCommand(() -> deAlgifier.predeAlgifyAuto(), deAlgifier).repeatedly());
     operatorController.rightBumper().whileTrue(new InstantCommand(() -> deAlgifier.deAlgifyAuto(), deAlgifier).repeatedly());
+    operatorController.leftBumper().whileTrue(new InstantCommand(() -> deAlgifier.resetToZero(), deAlgifier).repeatedly());
 
 
 
@@ -391,7 +394,6 @@ public class RobotContainer {
     //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
-    driveController.a().whileTrue(new DriveToHumanPlayer(drive));
 
     operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     

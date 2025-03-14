@@ -193,8 +193,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 1.9;
-    public static final double kCoralDistanceCloseBound = 1.0;
+    public static final double kCoralDistanceFarBound = 4.3;
+    public static final double kCoralDistanceCloseBound = 1.5;
   }
 
 public static final class DeAlgifierConstants {
@@ -205,14 +205,14 @@ public static final class DeAlgifierConstants {
   public static final double kArmAlgaeSetpointRad = 2.0;
   public static final double kKickerSetpointRPM = 6000;
 
-  public static final double ARM_P = 3.0;
+  public static final double ARM_P = 2.5;
   public static final double ARM_D = 0.0;
   public static final double KICKER_P = 0.0012;
   public static final double KICKER_D = 0.0;
 
-  public static final double kDeAlgifierDownSetpointRAD = 0.95;
-  public static final double kDeAlgifierMidSetpointRAD = 2.56;
-  public static final double kDeAlgifierUpSetpointRAD = 2.95;
+  public static final double kDeAlgifierDownSetpointRAD = 0.017 * 2 * Math.PI;
+  public static final double kDeAlgifierMidSetpointRAD = 0.238 * 2 * Math.PI;
+  public static final double kDeAlgifierUpSetpointRAD = 0.350 * 2 * Math.PI;
 }
 
 

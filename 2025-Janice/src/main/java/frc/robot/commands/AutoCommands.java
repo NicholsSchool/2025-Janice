@@ -110,8 +110,9 @@ public class AutoCommands {
 
     int tagIndex = topHumanPlayer.getAsBoolean() ? 13 : 12;
     Pose2d humanTagPose = FieldConstants.aprilTags.getTagPose(tagIndex).get().toPose2d();
-    Pose2d desiredPose = humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
-    Constants.RobotConstants.robotGoToPosBuffer * Math.sin(humanTagPose.getRotation().getRadians())), new Rotation2d()));
+    Pose2d desiredPose = new Pose2d(
+      new Translation2d(humanTagPose.getX() + Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
+       humanTagPose.getY() + Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians())), humanTagPose.getRotation());
 
     Command orbit = 
      splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), AllianceFlipUtil.apply(desiredPose.getRotation()).rotateBy(new Rotation2d(Math.PI))),
@@ -123,9 +124,9 @@ public class AutoCommands {
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
+    return new SequentialCommandGroup(autoReefRoutine(() -> 2, () -> 2, () -> true, () -> ReefDirection.LEFT),
      autoHumanRoutine(() -> false, () -> true),
-      autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
+      autoReefRoutine(() -> 2, () -> 2, () -> true, () -> ReefDirection.RIGHT));
   }
 
   public Command TenFootTest(Drive drive) {

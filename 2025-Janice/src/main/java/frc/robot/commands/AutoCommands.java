@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.security.cert.PKIXBuilderParameters;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -101,26 +103,23 @@ public class AutoCommands {
      , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius), false);
 
      return new SequentialCommandGroup(orbitToPose, 
-     new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())),
-      new WaitCommand(3.0).until(() -> elevator.isAtGoal()),
-     outtake.commandOuttake());
+     new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())), outtake.commandOuttake());
   }
 
   public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){
 
     int tagIndex = topHumanPlayer.getAsBoolean() ? 13 : 12;
-    Pose2d humanTagPose = FieldConstants.aprilTags.getTagPose(tagIndex).get().toPose2d();
+    Pose2d humanTagPose = FieldConstants.humanPlayerTags.getTagPose(tagIndex).get().toPose2d();
     Pose2d desiredPose = new Pose2d(
-      new Translation2d(humanTagPose.getX() + Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
-       humanTagPose.getY() + Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians())), humanTagPose.getRotation());
+      new Translation2d(humanTagPose.getX() + 3 * Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
+       humanTagPose.getY() + 3 * Constants.RobotConstants.robotGoToPosBuffer * Math.sin(humanTagPose.getRotation().getRadians())), humanTagPose.getRotation());
 
     Command orbit = 
      splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), AllianceFlipUtil.apply(desiredPose.getRotation()).rotateBy(new Rotation2d(Math.PI))),
-      () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), true)
-      .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
+      () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), true);
     return new SequentialCommandGroup(
-      new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1))
-      , new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
+      new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1)), new DriveToHumanPlayer(drive),
+      (new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral()));
   }
 
   public Command autoRoutine(){

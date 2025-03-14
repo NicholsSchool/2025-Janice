@@ -15,6 +15,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -193,38 +194,6 @@ public class DriveCommands {
         },
         drive);
   }
-
-    // public static Command joystickDriveFacingReef( Drive drive,
-  // DoubleSupplier xSupplier,
-  // DoubleSupplier ySupplier,
-  // DoubleSupplier robotYawSupplier,
-  // DoubleSupplier angleOffset, 
-  // BooleanSupplier robotRelative){
-  //     double distance = Double.MAX_VALUE;
-  //           int tagListOffset;
-  //           int targetTag = -1;
-  //           Pose2d targetPose = new Pose2d();
-        
-  //           if (DriverStation.getAlliance().isPresent()
-  //           && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-  //             tagListOffset = 6;
-  //           }else{
-  //             tagListOffset = 17;
-  //           }
-        
-  //           for(int i = 0; i < 6; i++){
-  //             Pose3d tagPose = FieldConstants.aprilTags.getTagPose(i + tagListOffset).get();
-  //             double distFromITag = drive.getPose().getTranslation().getDistance(tagPose.getTranslation().toTranslation2d());
-  //             if(distance > distFromITag){
-  //               distance = distFromITag;
-  //               targetPose = tagPose.toPose2d();
-  //               targetTag = i + tagListOffset;
-  //             }
-  //           }
-
-  //           Pose2d retTargetPose = targetPose;
-  //           return joystickDriveWithAngle(drive, xSupplier, ySupplier, () -> (retTargetPose.getRotation().getRadians() + angleOffset.getAsDouble()), robotYawSupplier, robotRelative);
-  // }
 
   public static double angleToVelocity(double desiredAngle, double robotYaw) {
     double currentYaw = robotYaw;

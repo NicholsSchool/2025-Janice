@@ -102,7 +102,7 @@ public class AutoCommands {
 
      return new SequentialCommandGroup(orbitToPose, 
      new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())),
-     outtake.commandOuttake());
+     new InstantCommand(() -> outtake.outtake()).withTimeout(0.5));
   }
 
   public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){
@@ -118,13 +118,13 @@ public class AutoCommands {
       .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
     return new SequentialCommandGroup(
       new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1))
-      , new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(() -> (outtake.hasCoral().getAsBoolean())).withTimeout(1.5);
+      , new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.LEFT),
-     autoHumanRoutine(() -> true, () -> true),
-      autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.RIGHT));
+    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
+     autoHumanRoutine(() -> false, () -> true),
+      autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
   }
 
   public Command TenFootTest(Drive drive) {

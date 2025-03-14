@@ -102,7 +102,8 @@ public class AutoCommands {
 
      return new SequentialCommandGroup(orbitToPose, 
      new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())),
-     new InstantCommand(() -> outtake.outtake()).withTimeout(0.5));
+      new WaitCommand(3.0).until(() -> elevator.isAtGoal()),
+     outtake.commandOuttake());
   }
 
   public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){

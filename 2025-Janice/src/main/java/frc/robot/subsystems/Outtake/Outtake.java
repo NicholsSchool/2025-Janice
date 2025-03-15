@@ -47,6 +47,6 @@ public class Outtake extends SubsystemBase {
             () -> outtake(),
             interrupted -> stop(),
             () -> false,
-            this).withTimeout(0.5);
+            this).withTimeout(0.8);
     } 
 }

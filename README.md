@@ -7,21 +7,23 @@ This project uses the REV 2m Distance Sensor. Support libraries must be installe
 Follow instructions here: https://github.com/REVrobotics/2m-Distance-Sensor
 
 CAN ID list: Updated as of 3/6/2025 at 6 pm so it might not be fully updated
-20 LeftFrontDrive
-21 LeftBackDrive
-22 RightFrontDrive
-23 RightBackDrive
+- 20 LeftFrontDrive
+- 21 LeftBackDrive
+- 22 RightFrontDrive
+- 23 RightBackDrive
 
-24 LeftFrontSteer
-25 LeftBackSteer
-26 RightFrontSteer
-27 RightBackSteer
+- 24 LeftFrontSteer
+- 25 LeftBackSteer
+- 26 RightFrontSteer
+- 27 RightBackSteer
 
-28 LeftFrontEncoder
-29 LeftBackEncoder
-30 RightFrontEncoder
-31 RightBackEncoder
+- 28 LeftFrontEncoder
+- 29 LeftBackEncoder
+- 30 RightFrontEncoder
+- 31 RightBackEncoder
 
-41 LeftElevator
-42 RightElevator
-43 ElevatorEncoder
+- 41 LeftElevator
+- 42 RightElevator
+- 43 ElevatorEncoder
+
+- 51 OuttakeMotor

@@ -32,6 +32,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToHumanPlayer;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToReef;
+import frc.robot.commands.FaceReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIO;
@@ -329,6 +330,8 @@ public class RobotContainer {
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
 
+    driveController.y().onTrue( new InstantCommand( () -> drive.setDriveBrakeMode(false)));
+
     // driveController
     //     .a()
     //     .whileTrue(
@@ -380,7 +383,10 @@ public class RobotContainer {
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
-    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgify(operatorController.getRightY()), deAlgifier));
+    // deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgifyManual(operatorController.getRightY()), deAlgifier));
+    operatorController.rightTrigger().whileTrue(new InstantCommand(() -> deAlgifier.predeAlgifyAuto(), deAlgifier).repeatedly());
+    operatorController.rightBumper().whileTrue(new InstantCommand(() -> deAlgifier.deAlgifyAuto(), deAlgifier).repeatedly());
+    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.resetToZero(), deAlgifier));
 
 
 
@@ -388,7 +394,7 @@ public class RobotContainer {
     //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
-    driveController.a().whileTrue(new DriveToHumanPlayer(drive));
+    driveController.a().whileTrue(new FaceReef(drive));
 
     operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     

@@ -30,7 +30,7 @@ public final class Constants {
   public static final double MeterPerInch = 0.0254;
   public static final double KgPerLb = 0.453592;
 
-  public static final double JOYSTICK_DEADBAND = 0.05;
+  public static final double JOYSTICK_DEADBAND = 0.08;
 
   public static RobotType getRobot() {
     return RobotBase.isReal() ? robot : RobotType.ROBOT_SIM;
@@ -92,7 +92,7 @@ public final class Constants {
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        30.0; 
+        33.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -113,7 +113,7 @@ public final class Constants {
 
       public static final double bumperThicknessMeters = Units.inchesToMeters(3.5);
 
-      public static final double robotGoToPosBuffer = Units.inchesToMeters(robotSideLengthInches) / 2 + bumperThicknessMeters;
+      public static final double robotGoToPosBuffer = Units.inchesToMeters(robotSideLengthInches) / 2 + bumperThicknessMeters - 0.1;
   }
 
   public static final class DriveConstants {
@@ -193,8 +193,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 1.7;
-    public static final double kCoralDistanceCloseBound = 1.3;
+    public static final double kCoralDistanceFarBound = 2.9;
+    public static final double kCoralDistanceCloseBound = 2.5;
   }
 
 public static final class DeAlgifierConstants {
@@ -205,10 +205,14 @@ public static final class DeAlgifierConstants {
   public static final double kArmAlgaeSetpointRad = 2.0;
   public static final double kKickerSetpointRPM = 6000;
 
-  public static final double ARM_P = 3.0;
+  public static final double ARM_P = 2.5;
   public static final double ARM_D = 0.0;
   public static final double KICKER_P = 0.0012;
   public static final double KICKER_D = 0.0;
+
+  public static final double kDeAlgifierDownSetpointRAD = 1.86;
+  public static final double kDeAlgifierMidSetpointRAD = 3.48;
+  public static final double kDeAlgifierUpSetpointRAD = 4.23;
 }
 
 
@@ -229,7 +233,7 @@ public static final class DeAlgifierConstants {
     public static final double SplineV5CircularMultiplier = 2.0;
     public static final double dotProductThreshold = 0.05;
 
-    public static final double reefAutoRadius = 2.0;
+    public static final double reefAutoRadius = 2.3;
     public static final Translation2d reefAutoCircle = new Translation2d(4.45, 4.1);
   }
 

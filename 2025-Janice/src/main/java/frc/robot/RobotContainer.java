@@ -83,7 +83,6 @@ public class RobotContainer {
   public final Elevator elevator;
   private final Outtake outtake;
   private final Climber climber;
-  private final DeAlgifier deAlgifier;
   private final Vision vision;
 
 
@@ -138,13 +137,12 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
         climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOReal());
 
         vision =
              new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2));
+                new VisionIOPhotonVision(camera0Name, robotToCamera0));
+                // new VisionIOPhotonVision(camera2Name, robotToCamera2));
         break;
         
       case ROBOT_REAL_FRANKENLEW:
@@ -161,7 +159,6 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
         vision =
               new Vision(
                 drive::addVisionMeasurement,
@@ -181,7 +178,6 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
 
         vision =
             new Vision(
@@ -201,7 +197,6 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim());
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -223,7 +218,6 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
         climber = new Climber(new ClimberIO() {});
-        deAlgifier = new DeAlgifier(new DeAlgifierIO() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
@@ -319,6 +313,7 @@ public class RobotContainer {
             () -> -driveController.getRightX() * 0.55,
             () -> Constants.driveRobotRelative));
     driveController.start().onTrue(new InstantCommand(() -> drive.resetFieldHeading()));
+    
     driveController
         .leftTrigger(0.8)
         .whileTrue(
@@ -328,7 +323,34 @@ public class RobotContainer {
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
-
+                driveController.povDown().whileTrue( DriveCommands.joystickDrive(
+                  drive,
+                  () -> -0.3,
+                  () -> 0,
+                  () -> 0.0,
+                  () -> true));
+                  
+                  driveController.povUp().whileTrue( DriveCommands.joystickDrive(
+                    drive,
+                    () -> 0.3,
+                    () -> 0,
+                    () -> 0.0,
+                    () -> true));
+                  
+                    driveController.povLeft().whileTrue( DriveCommands.joystickDrive(
+                  drive,
+                  () -> 0.0,
+                  () -> 0.3,
+                  () -> 0.0,
+                  () -> true));
+            
+                  driveController.povRight().whileTrue( DriveCommands.joystickDrive(
+                    drive,
+                    () -> 0.0,
+                    () -> -0.3,
+                    () -> 0.0,
+                    () -> true));
+              
     // driveController
     //     .a()
     //     .whileTrue(
@@ -380,7 +402,6 @@ public class RobotContainer {
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
-    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgify(operatorController.getRightY()), deAlgifier));
 
 
 
@@ -388,7 +409,7 @@ public class RobotContainer {
     //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
-    driveController.a().whileTrue(new DriveToHumanPlayer(drive));
+    driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
 
     operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     

@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import frc.robot.util.LoggedTunableNumber;
+
 import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
@@ -35,6 +37,16 @@ public class Vision extends SubsystemBase {
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
+
+  // tunable numbers
+  public static final LoggedTunableNumber tunableLinearStdDevBaseline =
+      new LoggedTunableNumber("Vision/LinearStdDevBaseline", linearStdDevBaseline);  
+  public static final LoggedTunableNumber tunableAngularStdDevBaseline =
+      new LoggedTunableNumber("Vision/AngularStdDevBaseline", angularStdDevBaseline);  
+  public static final LoggedTunableNumber tunableMaxAmbiguity =
+      new LoggedTunableNumber("Vision/MaxAmbiguity", maxAmbiguity);  
+  public static final LoggedTunableNumber tunableMaxZError =
+      new LoggedTunableNumber("Vision/MaxZError", maxZError);  
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
@@ -102,9 +114,9 @@ public class Vision extends SubsystemBase {
         boolean rejectPose =
             observation.tagCount() == 0 // Must have at least one tag
                 || (observation.tagCount() == 1
-                    && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+                    && observation.ambiguity() > tunableMaxAmbiguity.get()) // Cannot be high ambiguity
                 || Math.abs(observation.pose().getZ())
-                    > maxZError // Must have realistic Z coordinate
+                    > tunableMaxZError.get() // Must have realistic Z coordinate
 
                 // Must be within the field boundaries
                 || observation.pose().getX() < 0.0
@@ -128,8 +140,8 @@ public class Vision extends SubsystemBase {
         // Calculate standard deviations
         double stdDevFactor =
             Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-        double linearStdDev = linearStdDevBaseline * stdDevFactor;
-        double angularStdDev = angularStdDevBaseline * stdDevFactor;
+        double linearStdDev = tunableLinearStdDevBaseline.get() * stdDevFactor;
+        double angularStdDev = tunableAngularStdDevBaseline.get() * stdDevFactor;
         if (observation.type() == PoseObservationType.MEGATAG_2) {
           linearStdDev *= linearStdDevMegatag2Factor;
           angularStdDev *= angularStdDevMegatag2Factor;

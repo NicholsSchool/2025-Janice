@@ -247,6 +247,21 @@ public class DriveToPose extends Command {
     Logger.recordOutput("Odometry/DriveToPoseGoal", new Pose2d());
   }
 
+  /**
+   * Whether the command has finished. Once a command finishes, the scheduler will call its end()
+   * method and un-schedule it.
+   *
+   * @return whether the command has finished.
+   */
+  @Override
+  public boolean isFinished() {
+    running =
+        this.withinTolerance(
+            Constants.AutoConstants.driveFinishThreshold,
+            new Rotation2d(Constants.AutoConstants.angleFinishThreshold));
+    return running;
+  }
+
   /** Checks if the robot is stopped at the final pose. */
   public boolean atGoal() {
     return running && driveController.atGoal() && thetaController.atGoal();
@@ -268,14 +283,6 @@ public class DriveToPose extends Command {
 
   /** Returns whether the command is actively running. */
   public boolean isRunning() {
-    return running;
-  }
-
-  public boolean isFinished() {
-    running =
-        this.withinTolerance(
-            Constants.AutoConstants.driveFinishThreshold,
-            new Rotation2d(Constants.AutoConstants.angleFinishThreshold));
     return running;
   }
 }

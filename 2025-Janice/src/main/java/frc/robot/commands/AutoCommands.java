@@ -95,14 +95,17 @@ public class AutoCommands {
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;
     Pose2d orbitPose = new Pose2d(new Translation2d(Math.cos(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getX(), 
-     Math.sin(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), new Rotation2d(reefNormalAngle));
+                                                    Math.sin(reefNormalAngle) * Constants.AutoConstants.reefAutoRadius + Constants.AutoConstants.reefAutoCircle.getY()), 
+                                  new Rotation2d(reefNormalAngle));
 
-    Command orbitToPose = splineV5ToPose(() -> AllianceFlipUtil.apply(orbitPose).transformBy(new Transform2d(new Translation2d(), new Rotation2d(-Math.PI / 2)))
-     , () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius), false);
+    Command orbitToPose = splineV5ToPose(() -> AllianceFlipUtil.apply(orbitPose).transformBy(new Transform2d(new Translation2d(), new Rotation2d(-Math.PI / 2))),
+                                         () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius), 
+                                         false);
 
-     return new SequentialCommandGroup(orbitToPose, 
-     new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())),
-     outtake.commandOuttake());
+     return new SequentialCommandGroup( orbitToPose, 
+                                        new ParallelCommandGroup( new DriveToReef(drive, reefDirection.get()), 
+                                                                  elevator.commandGoToPos(desiredArmHeight.getAsDouble())),
+                                        outtake.commandOuttake());
   }
 
   public Command autoHumanRoutine(BooleanSupplier topHumanPlayer, BooleanSupplier shortestPath){
@@ -112,17 +115,18 @@ public class AutoCommands {
     Pose2d desiredPose = humanTagPose.plus(new Transform2d(new Translation2d(Constants.RobotConstants.robotGoToPosBuffer * Math.cos(humanTagPose.getRotation().getRadians()),
     Constants.RobotConstants.robotGoToPosBuffer * Math.sin(humanTagPose.getRotation().getRadians())), new Rotation2d()));
 
-    Command orbit = 
-     splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), desiredPose.getRotation().rotateBy(new Rotation2d(Math.PI))),
-      () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), false)
-      .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
-    return new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1), new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
+    Command orbit = splineV5ToPose( () -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), desiredPose.getRotation().rotateBy(new Rotation2d(Math.PI))),
+                                    () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), false)
+                                    .andThen(new InstantCommand(() -> outtake.processCoral()).repeatedly().until(outtake.hasCoral()));
+    return new ParallelCommandGroup(  orbit, 
+                                      elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1), 
+                                      new InstantCommand(() -> outtake.processCoral()).repeatedly()).until(outtake.hasCoral());
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
-     autoHumanRoutine(() -> true, () -> true),
-      autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
+    return new SequentialCommandGroup(  autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
+                                        autoHumanRoutine(() -> true, () -> true),
+                                        autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.RIGHT));
   }
 
   public Command TenFootTest(Drive drive) {

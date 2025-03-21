@@ -123,8 +123,8 @@ public final class Constants {
 
     public static final double lowGearScaler = 0.6;
     //TODO: tune this
-    public static final double reefLeftShift = 0.2 - Units.inchesToMeters(8.0);
-    public static final double reefRightShift = 0.2 + Units.inchesToMeters(3.5);
+    public static final double reefLeftShift = 0.1;
+    public static final double reefRightShift = 0.22;
   }
 
   // REV MAXSwerve Modules
@@ -170,7 +170,7 @@ public final class Constants {
     
     public static double kArmL1 = -0.05;
     public static double kArmL2 = -2.3;
-    public static double kArmL3 = -3.8;
+    public static double kArmL3 = -3.7;
     public static double kArmL4 = -2.0;
 
   }

@@ -77,6 +77,8 @@ public class Drive extends SubsystemBase {
   private Pose2d visionPose = new Pose2d();  
   private Rotation2d lastGyroRotation = new Rotation2d();
   private Pose2d filteredPhotonPose2d = new Pose2d();
+  private boolean coastRequest = false;
+  private boolean isBrakeModeDrive = true;
 
   //private PhotonVision photonCam;
   private int initVisionCount;
@@ -238,6 +240,21 @@ public class Drive extends SubsystemBase {
             gyroInputs.connected
                 ? gyroInputs.yawVelocityRadPerSec
                 : chassisSpeeds.omegaRadiansPerSecond);
+
+    // if a coast is requested during tele-op, set the motors to coast when the robot gets disabled
+    if( DriverStation.isDisabled() && coastRequest ) {
+      for( Module module : modules )
+        module.setDriveBrakeMode(false);
+      coastRequest = false;
+      isBrakeModeDrive = false;
+    }
+
+    //Once the robot is reinabled after being on coast in disable, reenable brake mode
+    if( DriverStation.isEnabled() && !isBrakeModeDrive ) {
+      for( Module module : modules )
+        module.setDriveBrakeMode(true);
+      isBrakeModeDrive = true;
+    }
   }
 
   /**
@@ -346,6 +363,10 @@ public class Drive extends SubsystemBase {
 
   public Pose2d getfilteredPhotonPose2d() {
     return filteredPhotonPose2d;
+  }
+
+  public void requestCoast() {
+    coastRequest = true;
   }
 
   /** Resets the current odometry odometryPose. */

@@ -170,6 +170,10 @@ public class Module {
     io.setTurnBrakeMode(enabled);
   }
 
+  public void setDriveBrakeMode( boolean enabled ) {
+    io.setDriveBrakeMode(enabled);
+  }
+
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
     if (turnRelativeOffset == null) {

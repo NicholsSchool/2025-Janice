@@ -20,7 +20,7 @@ public class DriveToHumanPlayer extends DriveToPose {
 // Drives to the closest HumanPlayer to the bot.
 public DriveToHumanPlayer(Drive drive) {
     super(
-        drive,
+        drive, true,
         () -> {
             double distance = Double.MAX_VALUE;
             int tagListOffset;

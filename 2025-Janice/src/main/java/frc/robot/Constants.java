@@ -117,7 +117,7 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double kMAX_LINEAR_SPEED = 4.8;
+    public static final double kMAX_LINEAR_SPEED = 3.2;
     public static final double kTRACK_WIDTH_X = Units.inchesToMeters(25); // 23.5in
     public static final double kTRACK_WIDTH_Y = Units.inchesToMeters(24.5);
 
@@ -229,8 +229,9 @@ public static final class DeAlgifierConstants {
     public static final double SplineV5CircularMultiplier = 2.0;
     public static final double dotProductThreshold = 0.05;
 
-    public static final double reefAutoRadius = 2.0;
+    public static final double reefAutoRadius = 2.5;
     public static final Translation2d reefAutoCircle = new Translation2d(4.45, 4.1);
+    public static final double splineV5Multipler = 0.7;
   }
 
   public static final class FiddleSongs {

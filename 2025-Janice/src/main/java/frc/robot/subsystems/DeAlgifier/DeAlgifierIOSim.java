@@ -7,38 +7,42 @@ import frc.robot.Constants.DeAlgifierConstants;
 
 public class DeAlgifierIOSim implements DeAlgifierIO {
     
-    private static final DCMotor arm = DCMotor.getFalcon500(1);
-    private static final DCMotor kicker = DCMotor.getNeo550(1);
+    private static final DCMotor laterator = DCMotor.getKrakenX60(1);
+    private static final DCMotor grabber = DCMotor.getFalcon500(1);
 
-    private final DCMotorSim armMotor =
+    private final DCMotorSim lateratorMotor =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(arm, 0.025, 1.0),
-          arm);
+          LinearSystemId.createDCMotorSystem(laterator, 0.025, DeAlgifierConstants.kLateratorGearRatio),
+          laterator);
     
-    private final DCMotorSim kickerMotor =
+    private final DCMotorSim grabberMotor =
       new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(kicker, 0.025, DeAlgifierConstants.kKickerGearRatio),
-          kicker);
+          LinearSystemId.createDCMotorSystem(grabber, 0.025, DeAlgifierConstants.kGrabberGearRatio),
+          grabber);
 
     public void updateInputs(DeAlgifierIOInputs inputs){ //TODO: fix these update inputs
-        inputs.armMotorVoltage = armMotor.getInputVoltage();
-        inputs.armSupplyVoltage = armMotor.getInputVoltage();
-        inputs.armCurrentAmps = armMotor.getCurrentDrawAmps();
-        inputs.armPositionRad = armMotor.getAngularPositionRad();
+        inputs.lateratorMotorVoltage = lateratorMotor.getInputVoltage();
+        inputs.lateratorCurrentAmps = lateratorMotor.getCurrentDrawAmps();
+        inputs.lateratorSupplyVoltage = lateratorMotor.getInputVoltage();
+        inputs.lateratorPositionRad = lateratorMotor.getAngularPositionRad();
+        inputs.lateratorVelocityRadPerSec = lateratorMotor.getAngularVelocityRadPerSec();
 
-        inputs.kickerMotorVoltage = kickerMotor.getInputVoltage();
-        inputs.kickerSupplyVoltage = kickerMotor.getInputVoltage();
-        inputs.kickerCurrentAmps = kickerMotor.getCurrentDrawAmps();
-        inputs.kickerVelocityRPM = kickerMotor.getAngularVelocityRPM();
+        inputs.grabberMotorVoltage = grabberMotor.getInputVoltage();
+        inputs.grabberSupplyVoltage = grabberMotor.getInputVoltage();
+        inputs.grabberCurrentAmps = grabberMotor.getCurrentDrawAmps();
+        inputs.grabberVelocityRPM = grabberMotor.getAngularVelocityRPM();
+
+        inputs.frontLimitSwitch = inputs.lateratorPositionRad > DeAlgifierConstants.kLateratorOutPositionRad;
+        inputs.backLimitSwitch = inputs.lateratorPositionRad < DeAlgifierConstants.kLateratorInPositionRad;
     }
 
     @Override
-    public void setArmVoltage( double voltage ) {
-        armMotor.setInputVoltage(voltage);
+    public void setLateratorVoltage(double voltage){
+        lateratorMotor.setInputVoltage(voltage);
     }
 
     @Override
-    public void setKickerVoltage( double voltage ) {
-        kickerMotor.setInputVoltage(voltage);
+    public void setGrabberVoltage( double voltage ) {
+        grabberMotor.setInputVoltage(voltage);
     }
 }

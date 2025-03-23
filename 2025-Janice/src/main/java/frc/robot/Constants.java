@@ -84,8 +84,8 @@ public final class Constants {
     //TODO find real value
     public static final int kOuttakeMotor = 51;
 
-    public static final int kDeAlgifierKicker = 39;
-    public static final int kDeAlgifierArm = 38;
+    public static final int kDeAlgifierLaterator = 39;
+    public static final int kDeAlgifierGrabber = 38;
     //TODO someone check this please.
   }
 
@@ -198,17 +198,25 @@ public final class Constants {
   }
 
 public static final class DeAlgifierConstants {
-  public static final double kDeAlgifierCurrentLimit = 30;
-  public static final double kArmGearRatio = 28;
-  public static final double kKickerGearRatio = 1; //TODO find gear ratio
+  public static final int kFrontLimitSwitchChannel = 0; //TODO: find these
+  public static final int kBackLimitSwitchChannel = 0;
 
-  public static final double kArmAlgaeSetpointRad = 2.0;
-  public static final double kKickerSetpointRPM = 6000;
+  public static final double kDeAlgifierGrabberCurrentLimit = 60; //amps
+  public static final double kLateratorGearRatio = 5;
+  public static final double kGrabberGearRatio = 3.86;
 
-  public static final double ARM_P = 3.0;
-  public static final double ARM_D = 0.0;
-  public static final double KICKER_P = 0.0012;
-  public static final double KICKER_D = 0.0;
+  public static final double kGrabberIntakeSetpointRPM = 0.0;
+  public static final double kGrabberEjectSetpointRPM = 0.0;
+  public static final double kGrabberP = 1.0;
+  public static final double kGrabberD = 0.0;
+
+  public static final double kLateratorVelocityLimitRadPerSec = 5;
+
+  public static final double kLateratorInPositionRad = 5.0;
+  public static final double kLateratorOutPositionRad = -5.0; //TODO: UPDATE THESE
+  public static final double kLateratorVelocityGoalRadPerSec = 5;
+  public static final double kLateratorPVelocity = 2.0;
+  public static final double kLateratorDVelocity = 0.0;
 }
 
 

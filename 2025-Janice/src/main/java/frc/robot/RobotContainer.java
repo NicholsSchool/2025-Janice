@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Axis;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -385,11 +386,19 @@ public class RobotContainer {
 
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
-    //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
-    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.deAlgify(operatorController.getRightY()), deAlgifier));
 
-    operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     
+    //axis 4 is Right X
+    operatorController.axisGreaterThan(4, 0.8).onTrue( new RepeatCommand(new InstantCommand( () -> deAlgifier.lateratorOut() )));
+    operatorController.axisLessThan(4, 0.8).onTrue( new RepeatCommand(new InstantCommand( () -> deAlgifier.lateratorIn() )));
+
+    operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
+    operatorController.rightBumper().whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.outtake() )));
+    operatorController.rightTrigger(0.8)
+      .and(operatorController.rightBumper())
+      .whileFalse(new InstantCommand( () -> deAlgifier.holdAlgae()));
+
+
   }
 
   // /**

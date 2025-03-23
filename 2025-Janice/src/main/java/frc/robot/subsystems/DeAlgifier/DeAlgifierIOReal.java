@@ -1,60 +1,87 @@
 package frc.robot.subsystems.DeAlgifier;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.StaticBrake;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DeAlgifierConstants;
 
 public class DeAlgifierIOReal implements DeAlgifierIO {
 
-    private TalonFX arm;
-    private SparkMax kicker;
+    private TalonFX laterator;
+    private TalonFX grabber;
+    private StaticBrake staticBrake;
+    private VoltageOut voltageControl;
+
+    private DigitalInput frontLimitSwitch;
+    private DigitalInput backLimitSwitch;
 
     public DeAlgifierIOReal() {
-        arm = new TalonFX(CAN.kDeAlgifierArm, "Elevator");
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits.StatorCurrentLimit = DeAlgifierConstants.kDeAlgifierCurrentLimit;
-        config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        config.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kArmGearRatio;
-        arm.getConfigurator().apply(config);
-        arm.setPosition(0.0);
+        laterator = new TalonFX(CAN.kDeAlgifierLaterator, "Elevator");
+        TalonFXConfiguration lateratorConfig = new TalonFXConfiguration();
+        lateratorConfig.CurrentLimits.StatorCurrentLimit = 30;
+        lateratorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        lateratorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        lateratorConfig.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kLateratorGearRatio;
+        laterator.getConfigurator().apply(lateratorConfig);
 
-        kicker = new SparkMax(CAN.kDeAlgifierKicker, MotorType.kBrushless );
-        SparkMaxConfig config2 = new SparkMaxConfig();
-        config2.alternateEncoder.inverted(false);
-        config2.alternateEncoder.velocityConversionFactor(DeAlgifierConstants.kKickerGearRatio);
-        kicker.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        grabber = new TalonFX(CAN.kDeAlgifierGrabber, "Elevator");
+        TalonFXConfiguration grabberConfig = new TalonFXConfiguration();
+        grabberConfig.CurrentLimits.StatorCurrentLimit = DeAlgifierConstants.kDeAlgifierGrabberCurrentLimit;
+        grabberConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        grabberConfig.CurrentLimits.SupplyCurrentLimit = 30;
+        grabberConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        grabberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        grabberConfig.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kGrabberGearRatio;
+        grabber.getConfigurator().apply(grabberConfig);
+
+        staticBrake = new StaticBrake();
+        staticBrake.UpdateFreqHz = 30;
+
+        voltageControl = new VoltageOut(0.0);
+        grabber.setControl(voltageControl);
+
+        frontLimitSwitch = new DigitalInput(DeAlgifierConstants.kFrontLimitSwitchChannel);
+        backLimitSwitch = new DigitalInput(DeAlgifierConstants.kBackLimitSwitchChannel);
     }
 
     public void updateInputs(DeAlgifierIOInputs inputs){
-        inputs.armMotorVoltage = arm.getMotorVoltage().getValueAsDouble();
-        inputs.armCurrentAmps = arm.getStatorCurrent().getValueAsDouble();
-        inputs.armSupplyVoltage = arm.getSupplyVoltage().getValueAsDouble();
-        inputs.armPositionRad = arm.getPosition().getValue().in(Radian);
+        inputs.lateratorMotorVoltage = laterator.getMotorVoltage().getValueAsDouble();
+        inputs.lateratorCurrentAmps = laterator.getStatorCurrent().getValueAsDouble();
+        inputs.lateratorSupplyVoltage = laterator.getSupplyVoltage().getValueAsDouble();
+        inputs.lateratorPositionRad = laterator.getPosition().getValue().in(Radian);
+        inputs.lateratorVelocityRadPerSec = laterator.getVelocity().getValue().in(RadiansPerSecond);
 
-        inputs.kickerMotorVoltage = kicker.getAppliedOutput();
-        inputs.kickerSupplyVoltage = kicker.getBusVoltage();
-        inputs.kickerCurrentAmps = kicker.getOutputCurrent();
-        inputs.kickerVelocityRPM = kicker.getEncoder().getVelocity();
+        inputs.grabberMotorVoltage = grabber.getMotorVoltage().getValueAsDouble();
+        inputs.grabberSupplyVoltage = grabber.getSupplyVoltage().getValueAsDouble();
+        inputs.grabberCurrentAmps = grabber.getSupplyCurrent().getValueAsDouble();
+        inputs.grabberVelocityRPM = grabber.getVelocity().getValue().in(RPM);
+
+        inputs.frontLimitSwitch = frontLimitSwitch.get();
+        inputs.backLimitSwitch = backLimitSwitch.get();
     }
 
     @Override
-    public void setArmVoltage(double voltage){
-        arm.setVoltage(voltage);
+    public void setLateratorVoltage(double voltage){
+        laterator.setVoltage(voltage);
     }
 
     @Override
-    public void setKickerVoltage( double voltage ) {
-        kicker.setVoltage(voltage);
+    public void setGrabberVoltage( double voltage ) {
+        voltageControl.Output = voltage;
+    }
+
+    public void setGrabberBrake( boolean enable ) {
+        if( enable )
+            grabber.setControl(staticBrake);
+        else
+            grabber.setControl(voltageControl);
     }
 }

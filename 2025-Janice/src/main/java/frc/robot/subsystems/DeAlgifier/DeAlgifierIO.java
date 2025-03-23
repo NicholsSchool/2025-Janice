@@ -5,21 +5,27 @@ public interface DeAlgifierIO {
 
     @AutoLog
     public static class DeAlgifierIOInputs {
-        public double armMotorVoltage = 0.0;
-        public double armSupplyVoltage = 0.0;
-        public double armCurrentAmps = 0.0;
-        public double armPositionRad = 0.0;
+        public double lateratorMotorVoltage = 0.0;
+        public double lateratorSupplyVoltage = 0.0;
+        public double lateratorCurrentAmps = 0.0;
+        public double lateratorPositionRad = 0.0;
+        public double lateratorVelocityRadPerSec = 0.0;
 
-        public double kickerMotorVoltage = 0.0;
-        public double kickerSupplyVoltage = 0.0;
-        public double kickerCurrentAmps = 0.0;
-        public double kickerVelocityRPM = 0.0;
+        public double grabberMotorVoltage = 0.0;
+        public double grabberSupplyVoltage = 0.0;
+        public double grabberCurrentAmps = 0.0;
+        public double grabberVelocityRPM = 0.0;
+
+        public boolean frontLimitSwitch = false;
+        public boolean backLimitSwitch = false;
     }
         /** Updates the set of loggable inputs. */
         public default void updateInputs(DeAlgifierIOInputs inputs) {}
         
         /** Set voltage command */
-        public default void setArmVoltage(double voltage) {}
+        public default void setLateratorVoltage(double voltage) {}
 
-        public default void setKickerVoltage( double voltage ) {}
+        public default void setGrabberVoltage( double voltage ) {}
+
+        public default void setGrabberBrake(boolean enable) {} 
 }

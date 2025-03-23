@@ -2,7 +2,6 @@ package frc.robot.subsystems.DeAlgifier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DeAlgifierConstants;
 
 import org.littletonrobotics.junction.Logger;
@@ -11,15 +10,13 @@ public class DeAlgifier extends SubsystemBase{
     private DeAlgifierIO io;
     private final DeAlgifierIOInputsAutoLogged inputs = new DeAlgifierIOInputsAutoLogged();
 
-    private final PIDController armPidController;
-    private final PIDController kickerPidController;
+    private final PIDController lateratorPidController;
+    private final PIDController grabberPidController;
     
     public DeAlgifier(DeAlgifierIO io){
         this.io = io;
-        this.armPidController = new PIDController(DeAlgifierConstants.ARM_P, 0, DeAlgifierConstants.ARM_D);
-        this.kickerPidController = new PIDController(DeAlgifierConstants.KICKER_P, 0, DeAlgifierConstants.KICKER_D);
-        armPidController.reset();
-        kickerPidController.reset();
+        lateratorPidController = new PIDController(DeAlgifierConstants.kLateratorPVelocity, 0, DeAlgifierConstants.kLateratorDVelocity);
+        grabberPidController = new PIDController(DeAlgifierConstants.kGrabberP, 0, DeAlgifierConstants.kGrabberD);
     }
     
     public void periodic(){
@@ -27,29 +24,40 @@ public class DeAlgifier extends SubsystemBase{
         Logger.processInputs("DeAlgifier", inputs);
         
         if (DriverStation.isDisabled()) {
-             io.setArmVoltage(0.0);
-             io.setKickerVoltage(0.0);
+             io.setLateratorVoltage(0.0);
+             io.setGrabberBrake(true);
         } 
-        else {
-            //io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
-            // io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
-            // System.out.println(kickerPidController.getSetpoint());
-        }
     }
 
-    public void deAlgify(double input) {
-        io.setArmVoltage(input);
-        kickerPidController.setSetpoint(Math.abs(input) > Constants.JOYSTICK_DEADBAND ? DeAlgifierConstants.kKickerSetpointRPM : 0.0);
-        // System.out.println("Dealgifying");
+    /**
+     * Called once to request laterator out
+     */
+    public void lateratorOut() {
+        if( !inputs.frontLimitSwitch )
+            io.setLateratorVoltage(lateratorPidController.calculate(inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+        else io.setLateratorVoltage(0.0);
     }
 
-    public void resetToZero() {
-        armPidController.setSetpoint(0.0);
-        kickerPidController.setSetpoint(0.0);
+    /**
+     * Called once to request laterator in
+     */
+    public void lateratorIn() {
+        if( !inputs.backLimitSwitch)
+            io.setLateratorVoltage(lateratorPidController.calculate(inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+        else io.setLateratorVoltage(0.0);
     }
-    
-    public void stop() {
-        armPidController.setSetpoint(inputs.armPositionRad);
-        kickerPidController.setSetpoint(0.0);
+
+    public void intake() {
+        io.setGrabberBrake(false);
+        io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
+    }
+
+    public void outtake() {
+        io.setGrabberBrake(false);
+        io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberEjectSetpointRPM));
+    }
+
+    public void holdAlgae() {
+        io.setGrabberBrake(true);
     }
 }

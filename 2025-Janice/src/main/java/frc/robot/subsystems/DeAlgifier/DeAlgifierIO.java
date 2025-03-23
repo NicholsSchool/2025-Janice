@@ -20,7 +20,7 @@ public interface DeAlgifierIO {
         public boolean backLimitSwitch = false;
     }
         /** Updates the set of loggable inputs. */
-        public default void updateInputs(DeAlgifierIOInputs inputs) {}
+        public void updateInputs(DeAlgifierIOInputs inputs);
         
         /** Set voltage command */
         public default void setLateratorVoltage(double voltage) {}

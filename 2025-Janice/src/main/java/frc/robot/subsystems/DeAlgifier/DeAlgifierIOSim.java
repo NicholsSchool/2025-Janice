@@ -45,4 +45,10 @@ public class DeAlgifierIOSim implements DeAlgifierIO {
     public void setGrabberVoltage( double voltage ) {
         grabberMotor.setInputVoltage(voltage);
     }
+
+    @Override
+    public void setGrabberBrake( boolean enable ) {
+        if( enable )
+            grabberMotor.setInputVoltage(0);
+    }
 }

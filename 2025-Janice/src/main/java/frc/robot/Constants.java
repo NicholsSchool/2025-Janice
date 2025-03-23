@@ -202,6 +202,8 @@ public static final class DeAlgifierConstants {
   public static final int kBackLimitSwitchChannel = 0;
 
   public static final double kDeAlgifierGrabberCurrentLimit = 60; //amps
+  public static final double kDeAlgifierLateratorCurrentLimit = 20; // low to make sure does not overrdrive into hard stop
+
   public static final double kLateratorGearRatio = 5;
   public static final double kGrabberGearRatio = 3.86;
 
@@ -210,10 +212,9 @@ public static final class DeAlgifierConstants {
   public static final double kGrabberP = 1.0;
   public static final double kGrabberD = 0.0;
 
-  public static final double kLateratorVelocityLimitRadPerSec = 5;
-
-  public static final double kLateratorInPositionRad = 5.0;
+  public static final double kLateratorInPositionRad = 5.0; //only used in SIM
   public static final double kLateratorOutPositionRad = -5.0; //TODO: UPDATE THESE
+
   public static final double kLateratorVelocityGoalRadPerSec = 5;
   public static final double kLateratorPVelocity = 2.0;
   public static final double kLateratorDVelocity = 0.0;

@@ -26,7 +26,7 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
     public DeAlgifierIOReal() {
         laterator = new TalonFX(CAN.kDeAlgifierLaterator, "Elevator");
         TalonFXConfiguration lateratorConfig = new TalonFXConfiguration();
-        lateratorConfig.CurrentLimits.StatorCurrentLimit = 30;
+        lateratorConfig.CurrentLimits.StatorCurrentLimit = 20;
         lateratorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         lateratorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         lateratorConfig.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kLateratorGearRatio;

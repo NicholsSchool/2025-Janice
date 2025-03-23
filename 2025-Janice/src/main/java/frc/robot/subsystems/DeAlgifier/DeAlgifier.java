@@ -12,11 +12,15 @@ public class DeAlgifier extends SubsystemBase{
 
     private final PIDController lateratorPidController;
     private final PIDController grabberPidController;
+
     
     public DeAlgifier(DeAlgifierIO io){
         this.io = io;
         lateratorPidController = new PIDController(DeAlgifierConstants.kLateratorPVelocity, 0, DeAlgifierConstants.kLateratorDVelocity);
         grabberPidController = new PIDController(DeAlgifierConstants.kGrabberP, 0, DeAlgifierConstants.kGrabberD);
+
+        lateratorPidController.reset();
+        grabberPidController.reset();
     }
     
     public void periodic(){

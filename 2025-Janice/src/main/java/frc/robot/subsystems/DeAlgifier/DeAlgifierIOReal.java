@@ -43,7 +43,6 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         grabber.getConfigurator().apply(grabberConfig);
 
         staticBrake = new StaticBrake();
-        staticBrake.UpdateFreqHz = 30;
 
         voltageControl = new VoltageOut(0.0);
         grabber.setControl(voltageControl);
@@ -79,9 +78,6 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
     }
 
     public void setGrabberBrake( boolean enable ) {
-        if( enable )
-            grabber.setControl(staticBrake);
-        else
-            grabber.setControl(voltageControl);
+        grabber.setControl(enable ? staticBrake : voltageControl);
     }
 }

@@ -68,7 +68,7 @@ public class RobotContainer {
   private final Outtake outtake;
   private final Climber climber;
   private final Vision vision;
-
+  private final DeAlgifier deAlgifier;
 
   //private PowerDistribution pdh;
   //ColorInfo colorInfo = null;
@@ -121,7 +121,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
         climber = new Climber(new ClimberIOSim());
-
+        deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -143,6 +143,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
               new Vision(
                 drive::addVisionMeasurement,
@@ -162,7 +163,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
-
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -181,6 +182,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
                 drive::addVisionMeasurement,

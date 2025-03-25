@@ -5,16 +5,18 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.commands.AutoOffsets.ReefOffsetParallel;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.ReefPosition;
 
 public class DriveToReef extends DriveToPose {
-    
   private static final LoggedTunableNumber robotRotationOffset =
       new LoggedTunableNumber("DriveToReef/RobotRotationOffset", -Math.PI/2);
 public static enum ReefDirection{
@@ -22,6 +24,7 @@ public static enum ReefDirection{
   LEFT,
   RIGHT
 }
+static AutoOffsets autoOffsets = new AutoOffsets();
 // Drives to the closest reef to the bot.
 public DriveToReef(Drive drive, ReefDirection reefDirection) {
     super(
@@ -48,7 +51,6 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
                 targetTag = i + tagListOffset;
               }
             }
-
             // calculate offset from target pose for robot width and bumpers. This should put robot
             // right against the reef base.
             double offsetDistanceBumper = Constants.RobotConstants.robotGoToPosBuffer;
@@ -63,25 +65,28 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
               break;
 
               case LEFT:
-              leftRightOffset = Constants.DriveConstants.reefLeftShift;
+              leftRightOffset = Constants.DriveConstants.reefLeftShift + autoOffsets.getOffset(targetTag, reefDirection);
               angleOffset = - Math.PI / 2;
               break;
 
               case RIGHT:
-              leftRightOffset = Constants.DriveConstants.reefRightShift;
+              leftRightOffset = Constants.DriveConstants.reefRightShift + autoOffsets.getOffset(targetTag, reefDirection);
               angleOffset = Math.PI / 2;
               break;
             }
-
             Pose2d offsetPose = new Pose2d(
-              new Translation2d(targetPose.getX() + Math.cos(targetPose.getRotation().getRadians()) * offsetDistanceBumper + Math.cos(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset,
-              targetPose.getY() + Math.sin(targetPose.getRotation().getRadians()) * offsetDistanceBumper + Math.sin(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset),
+              new Translation2d(targetPose.getX()
+                + Math.cos(targetPose.getRotation().getRadians()) * offsetDistanceBumper
+                 + Math.cos(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset,
+               targetPose.getY() + 
+               Math.sin(targetPose.getRotation().getRadians()) * offsetDistanceBumper
+                + Math.sin(targetPose.getRotation().getRadians() + angleOffset) * leftRightOffset),
                targetPose.getRotation().plus(new Rotation2d(robotRotationOffset.get())));
 
             Logger.recordOutput("DriveToReef/TargetedTag", targetTag);
             Logger.recordOutput("DriveToReef/TargetedPose", targetPose);
             Logger.recordOutput("DriveToReef/OffsetPose", offsetPose);
-            
+
             return offsetPose;
         });
   }

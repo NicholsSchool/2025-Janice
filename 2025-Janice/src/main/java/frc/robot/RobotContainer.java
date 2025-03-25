@@ -323,6 +323,7 @@ public class RobotContainer {
                 () -> -driveController.getLeftX(),
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
+
                 driveController.povDown().whileTrue( DriveCommands.joystickDrive(
                   drive,
                   () -> -0.3,
@@ -351,6 +352,12 @@ public class RobotContainer {
                     () -> 0.0,
                     () -> true));
               
+        // drive to closest reef
+    driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
+    driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
+    driveController.a().whileTrue(new DriveToHumanPlayer(drive));
+    driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
+    
     // driveController
     //     .a()
     //     .whileTrue(
@@ -402,14 +409,6 @@ public class RobotContainer {
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
-
-
-
-    // drive to closest reef
-    //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
-    driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
-    driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
-    driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
 
     operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
     

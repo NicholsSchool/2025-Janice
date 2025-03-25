@@ -86,21 +86,21 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(Constants.CAN.kFrontRightDrive);
         turnTalon = new TalonFX(Constants.CAN.kFrontRightPivot);
         cancoder = new CANcoder(Constants.CAN.kFrontRightEncoder);
-        absoluteEncoderOffset = new Rotation2d(0.2055 - 0.40858); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-0.20308); // MUST BE CALIBRATED
         break;
       case 2: // back left
         turnGearRatio = kTURN_GEAR_RATIO_REAR;
         driveTalon = new TalonFX(Constants.CAN.kBackLeftDrive);
         turnTalon = new TalonFX(Constants.CAN.kBackLeftPivot);
         cancoder = new CANcoder(Constants.CAN.kBackLeftEncoder);
-        absoluteEncoderOffset = new Rotation2d(2.517 + 0.069); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(2.586); // MUST BE CALIBRATED
         break;
       case 3: // back right
         turnGearRatio = kTURN_GEAR_RATIO_REAR;
         driveTalon = new TalonFX(Constants.CAN.kBackRightDrive);
         turnTalon = new TalonFX(Constants.CAN.kBackRightPivot);
         cancoder = new CANcoder(Constants.CAN.kBackRightEncoder);
-        absoluteEncoderOffset = new Rotation2d(-1.3575 - 0.42289 - Units.degreesToRadians(9.24) + Units.degreesToRadians(5)); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-1.8544); // MUST BE CALIBRATED
         break;
       default:
         throw new RuntimeException("Invalid module index");

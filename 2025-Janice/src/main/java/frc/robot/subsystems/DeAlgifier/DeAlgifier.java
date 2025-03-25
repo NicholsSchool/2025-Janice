@@ -6,8 +6,6 @@ import frc.robot.Constants.DeAlgifierConstants;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-
 public class DeAlgifier extends SubsystemBase{
     private DeAlgifierIO io;
     private final DeAlgifierIOInputsAutoLogged inputs = new DeAlgifierIOInputsAutoLogged();
@@ -106,7 +104,7 @@ public class DeAlgifier extends SubsystemBase{
     }
 
     public void lateratorManual(double input){
-        lateralManual = input*2.0;
+        lateralManual = input*4.0;
     }
 
     /**

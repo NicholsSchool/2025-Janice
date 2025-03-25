@@ -202,7 +202,7 @@ public static final class DeAlgifierConstants {
   public static final int kBackLimitSwitchChannel = 3;
 
   public static final double kDeAlgifierGrabberCurrentLimit = 60; //amps
-  public static final double kDeAlgifierLateratorCurrentLimit = 10; // low to make sure does not overrdrive into hard stop
+  public static final double kDeAlgifierLateratorCurrentLimit = 30; // low to make sure does not overrdrive into hard stop
 
   public static final double kLateratorGearRatio = 5;
   public static final double kGrabberGearRatio = 3.86;

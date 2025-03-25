@@ -3,17 +3,11 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -26,32 +20,24 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.RobotType;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToHumanPlayer;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;
-import frc.robot.subsystems.DeAlgifier.DeAlgifierIO;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIOReal;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIOSim;
-import frc.robot.subsystems.Intake.Intake;
-import frc.robot.subsystems.Intake.IntakeIOReal;
-import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
 import frc.robot.subsystems.Outtake.OuttakeIOReal;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
-import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -67,8 +53,6 @@ import frc.robot.util.LoggedTunableNumber;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import static frc.robot.subsystems.vision.VisionConstants.*;
-
-import java.lang.annotation.Repeatable;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -218,6 +202,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
         climber = new Climber(new ClimberIO() {});
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
@@ -410,8 +395,18 @@ public class RobotContainer {
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
-    operatorController.povUp().and(operatorController.start().and(operatorController.rightStick())).whileTrue(new InstantCommand(() -> climber.setClimbState(true)));
-    
+    // //axis 4 is Right X
+    // operatorController.axisGreaterThan(4, 0.8).onTrue( new RepeatCommand(new InstantCommand( () -> deAlgifier.lateratorOut() )));
+    // operatorController.axisLessThan(4, -0.8).onTrue( new RepeatCommand(new InstantCommand( () -> deAlgifier.lateratorIn() )));
+    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.lateratorManual(operatorController.getRightY()), deAlgifier));
+
+    operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
+    operatorController.rightBumper().whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.outtake() )));
+    operatorController.rightTrigger(0.8)
+      .and(operatorController.rightBumper())
+      .whileFalse(new InstantCommand( () -> deAlgifier.holdAlgae()));
+
+
   }
 
   // /**

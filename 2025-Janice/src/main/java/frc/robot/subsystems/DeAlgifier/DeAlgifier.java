@@ -2,7 +2,6 @@ package frc.robot.subsystems.DeAlgifier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DeAlgifierConstants;
 
 import org.littletonrobotics.junction.Logger;
@@ -11,15 +10,40 @@ public class DeAlgifier extends SubsystemBase{
     private DeAlgifierIO io;
     private final DeAlgifierIOInputsAutoLogged inputs = new DeAlgifierIOInputsAutoLogged();
 
-    private final PIDController armPidController;
-    private final PIDController kickerPidController;
+    private final PIDController lateratorPidController;
+    private final PIDController grabberPidController;
+
+    private LateratorMode lateratorMode;
+    private GrabberMode grabberMode;
+
+    private double lateralManual = 0.0;
+
+    boolean manual = true;
+
+    enum LateratorMode {
+        IN,
+        OUT,
+        IDLE,
+    }
+
+    enum GrabberMode {
+        INTAKE,
+        OUTTAKE,
+        HOLD,
+        IDLE
+    }
+
     
     public DeAlgifier(DeAlgifierIO io){
         this.io = io;
-        this.armPidController = new PIDController(DeAlgifierConstants.ARM_P, 0, DeAlgifierConstants.ARM_D);
-        this.kickerPidController = new PIDController(DeAlgifierConstants.KICKER_P, 0, DeAlgifierConstants.KICKER_D);
-        armPidController.reset();
-        kickerPidController.reset();
+        lateratorPidController = new PIDController(DeAlgifierConstants.kLateratorPVelocity, 0, DeAlgifierConstants.kLateratorDVelocity);
+        grabberPidController = new PIDController(DeAlgifierConstants.kGrabberP, 0, DeAlgifierConstants.kGrabberD);
+
+        lateratorPidController.reset();
+        grabberPidController.reset();
+
+        lateratorMode = LateratorMode.IDLE;
+        grabberMode = GrabberMode.IDLE;
     }
     
     public void periodic(){
@@ -27,29 +51,78 @@ public class DeAlgifier extends SubsystemBase{
         Logger.processInputs("DeAlgifier", inputs);
         
         if (DriverStation.isDisabled()) {
-             io.setArmVoltage(0.0);
-             io.setKickerVoltage(0.0);
+             io.setLateratorVoltage(0.0);
+             io.setGrabberBrake(true);
+
+             lateratorMode = LateratorMode.IDLE;
+             grabberMode = GrabberMode.IDLE; //for safety upon reenable
+
+             return;
         } 
-        else {
-            //io.setArmVoltage(armPidController.calculate(inputs.armPositionRad));
-            // io.setKickerVoltage( kickerPidController.getSetpoint() == 0.0 ? 0.0 : -5.0 ); //using the pid controller as a state machine
-            // System.out.println(kickerPidController.getSetpoint());
+        if(manual){
+            io.setLateratorVoltage(lateralManual);
+        }else{
+        
+            switch( lateratorMode ) {
+            case IN -> {
+                if( !inputs.backLimitSwitch)
+                    io.setLateratorVoltage(lateratorPidController.calculate(
+                        inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+                else io.setLateratorVoltage(0.0);
+            }
+            case OUT -> {
+                if( !inputs.frontLimitSwitch )
+                    io.setLateratorVoltage(lateratorPidController.calculate(
+                        inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+                else io.setLateratorVoltage(0.0);
+            }
+            case IDLE -> io.setLateratorVoltage(0.0);
+            default -> io.setLateratorVoltage(0.0);
+        }
+
+        switch( grabberMode ) {
+            case INTAKE -> {
+                io.setGrabberBrake(false);
+                io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
+            }
+            case OUTTAKE -> {
+                io.setGrabberBrake(false);
+                io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberEjectSetpointRPM));
+            }
+            case HOLD, IDLE -> io.setGrabberBrake(true);
+            default -> io.setGrabberBrake(true);
+        }
         }
     }
-
-    public void deAlgify(double input) {
-        io.setArmVoltage(input);
-        kickerPidController.setSetpoint(Math.abs(input) > Constants.JOYSTICK_DEADBAND ? DeAlgifierConstants.kKickerSetpointRPM : 0.0);
-        // System.out.println("Dealgifying");
-    }
-
-    public void resetToZero() {
-        armPidController.setSetpoint(0.0);
-        kickerPidController.setSetpoint(0.0);
-    }
     
-    public void stop() {
-        armPidController.setSetpoint(inputs.armPositionRad);
-        kickerPidController.setSetpoint(0.0);
+
+    /**
+     * Called once to request laterator out
+     */
+    public void lateratorOut() {
+        lateratorMode = LateratorMode.OUT;
+    }
+
+    public void lateratorManual(double input){
+        lateralManual = input*4.0;
+    }
+
+    /**
+     * Called once to request laterator in
+     */
+    public void lateratorIn() {
+       lateratorMode = LateratorMode.IN;
+    }
+
+    public void intake() {
+        grabberMode = GrabberMode.INTAKE;
+    }
+
+    public void outtake() {
+        grabberMode = GrabberMode.OUTTAKE;
+    }
+
+    public void holdAlgae() {
+        grabberMode = GrabberMode.HOLD;
     }
 }

@@ -92,7 +92,7 @@ public final class Constants {
   public static final class RobotConstants {
     public static final double robotSideLengthInches =
         // 34.0; // robot was measured bumper to bumper to be 33in, +1 in for buffer.
-        30.0; 
+        33.0; 
 
     
     public static final double robotMass = 42; //kg
@@ -117,19 +117,19 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double kMAX_LINEAR_SPEED = 4.8;
-    public static final double kTRACK_WIDTH_X = 0.5969; // 23.5in
-    public static final double kTRACK_WIDTH_Y = 0.5969;
+    public static final double kMAX_LINEAR_SPEED = 3.2;
+    public static final double kTRACK_WIDTH_X = Units.inchesToMeters(25); // 23.5in
+    public static final double kTRACK_WIDTH_Y = Units.inchesToMeters(24.5);
 
     public static final double lowGearScaler = 0.6;
     //TODO: tune this
-    public static final double reefLeftShift = 0.2 - Units.inchesToMeters(6.0);
-    public static final double reefRightShift = 0.2 + Units.inchesToMeters(3.2);
+    public static final double reefLeftShift = 0.1;
+    public static final double reefRightShift = 0.22;
   }
 
   // REV MAXSwerve Modules
   public static final class ModuleConstants {
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4.0); // 4-in with tread
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4.0) * 0.9569;
     public static final double kWheelRadiusMeters = kWheelDiameterMeters / 2.0;
     public static final double kDrivingMotorFreeSpinRPM = 6000; // Kraken non-FOC max RPM
     public static final double odometryCoefficient = 1.0; // TODO: tune odometry and use this
@@ -170,7 +170,7 @@ public final class Constants {
     
     public static double kArmL1 = -0.05;
     public static double kArmL2 = -2.3;
-    public static double kArmL3 = -3.8;
+    public static double kArmL3 = -3.7;
     public static double kArmL4 = -2.0;
 
   }
@@ -238,8 +238,9 @@ public static final class DeAlgifierConstants {
     public static final double SplineV5CircularMultiplier = 2.0;
     public static final double dotProductThreshold = 0.05;
 
-    public static final double reefAutoRadius = 2.0;
+    public static final double reefAutoRadius = 2.5;
     public static final Translation2d reefAutoCircle = new Translation2d(4.45, 4.1);
+    public static final double splineV5Multipler = 0.7;
   }
 
   public static final class FiddleSongs {

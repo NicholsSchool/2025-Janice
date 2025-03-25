@@ -79,28 +79,28 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(Constants.CAN.kFrontLeftDrive);
         turnTalon = new TalonFX(Constants.CAN.kFrontLeftPivot);
         cancoder = new CANcoder(Constants.CAN.kFrontLeftEncoder);
-        absoluteEncoderOffset = new Rotation2d(-1.596); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-1.5782); // MUST BE CALIBRATED
         break;
       case 1: // front right
         turnGearRatio = kTURN_GEAR_RATIO_FRONT;
         driveTalon = new TalonFX(Constants.CAN.kFrontRightDrive);
         turnTalon = new TalonFX(Constants.CAN.kFrontRightPivot);
         cancoder = new CANcoder(Constants.CAN.kFrontRightEncoder);
-        absoluteEncoderOffset = new Rotation2d(-0.199); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-0.20308); // MUST BE CALIBRATED
         break;
       case 2: // back left
         turnGearRatio = kTURN_GEAR_RATIO_REAR;
         driveTalon = new TalonFX(Constants.CAN.kBackLeftDrive);
         turnTalon = new TalonFX(Constants.CAN.kBackLeftPivot);
         cancoder = new CANcoder(Constants.CAN.kBackLeftEncoder);
-        absoluteEncoderOffset = new Rotation2d(2.517); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(2.586); // MUST BE CALIBRATED
         break;
       case 3: // back right
         turnGearRatio = kTURN_GEAR_RATIO_REAR;
         driveTalon = new TalonFX(Constants.CAN.kBackRightDrive);
         turnTalon = new TalonFX(Constants.CAN.kBackRightPivot);
         cancoder = new CANcoder(Constants.CAN.kBackRightEncoder);
-        absoluteEncoderOffset = new Rotation2d(-1.74); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-1.8544); // MUST BE CALIBRATED
         break;
       default:
         throw new RuntimeException("Invalid module index");

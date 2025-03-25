@@ -77,9 +77,9 @@ public class DriveToPose extends Command {
       case ROBOT_REAL_JANICE:
       case ROBOT_REPLAY:
       case ROBOT_SIM:
-        driveKp.initDefault(2.0);
+        driveKp.initDefault(5.0);
         driveKd.initDefault(0.0);
-        thetaKp.initDefault(5.0);
+        thetaKp.initDefault(1.5);
         thetaKd.initDefault(0.0);
         driveMaxVelocity.initDefault(Units.inchesToMeters(150.0));
         driveMaxVelocitySlow.initDefault(Units.inchesToMeters(50.0));
@@ -89,7 +89,7 @@ public class DriveToPose extends Command {
         thetaMaxAcceleration.initDefault(Units.degreesToRadians(720.0));
         driveTolerance.initDefault(0.01);
         driveToleranceSlow.initDefault(0.06);
-        thetaTolerance.initDefault(Units.degreesToRadians(1.0));
+        thetaTolerance.initDefault(Units.degreesToRadians(0.05));
         thetaToleranceSlow.initDefault(Units.degreesToRadians(3.0));
         ffMinRadius.initDefault(0.2);
         ffMaxRadius.initDefault(0.8);

@@ -247,13 +247,13 @@ public class SplineV5ToPose extends Command {
         AutoConstants.SplineV5LinearMultiplier + driveOutwardVelocity.getY()
          , thetaVelocity, currentPose.getRotation()));
     }else{
-    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
+    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds((
         AutoConstants.SplineV5CircularMultiplier * driveCircularVelocity.getX() * BradyMathLib.clip(1 - distFromCircle + avoidanceCircle.radius, 0.0, 1.0)+  
         driveLinearVelocity.getX() * 
-        AutoConstants.SplineV5LinearMultiplier * (BradyMathLib.clip(distFromCircle - avoidanceCircle.radius, -0.3, 1.0)) + driveOutwardVelocity.getX(),
-        AutoConstants.SplineV5CircularMultiplier * driveCircularVelocity.getY() * BradyMathLib.clip(1 - distFromCircle + avoidanceCircle.radius, 0.0, 1.0)
+        AutoConstants.SplineV5LinearMultiplier * (BradyMathLib.clip(distFromCircle - avoidanceCircle.radius, -0.3, 1.0)) + driveOutwardVelocity.getX()),
+        (AutoConstants.SplineV5CircularMultiplier * driveCircularVelocity.getY() * BradyMathLib.clip(1 - distFromCircle + avoidanceCircle.radius, 0.0, 1.0)
         + driveLinearVelocity.getY() * 
-        AutoConstants.SplineV5LinearMultiplier * (BradyMathLib.clip(distFromCircle - avoidanceCircle.radius, -0.3, 1.0)) + driveOutwardVelocity.getY()
+        AutoConstants.SplineV5LinearMultiplier * (BradyMathLib.clip(distFromCircle - avoidanceCircle.radius, -0.3, 1.0)) + driveOutwardVelocity.getY())
          , thetaVelocity, currentPose.getRotation()));
     }
     // Log data
@@ -311,4 +311,6 @@ public class SplineV5ToPose extends Command {
             new Rotation2d(Constants.AutoConstants.splineAngleFinishThreshold));
     return running;
   }
+
+  //TODO: do this as a drive to pos interface like drive to reef
 }

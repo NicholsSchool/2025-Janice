@@ -84,7 +84,7 @@ public final class Constants {
     //TODO find real value
     public static final int kOuttakeMotor = 51;
 
-    public static final int kDeAlgifierLaterator = 39;
+    public static final int kDeAlgifierLaterator = 37;
     public static final int kDeAlgifierGrabber = 38;
     //TODO someone check this please.
   }
@@ -198,11 +198,11 @@ public final class Constants {
   }
 
 public static final class DeAlgifierConstants {
-  public static final int kFrontLimitSwitchChannel = 0; //TODO: find these
-  public static final int kBackLimitSwitchChannel = 0;
+  public static final int kFrontLimitSwitchChannel = 2; //TODO: find these
+  public static final int kBackLimitSwitchChannel = 3;
 
   public static final double kDeAlgifierGrabberCurrentLimit = 60; //amps
-  public static final double kDeAlgifierLateratorCurrentLimit = 20; // low to make sure does not overrdrive into hard stop
+  public static final double kDeAlgifierLateratorCurrentLimit = 10; // low to make sure does not overrdrive into hard stop
 
   public static final double kLateratorGearRatio = 5;
   public static final double kGrabberGearRatio = 3.86;

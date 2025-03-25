@@ -85,7 +85,7 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
 
             Logger.recordOutput("DriveToReef/TargetedTag", targetTag);
             Logger.recordOutput("DriveToReef/TargetedPose", targetPose);
-            Logger.recordOutput("DriveToReef/OffsetPose", targetPose);
+            Logger.recordOutput("DriveToReef/OffsetPose", offsetPose);
 
             return offsetPose;
         });

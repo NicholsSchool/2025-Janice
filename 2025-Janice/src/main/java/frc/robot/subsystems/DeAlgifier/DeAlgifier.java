@@ -6,12 +6,30 @@ import frc.robot.Constants.DeAlgifierConstants;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
 public class DeAlgifier extends SubsystemBase{
     private DeAlgifierIO io;
     private final DeAlgifierIOInputsAutoLogged inputs = new DeAlgifierIOInputsAutoLogged();
 
     private final PIDController lateratorPidController;
     private final PIDController grabberPidController;
+
+    private LateratorMode lateratorMode;
+    private GrabberMode grabberMode;
+
+    enum LateratorMode {
+        IN,
+        OUT,
+        IDLE
+    }
+
+    enum GrabberMode {
+        INTAKE,
+        OUTTAKE,
+        HOLD,
+        IDLE
+    }
 
     
     public DeAlgifier(DeAlgifierIO io){
@@ -21,6 +39,9 @@ public class DeAlgifier extends SubsystemBase{
 
         lateratorPidController.reset();
         grabberPidController.reset();
+
+        lateratorMode = LateratorMode.IDLE;
+        grabberMode = GrabberMode.IDLE;
     }
     
     public void periodic(){
@@ -30,38 +51,68 @@ public class DeAlgifier extends SubsystemBase{
         if (DriverStation.isDisabled()) {
              io.setLateratorVoltage(0.0);
              io.setGrabberBrake(true);
+
+             lateratorMode = LateratorMode.IDLE;
+             grabberMode = GrabberMode.IDLE; //for safety upon reenable
+
+             return;
         } 
+
+        switch( lateratorMode ) {
+            case IN -> {
+                if( !inputs.backLimitSwitch)
+                    io.setLateratorVoltage(lateratorPidController.calculate(
+                        inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+                else io.setLateratorVoltage(0.0);
+            }
+            case OUT -> {
+                if( !inputs.frontLimitSwitch )
+                    io.setLateratorVoltage(lateratorPidController.calculate(
+                        inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+                else io.setLateratorVoltage(0.0);
+            }
+            case IDLE -> io.setLateratorVoltage(0.0);
+            default -> io.setLateratorVoltage(0.0);
+        }
+
+        switch( grabberMode ) {
+            case INTAKE -> {
+                io.setGrabberBrake(false);
+                io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
+            }
+            case OUTTAKE -> {
+                io.setGrabberBrake(false);
+                io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberEjectSetpointRPM));
+            }
+            case HOLD, IDLE -> io.setGrabberBrake(true);
+            default -> io.setGrabberBrake(true);
+        }
     }
+    
 
     /**
      * Called once to request laterator out
      */
     public void lateratorOut() {
-        if( !inputs.frontLimitSwitch )
-            io.setLateratorVoltage(lateratorPidController.calculate(inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
-        else io.setLateratorVoltage(0.0);
+        lateratorMode = LateratorMode.OUT;
     }
 
     /**
      * Called once to request laterator in
      */
     public void lateratorIn() {
-        if( !inputs.backLimitSwitch)
-            io.setLateratorVoltage(lateratorPidController.calculate(inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
-        else io.setLateratorVoltage(0.0);
+       lateratorMode = LateratorMode.IN;
     }
 
     public void intake() {
-        io.setGrabberBrake(false);
-        io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
+        grabberMode = GrabberMode.INTAKE;
     }
 
     public void outtake() {
-        io.setGrabberBrake(false);
-        io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberEjectSetpointRPM));
+        grabberMode = GrabberMode.OUTTAKE;
     }
 
     public void holdAlgae() {
-        io.setGrabberBrake(true);
+        grabberMode = GrabberMode.HOLD;
     }
 }

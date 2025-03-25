@@ -329,7 +329,6 @@ public class RobotContainer {
                 () -> -driveController.getRightX(),
                 () -> Constants.driveRobotRelative));
         // drive to closest reef
-    //driveController.y().whileTrue(new DriveToReef(drive, ReefDirection.CENTER));
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     driveController.a().whileTrue(new DriveToHumanPlayer(drive));

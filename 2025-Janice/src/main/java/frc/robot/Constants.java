@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  private static final RobotType robot = RobotType.ROBOT_REAL_JANICE;
+  private static final RobotType robot = RobotType.ROBOT_CALIBRATE;
   public static final boolean driveRobotRelative =
       false; // set to true to override all field relative and instead command in robot-relative.
 
@@ -41,7 +41,8 @@ public final class Constants {
     ROBOT_REAL_JANICE, // a real robot (JANICE)
     ROBOT_REPLAY, // data file replay (could be on real bot or simulation)
     ROBOT_SIM, // simulation
-    ROBOT_FOOTBALL // Football for simulating
+    ROBOT_FOOTBALL, // Football for simulating
+    ROBOT_CALIBRATE
   }
 
   // CAN IDs (Controller Area Network)

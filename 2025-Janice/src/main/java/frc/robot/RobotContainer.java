@@ -171,6 +171,25 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
+        case ROBOT_CALIBRATE:
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
+        climber = new Climber(new ClimberIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        vision =
+             new Vision(
+              drive::addVisionMeasurement,
+              new VisionIOPhotonVision(camera0Name, robotToCamera0),
+              new VisionIOPhotonVision(camera1Name, robotToCamera1));
+        break;
+
       case ROBOT_FOOTBALL:
         drive =
             new Drive(
@@ -189,8 +208,6 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
-
-      case ROBOT_REPLAY:
       default:
         // Replayed robot, disable IO implementations since the replay
         // will supply the data.

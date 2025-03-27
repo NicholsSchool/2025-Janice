@@ -121,7 +121,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
         climber = new Climber(new ClimberIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -415,9 +415,9 @@ public class RobotContainer {
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // //axis 4 is Right X
-    operatorController.axisGreaterThan(4, 0.1).onTrue( new RepeatCommand(new InstantCommand( 
+    operatorController.axisGreaterThan(5, 0.1).whileTrue( new RepeatCommand(new InstantCommand( 
       () -> deAlgifier.lateratorManual(operatorController.getRightX()) )));
-    operatorController.axisLessThan(4, -0.1).onTrue( new RepeatCommand(new InstantCommand( 
+    operatorController.axisLessThan(5, -0.1).whileTrue( new RepeatCommand(new InstantCommand( 
       () -> deAlgifier.lateratorManual(operatorController.getRightX())) ));
 
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));

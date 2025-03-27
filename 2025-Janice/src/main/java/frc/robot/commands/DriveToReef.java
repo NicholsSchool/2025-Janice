@@ -20,7 +20,7 @@ public class DriveToReef extends DriveToPose {
   private static final LoggedTunableNumber robotRotationOffset =
       new LoggedTunableNumber("DriveToReef/RobotRotationOffset", -Math.PI/2);
 public static enum ReefDirection{
-  CENTER,
+  DEALGIFY,
   LEFT,
   RIGHT
 }
@@ -59,9 +59,9 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
             double angleOffset = 0.0;
 
             switch(reefDirection){
-              case CENTER:
-              leftRightOffset = 0.0;
-              angleOffset = 0.0;
+              case DEALGIFY:
+              leftRightOffset = Constants.DriveConstants.reefLeftShift + Units.inchesToMeters(4);
+              angleOffset = -Math.PI / 2;
               break;
 
               case LEFT:

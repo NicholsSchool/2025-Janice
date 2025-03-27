@@ -115,7 +115,7 @@ public class AutoCommands {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1)),
       new DriveToHumanPlayer(drive),
-      new WaitCommand(0.7)
+      new WaitCommand(1.2)
     );
   }
 

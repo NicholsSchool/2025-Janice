@@ -108,9 +108,11 @@ public class DeAlgifier extends SubsystemBase{
     }
 
     public void lateratorManual(double input){
-        if( Math.abs( input ) > 0.05 )
+        if( Math.abs( input ) > 0.05 ) {
+            lateralManual = input*1.5;
+        } else {
             lateralManual = 0.0;
-        lateralManual = input*4.0;
+        }
     }
 
     /**

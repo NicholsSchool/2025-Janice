@@ -24,7 +24,7 @@ public class Outtake extends SubsystemBase {
         if (DriverStation.isDisabled()) {}
     }
     public void outtake() {
-        io.setVoltage(-3.0);
+        io.setVoltage(-2.4);
     }
     
     public void stop() {

@@ -174,6 +174,9 @@ public final class Constants {
     public static double kArmL3 = -3.7;
     public static double kArmL4 = -2.0;
 
+    public static double kAlgaeL2 = -0.4;
+    public static double kAlgaeL3 = -3.38;
+
   }
 
   public static final class IntakeConstants {

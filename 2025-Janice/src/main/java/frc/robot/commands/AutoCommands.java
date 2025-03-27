@@ -118,11 +118,14 @@ public class AutoCommands {
      splineV5ToPose(() -> new Pose2d(AllianceFlipUtil.apply((desiredPose.getTranslation())), AllianceFlipUtil.apply(desiredPose.getRotation()).rotateBy(new Rotation2d(Math.PI))),
       () -> new Circle(AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), Constants.AutoConstants.reefAutoRadius), true);
     return new SequentialCommandGroup(
-      new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1)), new DriveToHumanPlayer(drive), new WaitCommand(0.7));
+      new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1)),
+      new DriveToHumanPlayer(drive),
+       new WaitCommand(0.7));
   }
 
   public Command autoRoutine(){
-    return new SequentialCommandGroup(autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.LEFT),
+    return new SequentialCommandGroup(
+      autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.LEFT),
      autoHumanRoutine(() -> true, () -> true),
       autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.RIGHT), autoHumanRoutine(() -> true, () -> true));
   }

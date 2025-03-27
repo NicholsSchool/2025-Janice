@@ -208,9 +208,9 @@ public static final class DeAlgifierConstants {
   public static final double kLateratorGearRatio = 5;
   public static final double kGrabberGearRatio = 3.86;
 
-  public static final double kGrabberIntakeSetpointRPM = 0.0;
-  public static final double kGrabberEjectSetpointRPM = 0.0;
-  public static final double kGrabberP = 1.0;
+  public static final double kGrabberIntakeSetpointRPM = -300.0;
+  public static final double kGrabberEjectSetpointRPM = +300.0;
+  public static final double kGrabberP = 5.0;
   public static final double kGrabberD = 0.0;
 
   public static final double kLateratorInPositionRad = 5.0; //only used in SIM

@@ -65,29 +65,27 @@ public class AutoCommands {
   //   return weaveToPos.until(() -> objectArea > VisionConstants.weaveToPoseBreakArea);
   // }
 
-  public Command splineV5ToPose(Supplier<Pose2d> pose, Supplier<Circle> circle, boolean slowmode) {
-    var splToPose =
-      new SplineV5ToPose(
-        this.drive,() -> {return pose.get();}, () -> {return circle.get();});
+    public Command splineV5ToPose(Supplier<Pose2d> pose, Supplier<Circle> circle, boolean slowmode) {
+        var splToPose =
+            new SplineV5ToPose(this.drive, () -> {return pose.get();}, () -> {return circle.get();});
+        return splToPose.until(splToPose::atGoal);
+    }
 
-    return splToPose.until(splToPose::atGoal);
-  }
-
-  public Command autoReefRoutine(IntSupplier reefPosition, IntSupplier coralLevel, BooleanSupplier shortestPath, Supplier<DriveToReef.ReefDirection> reefDirection){
-    DoubleSupplier desiredArmHeight = () -> 0.0;
-    switch(coralLevel.getAsInt()){
-      case 1:
-        desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; 
-        break;
-      case 2: 
-        desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2; 
-        break;
-      case 3:
-        desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3; 
-        break;
-      case 4: 
-        desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
-        break;
+    public Command autoReefRoutine(IntSupplier reefPosition, IntSupplier coralLevel, BooleanSupplier shortestPath, Supplier<DriveToReef.ReefDirection> reefDirection){
+        DoubleSupplier desiredArmHeight = () -> 0.0;
+        switch(coralLevel.getAsInt()){
+            case 1:
+                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; 
+                break;
+            case 2: 
+                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2 - 0.05;
+                break;
+            case 3:
+                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3;
+                break;
+            case 4: 
+                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
+                break;
     }
     //-π/6 is a multiplier that converts clock angles to radians
     double reefNormalAngle = reefPosition.getAsInt() * -Math.PI / 6;

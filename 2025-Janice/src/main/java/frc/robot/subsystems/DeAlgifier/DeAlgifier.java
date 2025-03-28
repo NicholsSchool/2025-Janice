@@ -85,7 +85,7 @@ public class DeAlgifier extends SubsystemBase{
         switch( grabberMode ) {
             case INTAKE -> {
                 io.setGrabberBrake(false);
-                io.setGrabberVoltage(-1.5);
+                io.setGrabberVoltage(-3.0);
                 //io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
             }
             case OUTTAKE -> {

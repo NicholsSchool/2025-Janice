@@ -123,7 +123,8 @@ public class AutoCommands {
     return new SequentialCommandGroup(
       autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.LEFT),
       autoHumanRoutine(() -> true, () -> true),
-      autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.RIGHT), autoHumanRoutine(() -> true, () -> true));
+      autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.RIGHT),
+       autoHumanRoutine(() -> true, () -> true));
   }
 
   public Command TenFootTest(Drive drive) {

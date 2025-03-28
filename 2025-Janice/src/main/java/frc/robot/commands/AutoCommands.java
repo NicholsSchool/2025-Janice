@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -78,7 +79,7 @@ public class AutoCommands {
                 desiredArmHeight = () -> Constants.ElevatorConstants.kArmL1; 
                 break;
             case 2: 
-                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2 - 0.05;
+                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2 - 0.12;
                 break;
             case 3:
                 desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3;
@@ -96,7 +97,7 @@ public class AutoCommands {
     Command orbitToPose = splineV5ToPose(() -> AllianceFlipUtil.apply(orbitPose).transformBy(new Transform2d(new Translation2d(), new Rotation2d(-Math.PI / 2))),
       () -> new Circle(() -> AllianceFlipUtil.apply(Constants.AutoConstants.reefAutoCircle), () -> Constants.AutoConstants.reefAutoRadius), false);
 
-     return new SequentialCommandGroup(orbitToPose, 
+     return new SequentialCommandGroup(orbitToPose, new WaitCommand(0.4),
      new ParallelCommandGroup(new DriveToReef(drive, reefDirection.get()), elevator.commandGoToPos(desiredArmHeight.getAsDouble())), outtake.commandOuttake());
   }
 
@@ -115,7 +116,8 @@ public class AutoCommands {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1)),
       new DriveToHumanPlayer(drive),
-      new WaitCommand(1.2)
+      new InstantCommand(() -> outtake.processCoral()).repeatedly().until( outtake.hasCoral() ),
+      new InstantCommand(() -> outtake.stop())
     );
   }
 
@@ -123,7 +125,7 @@ public class AutoCommands {
     return new SequentialCommandGroup(
       autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.LEFT),
       autoHumanRoutine(() -> true, () -> true),
-      autoReefRoutine(() -> 10, () -> 2, () -> true, () -> ReefDirection.RIGHT),
+      autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
        autoHumanRoutine(() -> true, () -> true));
   }
 

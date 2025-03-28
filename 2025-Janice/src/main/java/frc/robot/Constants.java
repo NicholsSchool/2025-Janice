@@ -163,13 +163,13 @@ public final class Constants {
     public static double ElevatorMaxAccelerationRad = 1000;
     public static double ElevatorMaxVelocityRad = 1000;
     public static double maxHeight = -4.0;
-    public static double minHeight = -0.0;
+    public static double minHeight = 0.0;
 
     public static int elevatorLimitSwitchChannel = 0;
 
     public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
-    public static double kArmL1 = -0.05;
+    public static double kArmL1 = -0.01;
     public static double kArmL2 = -2.3;
     public static double kArmL3 = -3.7;
     public static double kArmL4 = -2.0;

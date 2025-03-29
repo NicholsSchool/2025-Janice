@@ -1,15 +1,9 @@
 package frc.robot.subsystems.Intake;
 
-import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.BradyMathLib;
 
 public class Intake extends SubsystemBase {

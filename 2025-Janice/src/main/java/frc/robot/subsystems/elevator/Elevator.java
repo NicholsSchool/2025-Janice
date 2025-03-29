@@ -2,7 +2,6 @@ package frc.robot.subsystems.elevator;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.subsystems.drive.Drive;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;

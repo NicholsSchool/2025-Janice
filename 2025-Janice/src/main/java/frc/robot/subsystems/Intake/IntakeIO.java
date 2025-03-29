@@ -2,8 +2,6 @@ package frc.robot.subsystems.Intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.wpilibj.Solenoid;
-
 public interface IntakeIO {
 
     @AutoLog

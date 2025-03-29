@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToHumanPlayer;
 import frc.robot.commands.DriveToReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;

@@ -416,8 +416,10 @@ public class RobotContainer {
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // //axis 4 is Right X
-    operatorController.axisMagnitudeGreaterThan(5, 0).whileTrue( 
-      new RepeatCommand( new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY()))));
+    operatorController.axisMagnitudeGreaterThan(5, 0.07).whileTrue( 
+      new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY())).repeatedly());
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> deAlgifier.lateratorManual(0.0)));
+
 
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));

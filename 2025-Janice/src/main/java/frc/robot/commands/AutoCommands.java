@@ -82,7 +82,7 @@ public class AutoCommands {
                 desiredArmHeight = () -> Constants.ElevatorConstants.kArmL2 - 0.12;
                 break;
             case 3:
-                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3;
+                desiredArmHeight = () -> Constants.ElevatorConstants.kArmL3 - 0.1;
                 break;
             case 4: 
                 desiredArmHeight = () -> Constants.ElevatorConstants.kArmL4; 
@@ -115,9 +115,7 @@ public class AutoCommands {
     
     return new SequentialCommandGroup(
       new ParallelCommandGroup(orbit, elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1)),
-      new DriveToHumanPlayer(drive),
-      new InstantCommand(() -> outtake.processCoral()).repeatedly().until( outtake.hasCoral() ),
-      new InstantCommand(() -> outtake.stop())
+      new DriveToHumanPlayer(drive), new WaitCommand(1.5)
     );
   }
 
@@ -128,6 +126,8 @@ public class AutoCommands {
       autoReefRoutine(() -> 6, () -> 2, () -> true, () -> ReefDirection.LEFT),
        autoHumanRoutine(() -> true, () -> true));
   }
+
+  //return autoReefRoutine(() -> 12, () -> 3, () -> true, ReefDirection.LEFT);
 
   public Command TenFootTest(Drive drive) {
     return new DriveToPose(drive, new Pose2d(new Translation2d(3.048, 0), new Rotation2d(0)));

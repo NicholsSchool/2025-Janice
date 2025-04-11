@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -361,8 +362,9 @@ public class RobotContainer {
     driveController.x().whileTrue( 
       new SequentialCommandGroup(
         new DriveToReef(drive, ReefDirection.LEFT),
-        elevator.runGoToPosCommand(ElevatorConstants.kArmL3).until(() -> elevator.isAtGoal()),
-        new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ) ) ) );
+        elevator.runGoToPosCommand(ElevatorConstants.kArmL3),
+        new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(
+          () -> Math.abs(elevator.getHeight() - ElevatorConstants.kArmL3 ) < 0.05 ) ) ) );
 
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));

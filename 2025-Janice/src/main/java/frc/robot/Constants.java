@@ -1,5 +1,8 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Meter;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -9,6 +12,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -84,6 +89,7 @@ public final class Constants {
     public static final int elevatorEncoder = 43;
     //TODO find real value
     public static final int kOuttakeMotor = 51;
+    public static final int kOuttakeSensor = 52;
 
     public static final int kDeAlgifierLaterator = 37;
     public static final int kDeAlgifierGrabber = 38;
@@ -197,8 +203,8 @@ public final class Constants {
 
     //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
-    public static final double kCoralDistanceFarBound = 1.7;
-    public static final double kCoralDistanceCloseBound = 1.3;
+    public static final Angle kOuttakeSensorFOV = Angle.ofBaseUnits(4, Degree);
+    public static final Distance kCoralDistanceThreshold = Distance.ofBaseUnits(.15, Meter);
   }
 
 public static final class DeAlgifierConstants {

@@ -19,11 +19,8 @@ public class GyroIORedux implements GyroIO {
     gyro.setPartyMode(0);
 
     CanandgyroSettings settings = new CanandgyroSettings();
-    settings.setAngularPositionFramePeriod(0.02); // 20ms update
-    settings.setYawFramePeriod(0.02);
-    settings.setStatusFramePeriod(0.1);
 
-    gyro.setSettings(settings, 0.050);
+    gyro.setSettings(settings);
   }
 
   @Override

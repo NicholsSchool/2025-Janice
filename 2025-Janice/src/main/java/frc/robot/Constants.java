@@ -47,7 +47,7 @@ public final class Constants {
 
   // CAN IDs (Controller Area Network)
   public static final class CAN {
-    public static final int kReduxGyro = 11;
+    public static final int kReduxGyro = 20;
 
     public static final int kFrontLeftDrive = 21;
     public static final int kBackLeftDrive = 22;

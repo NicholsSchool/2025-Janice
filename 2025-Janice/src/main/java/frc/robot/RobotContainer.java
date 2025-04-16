@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -31,13 +30,9 @@ import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
 import frc.robot.subsystems.Outtake.OuttakeIOReal;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
-import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -66,7 +61,6 @@ public class RobotContainer {
   public final Drive drive;
   public final Elevator elevator;
   private final Outtake outtake;
-  private final Climber climber;
   private final Vision vision;
   private final DeAlgifier deAlgifier;
 
@@ -120,7 +114,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
         vision =
              new Vision(
@@ -142,7 +135,6 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(3));
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
               new Vision(
@@ -162,7 +154,6 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
             new Vision(
@@ -181,7 +172,6 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
@@ -200,7 +190,6 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
@@ -220,7 +209,6 @@ public class RobotContainer {
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
-        climber = new Climber(new ClimberIO() {});
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
@@ -259,25 +247,6 @@ public class RobotContainer {
     // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
     //   colorInfo.pvCornerOne();
     // }
-  }
-
-  // changes robot pose with dashboard tunables
-  private void resetPosWithDashboard() {
-
-    // update robot position only if robot is disabled, otherwise
-    // robot could move in unexpected ways.
-    if (DriverStation.isDisabled()) {
-      if (startX0.hasChanged(hashCode())
-          || startY0.hasChanged(hashCode())
-          || startTheta0.hasChanged(hashCode())
-          || startX1.hasChanged(hashCode())
-          || startY1.hasChanged(hashCode())
-          || startTheta1.hasChanged(hashCode())
-          || startPositionIndex.hasChanged(hashCode())) {
-
-        setStartingPose();
-      }
-    }
   }
 
   /**
@@ -408,13 +377,11 @@ public class RobotContainer {
     operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
     operatorController.povUp().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL3));
     operatorController.povDown().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL2));
-    // operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
-    //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // //axis 4 is Right X
     operatorController.axisMagnitudeGreaterThan(5, 0.07).whileTrue( 
@@ -461,8 +428,6 @@ public class RobotContainer {
     //return autoChooser.get();
   }
 
-  private void addAutos() {}
-  
   private void addTestingAutos() {
     autoChooser.addOption("Wait Auto", new WaitCommand(Time.ofBaseUnits(5, Seconds)) );
     // Pathplanner Auto Testing
@@ -491,10 +456,5 @@ public class RobotContainer {
     //           new Translation2d(4, 3),
     //           new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
 
-  }
-
-  private void registerNamedCommands() {
-    NamedCommands.registerCommand("Print", new InstantCommand( () -> System.out.println("Print Command!")));
-    
   }
 }

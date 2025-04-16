@@ -13,6 +13,7 @@ public class DeAlgifier extends SubsystemBase{
     private final PIDController lateratorPidController;
     private final PIDController grabberPidController;
 
+    @SuppressWarnings("unused")
     private LateratorMode lateratorMode;
     private GrabberMode grabberMode;
 
@@ -55,7 +56,7 @@ public class DeAlgifier extends SubsystemBase{
              io.setGrabberBrake(true);
 
              lateratorMode = LateratorMode.IDLE;
-             grabberMode = GrabberMode.IDLE; //for safety upon reenable
+             grabberMode = GrabberMode.IDLE;
 
              return;
         } 

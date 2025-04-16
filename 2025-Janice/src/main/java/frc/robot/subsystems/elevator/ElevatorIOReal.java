@@ -34,10 +34,9 @@ public class ElevatorIOReal implements ElevatorIO{
   }
 
   private double getHeight(){
-    if(!elevatorLimitSwitch.get()){
+    if(!elevatorLimitSwitch.get() && elevatorEncoder.getPosition().getValueAsDouble() != 0.0 ){
       elevatorEncoder.setPosition(0.0);
     }
-    //TODO: we need to figure out what the conversion is between this and the actual height is 
     return elevatorEncoder.getPosition().getValueAsDouble();
   }
 

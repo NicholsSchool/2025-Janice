@@ -45,7 +45,7 @@ public class Outtake extends SubsystemBase {
         return () -> inputs.hasCoral;
     }
 
-        public Command commandOuttake() {   
+    public Command commandOuttake() {   
         return new FunctionalCommand(
             () -> System.out.println("Outtaking"),
             () -> outtakeAuto(),

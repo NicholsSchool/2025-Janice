@@ -157,25 +157,28 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double ElevatorCurrentLimit = 35.0;
-    public static double kElevatorP = 13;
-    public static double kElevatorI = 0;
-    public static double kElevatorD = 0;
-    public static double ElevatorMaxAccelerationRad = 1000;
-    public static double ElevatorMaxVelocityRad = 1000;
-    public static double maxHeight = -4.0;
-    public static double minHeight = 0.0;
 
-    public static int elevatorLimitSwitchChannel = 0;
+    public static final double kElevatorP = 13;
+    public static final double kElevatorI = 0;
+    public static final double kElevatorD = 0;
+    public static final double ElevatorMaxAccelerationRad = 1000;
+    public static final double ElevatorMaxVelocityRad = 1000;
+    public static final double maxHeight = -4.0;
+    public static final double minHeight = 0.0;
 
-    public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    public static final int elevatorLimitSwitchChannel = 0;
+
+    public static final double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
-    public static double kArmL1 = -0.01;
-    public static double kArmL2 = -2.3;
-    public static double kArmL3 = -3.7;
-    public static double kArmL4 = -2.0;
+    public static final double kArmL1 = -0.01;
+    public static final double kArmL2 = -2.3;
+    public static final double kArmL3 = -3.7;
+    public static final double kArmL4 = -2.0;
 
-    public static double kAlgaeL2 = -0.4;
-    public static double kAlgaeL3 = -3.38;
+    public static final double kAlgaeL2 = -0.4;
+    public static final double kAlgaeL3 = -3.38;
+
+    public static final double kElevatorManualScaler = 5.0;
 
   }
 

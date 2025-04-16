@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import com.reduxrobotics.sensors.canandgyro.CanandgyroSettings;
 
@@ -19,7 +17,8 @@ public class GyroIORedux implements GyroIO {
     gyro.setPartyMode(0);
 
     CanandgyroSettings settings = new CanandgyroSettings();
-
+    settings.setYawFramePeriod(0.05);
+    settings.setAccelerationFramePeriod(0); //disables the acceleration frame
     gyro.setSettings(settings);
   }
 
@@ -34,10 +33,5 @@ public class GyroIORedux implements GyroIO {
   public void resetIMU() {
     System.out.println("resetting IMU");
     gyro.setYaw(0);
-  }
-
-  @AutoLogOutput
-  public double[] getAccelData() {
-    return new double[] { gyro.getAccelerationX(), gyro.getAccelerationY(), gyro.getAccelerationZ() };
   }
 }

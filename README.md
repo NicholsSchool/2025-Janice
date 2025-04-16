@@ -6,24 +6,26 @@ We are a proud Open Alliance team! Our FRCOA Build Thread can be found on [Chief
 This project uses the REV 2m Distance Sensor. Support libraries must be installed manually.
 Follow instructions here: https://github.com/REVrobotics/2m-Distance-Sensor
 
-CAN ID list: Updated as of 3/6/2025 at 6 pm so it might not be fully updated
-- 20 LeftFrontDrive
-- 21 LeftBackDrive
-- 22 RightFrontDrive
-- 23 RightBackDrive
+CAN ID list: Updated as of 4/16/2025
+- 20 ReduxGyro
+- 21 LeftFrontDrive
+- 22 LeftBackDrive
+- 23 RightFrontDrive
+- 24 RightBackDrive
 
-- 24 LeftFrontSteer
-- 25 LeftBackSteer
-- 26 RightFrontSteer
-- 27 RightBackSteer
+- 25 LeftFrontSteer
+- 26 LeftBackSteer
+- 27 RightFrontSteer
+- 28 RightBackSteer
 
-- 28 LeftFrontEncoder
-- 29 LeftBackEncoder
-- 30 RightFrontEncoder
+- 29 LeftFrontEncoder
+- 30 LeftBackEncoder
 - 31 RightBackEncoder
+- 32 RightFrontEncoder
 
 - 41 LeftElevator
 - 42 RightElevator
 - 43 ElevatorEncoder
 
 - 51 OuttakeMotor
+- 52 OuttakeDistSensor

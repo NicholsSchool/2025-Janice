@@ -33,7 +33,7 @@ public class ElevatorIOSim implements ElevatorIO{
     }
 
     private double getCurrentHeight(){
-        // find a regression for it 
+        //TODO: find a regression for it 
         return lSim.getAngularPositionRad();
     }
 

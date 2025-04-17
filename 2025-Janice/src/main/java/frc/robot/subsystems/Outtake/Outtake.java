@@ -23,8 +23,12 @@ public class Outtake extends SubsystemBase {
         Logger.processInputs("Outtake", inputs);
         if (DriverStation.isDisabled()) {}
     }
-    public void outtake() {
+    public void outtakeAuto() {
         io.setVoltage(-3.0);
+    }
+
+    public void outtakeTele(){
+        io.setVoltage(-2.4);
     }
     
     public void stop() {
@@ -41,12 +45,12 @@ public class Outtake extends SubsystemBase {
         return () -> inputs.hasCoral;
     }
 
-        public Command commandOuttake() {   
+    public Command commandOuttake() {   
         return new FunctionalCommand(
             () -> System.out.println("Outtaking"),
-            () -> outtake(),
+            () -> outtakeAuto(),
             interrupted -> stop(),
             () -> false,
-            this).withTimeout(0.5);
+            this).withTimeout(0.8);
     } 
 }

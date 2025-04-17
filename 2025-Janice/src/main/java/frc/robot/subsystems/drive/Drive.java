@@ -14,14 +14,10 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -29,32 +25,25 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
 
 import java.util.ArrayDeque;
 
-import javax.xml.crypto.dsig.Transform;
-
 // import frc.robot.commands.VisionCommands.PhotonInfo;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-import org.photonvision.PhotonCamera;
-
-import com.google.flatbuffers.FlexBuffers.Vector;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -80,8 +69,6 @@ public class Drive extends SubsystemBase {
   private boolean coastRequest = false;
   private boolean isBrakeModeDrive = true;
 
-  //private PhotonVision photonCam;
-  private int initVisionCount;
   private ArrayDeque<Pose2d> visionStatsBuffer;
   private PoseVisionStats poseVisionStats;
 
@@ -98,6 +85,7 @@ public class Drive extends SubsystemBase {
   SwerveDrivePoseEstimator kalman =
       new SwerveDrivePoseEstimator(kinematics, lastGyroRotation, positions, odometryPose);
 
+  @SuppressWarnings("deprecation")
   private final LoggedDashboardNumber moduleTestIndex = // drive module to test with voltage ramp
       new LoggedDashboardNumber("Module Test Index (0-3)", 0);
 
@@ -113,17 +101,6 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
       
-    //photonCam = new PhotonVision("Arducam_OV2311_USB_Camera");
-
-    // This is related to PathPlanner configuration.
-    // This RobotConfig is currently not used.
-    RobotConfig config;
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
@@ -429,7 +406,6 @@ public class Drive extends SubsystemBase {
 
   @AutoLogOutput
   public double getYaw() {
-    // return odometryPose.getRotation().getRadians();
     return kalman.getEstimatedPosition().getRotation().getRadians();
   }
 
@@ -447,31 +423,7 @@ public class Drive extends SubsystemBase {
     // System.out.println(photonCam.getArea(photonCam.getBestTarget(photonCam.getLatestPipeline())));
   }
 
-  // private boolean usePhotonPose(){
-
-  //   boolean targetDetected = photonCam.getTargetId(photonCam.getLatestPipeline().getBestTarget()) != -1;
-
-  //   if( !targetDetected )
-  //     return false;
-
-  //   Pose2d kalmanPose = kalman.getEstimatedPosition();
-  //   Pose2d rawPhotonPose = getRawPhotonPose();
-
-  //   //runVisionStats(rawPhotonPose); //comment out for better performance
-
-  //   //Take first initVisionCountThreshold vision updates to initiaize kalman position on startup / reset
-  //   if( initVisionCount < VisionConstants.initVisionCountTreshold ) {
-  //     initVisionCount++;
-  //     return true;
-  //   }
-
-  //   Translation2d kalmanTranslation = kalmanPose.getTranslation();
-  //   Translation2d rawPhotonTranslation = rawPhotonPose.getTranslation();
-
-  //   //Check to see if the photon pose is too far away from the estimated pose 
-  //   return kalmanTranslation.getDistance(rawPhotonTranslation) < VisionConstants.visionDistanceUpdateThreshold;
-  // }
-
+  @SuppressWarnings("unused")
   private void runVisionStats( Pose2d newVisionPose ) {
       //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
       if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer )
@@ -490,22 +442,6 @@ public class Drive extends SubsystemBase {
     return poseVisionStats;
   }
 
-  // @AutoLogOutput
-  // private double getDistanceToTag() {
-  //   if( !photonCam.getLatestPipeline().hasTargets() )
-  //     return -1.0;
-      
-  //   Transform3d cameraToTarget = photonCam.getLatestPipeline().getBestTarget().bestCameraToTarget;
-  //   return cameraToTarget.getTranslation().getDistance(Translation3d.kZero);
-  // }
-
-  // private Matrix<N3, N1> getVisionStdDevs( double distanceToTag ) {
-  //   double xStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
-  //   double yStdDevs = VisionConstants.tranlationPhotonStdDevs * distanceToTag; //meters
-  //   double yawStdDevs = VisionConstants.rotationPhotonStdDevs * distanceToTag; //rad
-
-  //   return VecBuilder.fill(xStdDevs, yStdDevs, yawStdDevs);
-  // }
 
   /** Adds a new timestamped vision measurement. */
   public void addVisionMeasurement(

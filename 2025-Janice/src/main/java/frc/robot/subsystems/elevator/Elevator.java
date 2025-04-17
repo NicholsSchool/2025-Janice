@@ -2,7 +2,6 @@ package frc.robot.subsystems.elevator;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.subsystems.drive.Drive;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -141,13 +140,12 @@ public class Elevator extends SubsystemBase {
     }else{
       elevatorMode = ElevatorMode.kGoToPos;
     }
-    // if((stickPosition < 0 && getHeight() < ElevatorConstants.minHeight) || (stickPosition > 0 && getHeight() > ElevatorConstants.maxHeight)){
-    //   voltageCmdManual = 0.0;
-    // }else{
+    
+
     if(inputs.limitSwitch && stickPosition > 0.0){
       voltageCmdManual = 0.0;
     }else{
-      voltageCmdManual = stickPosition * 5;
+      voltageCmdManual = stickPosition * ElevatorConstants.kElevatorManualScaler;
     }
     //}
     

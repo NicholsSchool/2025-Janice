@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToHumanPlayer;
 import frc.robot.commands.DriveToReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;
@@ -32,9 +30,6 @@ import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
 import frc.robot.subsystems.Outtake.OuttakeIOReal;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
@@ -66,7 +61,6 @@ public class RobotContainer {
   public final Drive drive;
   public final Elevator elevator;
   private final Outtake outtake;
-  private final Climber climber;
   private final Vision vision;
   private final DeAlgifier deAlgifier;
 
@@ -120,7 +114,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
         vision =
              new Vision(
@@ -142,7 +135,6 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(3));
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
               new Vision(
@@ -162,13 +154,30 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
+        break;
+
+        case ROBOT_CALIBRATE:
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        outtake = new Outtake(new OuttakeIOSim());
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        vision =
+             new Vision(
+              drive::addVisionMeasurement,
+              new VisionIOPhotonVision(camera0Name, robotToCamera0),
+              new VisionIOPhotonVision(camera1Name, robotToCamera1));
         break;
 
       case ROBOT_FOOTBALL:
@@ -181,7 +190,6 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        climber = new Climber(new ClimberIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
@@ -189,8 +197,6 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
-
-      case ROBOT_REPLAY:
       default:
         // Replayed robot, disable IO implementations since the replay
         // will supply the data.
@@ -203,7 +209,6 @@ public class RobotContainer {
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
-        climber = new Climber(new ClimberIO() {});
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
@@ -242,25 +247,6 @@ public class RobotContainer {
     // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
     //   colorInfo.pvCornerOne();
     // }
-  }
-
-  // changes robot pose with dashboard tunables
-  private void resetPosWithDashboard() {
-
-    // update robot position only if robot is disabled, otherwise
-    // robot could move in unexpected ways.
-    if (DriverStation.isDisabled()) {
-      if (startX0.hasChanged(hashCode())
-          || startY0.hasChanged(hashCode())
-          || startTheta0.hasChanged(hashCode())
-          || startX1.hasChanged(hashCode())
-          || startY1.hasChanged(hashCode())
-          || startTheta1.hasChanged(hashCode())
-          || startPositionIndex.hasChanged(hashCode())) {
-
-        setStartingPose();
-      }
-    }
   }
 
   /**
@@ -342,7 +328,7 @@ public class RobotContainer {
         // drive to closest reef
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
-    driveController.a().whileTrue(new DriveToHumanPlayer(drive));
+    driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
     
     // driveController
@@ -389,24 +375,23 @@ public class RobotContainer {
     operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
     operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
     operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
-    // operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
+    operatorController.povUp().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL3));
+    operatorController.povDown().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL2));
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
-    operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtake(), outtake )));
-    //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
+    operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
 
     // //axis 4 is Right X
-    // operatorController.axisGreaterThan(4, 0.8).onTrue( new RepeatCommand(new InstantCommand( () -> deAlgifier.lateratorOut() )));
-    // operatorController.axisLessThan(4, -0.8).onTrue( new RepeatCommand(new InstantCommand( () -> deAlgifier.lateratorIn() )));
-    deAlgifier.setDefaultCommand(new InstantCommand(() -> deAlgifier.lateratorManual(operatorController.getRightY()), deAlgifier));
+    operatorController.axisMagnitudeGreaterThan(5, 0.07).whileTrue( 
+      new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY())).repeatedly());
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> deAlgifier.lateratorManual(0.0)));
+
 
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
-    operatorController.rightBumper().whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.outtake() )));
-    operatorController.rightTrigger(0.8)
-      .and(operatorController.rightBumper())
-      .whileFalse(new InstantCommand( () -> deAlgifier.holdAlgae()));
+    operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
+
 
 
   }
@@ -443,8 +428,6 @@ public class RobotContainer {
     //return autoChooser.get();
   }
 
-  private void addAutos() {}
-  
   private void addTestingAutos() {
     autoChooser.addOption("Wait Auto", new WaitCommand(Time.ofBaseUnits(5, Seconds)) );
     // Pathplanner Auto Testing
@@ -473,10 +456,5 @@ public class RobotContainer {
     //           new Translation2d(4, 3),
     //           new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
 
-  }
-
-  private void registerNamedCommands() {
-    NamedCommands.registerCommand("Print", new InstantCommand( () -> System.out.println("Print Command!")));
-    
   }
 }

@@ -30,7 +30,7 @@ public final class Constants {
   public static final double MeterPerInch = 0.0254;
   public static final double KgPerLb = 0.453592;
 
-  public static final double JOYSTICK_DEADBAND = 0.05;
+  public static final double JOYSTICK_DEADBAND = 0.08;
 
   public static RobotType getRobot() {
     return RobotBase.isReal() ? robot : RobotType.ROBOT_SIM;
@@ -41,12 +41,13 @@ public final class Constants {
     ROBOT_REAL_JANICE, // a real robot (JANICE)
     ROBOT_REPLAY, // data file replay (could be on real bot or simulation)
     ROBOT_SIM, // simulation
-    ROBOT_FOOTBALL // Football for simulating
+    ROBOT_FOOTBALL, // Football for simulating
+    ROBOT_CALIBRATE
   }
 
   // CAN IDs (Controller Area Network)
   public static final class CAN {
-    public static final int kReduxGyro = 11;
+    public static final int kReduxGyro = 20;
 
     public static final int kFrontLeftDrive = 21;
     public static final int kBackLeftDrive = 22;
@@ -123,8 +124,8 @@ public final class Constants {
 
     public static final double lowGearScaler = 0.6;
     //TODO: tune this
-    public static final double reefLeftShift = 0.1;
-    public static final double reefRightShift = 0.22;
+    public static final double reefLeftShift = 0.1 + 0.08 - Units.inchesToMeters(5);
+    public static final double reefRightShift = 0.22 + 0.08;
   }
 
   // REV MAXSwerve Modules
@@ -156,22 +157,28 @@ public final class Constants {
 
   public static final class ElevatorConstants{
     public static final double ElevatorCurrentLimit = 35.0;
-    public static double kElevatorP = 13;
-    public static double kElevatorI = 0;
-    public static double kElevatorD = 0;
-    public static double ElevatorMaxAccelerationRad = 1000;
-    public static double ElevatorMaxVelocityRad = 1000;
-    public static double maxHeight = -4.0;
-    public static double minHeight = -0.0;
 
-    public static int elevatorLimitSwitchChannel = 0;
+    public static final double kElevatorP = 13;
+    public static final double kElevatorI = 0;
+    public static final double kElevatorD = 0;
+    public static final double ElevatorMaxAccelerationRad = 1000;
+    public static final double ElevatorMaxVelocityRad = 1000;
+    public static final double maxHeight = -4.0;
+    public static final double minHeight = 0.0;
 
-    public static double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    public static final int elevatorLimitSwitchChannel = 0;
+
+    public static final double kElevatorGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     
-    public static double kArmL1 = -0.05;
-    public static double kArmL2 = -2.3;
-    public static double kArmL3 = -3.7;
-    public static double kArmL4 = -2.0;
+    public static final double kArmL1 = -0.01;
+    public static final double kArmL2 = -2.3;
+    public static final double kArmL3 = -3.7;
+    public static final double kArmL4 = -2.0;
+
+    public static final double kAlgaeL2 = -0.4;
+    public static final double kAlgaeL3 = -3.38;
+
+    public static final double kElevatorManualScaler = 5.0;
 
   }
 
@@ -207,9 +214,9 @@ public static final class DeAlgifierConstants {
   public static final double kLateratorGearRatio = 5;
   public static final double kGrabberGearRatio = 3.86;
 
-  public static final double kGrabberIntakeSetpointRPM = 0.0;
-  public static final double kGrabberEjectSetpointRPM = 0.0;
-  public static final double kGrabberP = 1.0;
+  public static final double kGrabberIntakeSetpointRPM = -300.0;
+  public static final double kGrabberEjectSetpointRPM = +300.0;
+  public static final double kGrabberP = 5.0;
   public static final double kGrabberD = 0.0;
 
   public static final double kLateratorInPositionRad = 5.0; //only used in SIM

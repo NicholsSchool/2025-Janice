@@ -5,22 +5,19 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
-import frc.robot.commands.AutoOffsets.ReefOffsetParallel;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.ReefPosition;
 
 public class DriveToReef extends DriveToPose {
   private static final LoggedTunableNumber robotRotationOffset =
       new LoggedTunableNumber("DriveToReef/RobotRotationOffset", -Math.PI/2);
 public static enum ReefDirection{
-  CENTER,
+  DEALGIFY,
   LEFT,
   RIGHT
 }
@@ -59,9 +56,9 @@ public DriveToReef(Drive drive, ReefDirection reefDirection) {
             double angleOffset = 0.0;
 
             switch(reefDirection){
-              case CENTER:
-              leftRightOffset = 0.0;
-              angleOffset = 0.0;
+              case DEALGIFY:
+              leftRightOffset = Constants.DriveConstants.reefLeftShift + Units.inchesToMeters(4);
+              angleOffset = -Math.PI / 2;
               break;
 
               case LEFT:

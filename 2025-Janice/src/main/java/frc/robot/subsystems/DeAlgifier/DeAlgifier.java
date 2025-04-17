@@ -13,6 +13,7 @@ public class DeAlgifier extends SubsystemBase{
     private final PIDController lateratorPidController;
     private final PIDController grabberPidController;
 
+    @SuppressWarnings("unused")
     private LateratorMode lateratorMode;
     private GrabberMode grabberMode;
 
@@ -55,44 +56,48 @@ public class DeAlgifier extends SubsystemBase{
              io.setGrabberBrake(true);
 
              lateratorMode = LateratorMode.IDLE;
-             grabberMode = GrabberMode.IDLE; //for safety upon reenable
+             grabberMode = GrabberMode.IDLE;
 
              return;
         } 
         if(manual){
-            io.setLateratorVoltage(lateralManual);
+            io.setLateratorVoltage(lateralManual * 3);
         }else{
-        
-            switch( lateratorMode ) {
-            case IN -> {
-                if( !inputs.backLimitSwitch)
-                    io.setLateratorVoltage(lateratorPidController.calculate(
-                        inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
-                else io.setLateratorVoltage(0.0);
-            }
-            case OUT -> {
-                if( !inputs.frontLimitSwitch )
-                    io.setLateratorVoltage(lateratorPidController.calculate(
-                        inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
-                else io.setLateratorVoltage(0.0);
-            }
-            case IDLE -> io.setLateratorVoltage(0.0);
-            default -> io.setLateratorVoltage(0.0);
+            io.setLateratorVoltage(0.0);
+            io.setGrabberBrake(true);            
+        //     switch( lateratorMode ) {
+        //     case IN -> {
+        //         if( !inputs.backLimitSwitch)
+        //             io.setLateratorVoltage(lateratorPidController.calculate(
+        //                 inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+        //         else io.setLateratorVoltage(0.0);
+        //     }
+        //     case OUT -> {
+        //         if( !inputs.frontLimitSwitch )
+        //             io.setLateratorVoltage(lateratorPidController.calculate(
+        //                 inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
+        //         else io.setLateratorVoltage(0.0);
+        //     }
+        //     case IDLE -> io.setLateratorVoltage(0.0);
+        //     default -> io.setLateratorVoltage(0.0);
+        // }
         }
 
         switch( grabberMode ) {
             case INTAKE -> {
                 io.setGrabberBrake(false);
-                io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
+                io.setGrabberVoltage(-3.0);
+                //io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberIntakeSetpointRPM));
             }
             case OUTTAKE -> {
                 io.setGrabberBrake(false);
-                io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberEjectSetpointRPM));
+                io.setGrabberVoltage(1.5);
+               // io.setGrabberVoltage(grabberPidController.calculate(inputs.grabberVelocityRPM, DeAlgifierConstants.kGrabberEjectSetpointRPM));
             }
             case HOLD, IDLE -> io.setGrabberBrake(true);
             default -> io.setGrabberBrake(true);
         }
-        }
+        
     }
     
 
@@ -104,7 +109,11 @@ public class DeAlgifier extends SubsystemBase{
     }
 
     public void lateratorManual(double input){
-        lateralManual = input*4.0;
+        if( Math.abs( input ) > 0.05 ) {
+            lateralManual = input*1.5;
+        } else {
+            lateralManual = 0.0;
+        }
     }
 
     /**

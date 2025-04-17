@@ -82,6 +82,7 @@ public class RobotContainer {
   public static CommandXboxController driveController = new CommandXboxController(0);
   public static CommandXboxController operatorController = new CommandXboxController(1);
   public Rumbler driveRumbler = new Rumbler(driveController);
+  public Rumbler operatorRumbler = new Rumbler(operatorController);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -365,15 +366,6 @@ public class RobotContainer {
     driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
 
-    driveController.b().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
-    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
-
-    driveController.x().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
-    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
-
-    driveController.a().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
-    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
-    
     // driveController
     //     .a()
     //     .whileTrue(
@@ -435,8 +427,25 @@ public class RobotContainer {
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
 
-    driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());
 
+    driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());
+    operatorRumbler.setDefaultCommand(new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0), operatorRumbler).repeatedly());
+
+    driveController.b().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+
+    driveController.x().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+
+    driveController.a().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+
+    operatorController.leftTrigger(0.8).onFalse(
+      new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0.3), driveRumbler).repeatedly().withTimeout(0.3));
+    
+    driveController.povRight().onFalse(
+      new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0.3), driveRumbler).repeatedly().withTimeout(0.3));
+    
   }
 
   // /**

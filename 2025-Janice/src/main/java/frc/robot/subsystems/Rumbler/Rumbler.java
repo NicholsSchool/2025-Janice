@@ -1,7 +1,11 @@
 package frc.robot.subsystems.Rumbler;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class Rumbler extends SubsystemBase {
@@ -16,8 +20,8 @@ public class Rumbler extends SubsystemBase {
     public void periodic(){
     }
 
-    public void setRumble(RumbleType rumbleType, double value){
-        controller.setRumble(rumbleType, value);
+    public void setRumble(RumbleType rumbleType, double strength){
+        controller.setRumble(rumbleType, strength);
     }
 
 }

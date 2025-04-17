@@ -19,6 +19,6 @@ public class DriveAndScore extends Command {
         new SequentialCommandGroup(
             new DriveToReef(drive, reefDirection),
             elevator.runGoToPosCommand(scoreSetpoint),
-            new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(() -> Math.abs(elevator.getHeight() - scoreSetpoint ) < 0.05 ) ) );
+            new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(() -> Math.abs(elevator.getHeight() - scoreSetpoint ) < 0.12 ) ) );
     }
 }

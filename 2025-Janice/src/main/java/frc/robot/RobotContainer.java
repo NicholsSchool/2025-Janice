@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.DeAlgifier.DeAlgifierIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
+import frc.robot.subsystems.Rumbler.Rumbler;
 import frc.robot.subsystems.Outtake.OuttakeIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -73,6 +75,8 @@ public class RobotContainer {
   // Controller
   public static CommandXboxController driveController = new CommandXboxController(0);
   public static CommandXboxController operatorController = new CommandXboxController(1);
+  public Rumbler driveRumbler = new Rumbler(driveController);
+  public Rumbler operatorRumbler = new Rumbler(operatorController);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -286,7 +290,7 @@ public class RobotContainer {
             () -> -driveController.getRightX() * 0.55,
             () -> Constants.driveRobotRelative));
     driveController.start().onTrue(new InstantCommand(() -> drive.resetFieldHeading()));
-    
+
     driveController
         .leftTrigger(0.8)
         .whileTrue(
@@ -330,7 +334,7 @@ public class RobotContainer {
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
     driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
-    
+
     // driveController
     //     .a()
     //     .whileTrue(
@@ -393,7 +397,24 @@ public class RobotContainer {
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
 
 
+    driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());
+    operatorRumbler.setDefaultCommand(new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0), operatorRumbler).repeatedly());
 
+    driveController.b().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+
+    driveController.x().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+
+    driveController.a().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+
+    operatorController.leftTrigger(0.8).onFalse(
+      new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0.3), driveRumbler).repeatedly().withTimeout(0.3));
+    
+    driveController.povRight().onFalse(
+      new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0.3), driveRumbler).repeatedly().withTimeout(0.3));
+    
   }
 
   // /**

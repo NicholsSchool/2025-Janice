@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.drive.Drive;
@@ -18,7 +19,8 @@ public class DriveAndScore extends Command {
         this.addRequirements(drive);
         new SequentialCommandGroup(
             new DriveToReef(drive, reefDirection),
-            elevator.runGoToPosCommand(scoreSetpoint),
-            new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(() -> Math.abs(elevator.getHeight() - scoreSetpoint ) < 0.12 ) ) );
+            elevator.runGoToPosCommand(scoreSetpoint - 0.1),
+            new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(() -> Math.abs(elevator.getHeight() - scoreSetpoint - 0.1 ) < 0.12 ) ) )
+            .finallyDo( () -> elevator.setTargetPos(ElevatorConstants.kArmL1) );
     }
 }

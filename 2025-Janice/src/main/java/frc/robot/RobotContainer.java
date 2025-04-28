@@ -366,12 +366,7 @@ public class RobotContainer {
         elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3 - 0.1),
         new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(() -> Math.abs(elevator.getHeight() - Constants.ElevatorConstants.kArmL3 - 0.1 ) < 0.05 ) ) ))
       .onFalse(elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1));
-    driveController.b().whileTrue( 
-        new SequentialCommandGroup(
-        new DriveToReef(drive, ReefDirection.RIGHT),
-        elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3 - 0.1),
-        new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake ).onlyIf(() -> Math.abs(elevator.getHeight() - Constants.ElevatorConstants.kArmL3 - 0.1 ) < 0.05 ) ) ))
-      .onFalse(elevator.commandGoToPos(Constants.ElevatorConstants.kArmL1));
+    driveController.b().whileTrue( new DriveAndScore(drive, elevator, outtake, ReefDirection.RIGHT, true) );
     driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
     

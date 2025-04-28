@@ -20,7 +20,7 @@ public class DeAlgifierIOSim implements DeAlgifierIO {
           LinearSystemId.createDCMotorSystem(grabber, 0.025, DeAlgifierConstants.kGrabberGearRatio),
           grabber);
 
-    public void updateInputs(DeAlgifierIOInputs inputs){ //TODO: fix these update inputs
+    public void updateInputs(DeAlgifierIOInputs inputs){
         inputs.lateratorMotorVoltage = lateratorMotor.getInputVoltage();
         inputs.lateratorCurrentAmps = lateratorMotor.getCurrentDrawAmps();
         inputs.lateratorSupplyVoltage = lateratorMotor.getInputVoltage();

@@ -46,9 +46,6 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
 
         voltageControl = new VoltageOut(0.0);
         grabber.setControl(voltageControl);
-
-        frontLimitSwitch = new DigitalInput(DeAlgifierConstants.kFrontLimitSwitchChannel);
-        backLimitSwitch = new DigitalInput(DeAlgifierConstants.kBackLimitSwitchChannel);
     }
 
     public void updateInputs(DeAlgifierIOInputs inputs){

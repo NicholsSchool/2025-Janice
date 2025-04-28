@@ -80,14 +80,11 @@ public final class Constants {
 
     public static final int kLeftChain = 41;
     public static final int kRightChain = 42;
-    //fill in properly later
     public static final int elevatorEncoder = 43;
-    //TODO find real value
     public static final int kOuttakeMotor = 51;
 
     public static final int kDeAlgifierLaterator = 37;
     public static final int kDeAlgifierGrabber = 38;
-    //TODO someone check this please.
   }
 
   public static final class RobotConstants {
@@ -123,7 +120,6 @@ public final class Constants {
     public static final double kTRACK_WIDTH_Y = Units.inchesToMeters(24.5);
 
     public static final double lowGearScaler = 0.6;
-    //TODO: tune this
     public static final double reefLeftShift = 0.1 + 0.08 - Units.inchesToMeters(5);
     public static final double reefRightShift = 0.22 + 0.08;
   }
@@ -132,8 +128,8 @@ public final class Constants {
   public static final class ModuleConstants {
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4.0) * 0.9569;
     public static final double kWheelRadiusMeters = kWheelDiameterMeters / 2.0;
-    public static final double kDrivingMotorFreeSpinRPM = 6000; // Kraken non-FOC max RPM
-    public static final double odometryCoefficient = 1.0; // TODO: tune odometry and use this
+    public static final double kDrivingMotorFreeSpinRPM = 5870; // Kraken non-FOC max RPM
+    public static final double odometryCoefficient = 1.0;
 
     public static final double kDrivingP = 0.02; 
     public static final double kDrivingI = 0.0;
@@ -197,17 +193,12 @@ public final class Constants {
   }
 
   public static final class OuttakeConstants {
-
-    //TODO set new current limits
     public static final double kOuttakeCurrentLimit = 35.0;
     public static final double kCoralDistanceFarBound = 1.7;
     public static final double kCoralDistanceCloseBound = 1.3;
   }
 
 public static final class DeAlgifierConstants {
-  public static final int kFrontLimitSwitchChannel = 2; //TODO: find these
-  public static final int kBackLimitSwitchChannel = 3;
-
   public static final double kDeAlgifierGrabberCurrentLimit = 60; //amps
   public static final double kDeAlgifierLateratorCurrentLimit = 30; // low to make sure does not overrdrive into hard stop
 
@@ -220,26 +211,18 @@ public static final class DeAlgifierConstants {
   public static final double kGrabberD = 0.0;
 
   public static final double kLateratorInPositionRad = 5.0; //only used in SIM
-  public static final double kLateratorOutPositionRad = -5.0; //TODO: UPDATE THESE
+  public static final double kLateratorOutPositionRad = -5.0; //TODO: redo sim dealgifier
 
   public static final double kLateratorVelocityGoalRadPerSec = 5;
   public static final double kLateratorPVelocity = 2.0;
   public static final double kLateratorDVelocity = 0.0;
 }
-
-
-  //TODO: Fix these constants MUST BE DONE BEFORE COMP
-  public static final class ClimberConstants {
-  
-      public static final int kChannel = -0;
-      public static final int kRChannel = -0;
-  }
     
   public static final class AutoConstants {
-    public static final double driveFinishThreshold = 0.075; // TODO: tune these
+    public static final double driveFinishThreshold = 0.075;
     public static final double angleFinishThreshold = Math.PI / 12.0;
 
-    public static final double splineFinishThreshold = 0.4; // TODO: tune these
+    public static final double splineFinishThreshold = 0.4;
     public static final double splineAngleFinishThreshold = Math.PI / 12.0;
     public static final double SplineV5LinearMultiplier = 1.5;
     public static final double SplineV5CircularMultiplier = 2.0;

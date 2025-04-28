@@ -22,6 +22,7 @@ public class LoggedTunableNumber {
   private final String key;
   private boolean hasDefault = false;
   private double defaultValue;
+  @SuppressWarnings("deprecation")
   private LoggedDashboardNumber dashboardNumber;
   private Map<Integer, Double> lastHasChangedValues = new HashMap<>();
 
@@ -50,6 +51,7 @@ public class LoggedTunableNumber {
    *
    * @param defaultValue The default value
    */
+  @SuppressWarnings("deprecation")
   public void initDefault(double defaultValue) {
     if (!hasDefault) {
       hasDefault = true;

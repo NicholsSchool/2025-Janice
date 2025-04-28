@@ -284,8 +284,6 @@ public class SplineV5ToPose extends Command {
   /**
    * Checks if the robot pose is within the allowed drive and theta tolerances.
    *
-   * <p>//TODO: @tom is this in meters
-   *
    * @param driveTolerance the finish distance for drive in meters
    * @param thetaTolerance the angle threashold
    */

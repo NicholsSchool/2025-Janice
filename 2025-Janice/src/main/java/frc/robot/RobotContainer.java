@@ -57,6 +57,7 @@ public class RobotContainer {
   public final Drive drive;
   public final Elevator elevator;
   private final Outtake outtake;
+  @SuppressWarnings("unused")
   private final Vision vision;
   private final DeAlgifier deAlgifier;
 

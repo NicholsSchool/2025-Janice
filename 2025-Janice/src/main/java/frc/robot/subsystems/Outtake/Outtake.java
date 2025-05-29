@@ -14,7 +14,7 @@ public class Outtake extends SubsystemBase {
     private OuttakeIO io;
     private final OuttakeIOInputsAutoLogged inputs = new OuttakeIOInputsAutoLogged();
     
-    public Outtake (OuttakeIO io){
+    public Outtake  (OuttakeIO io){
         this.io = io;
     }
     

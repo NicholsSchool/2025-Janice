@@ -85,6 +85,7 @@ public final class Constants {
 
     public static final int kDeAlgifierLaterator = 37;
     public static final int kDeAlgifierGrabber = 38;
+    public static final int kGripperMotor = -1;
   }
 
   public static final class RobotConstants {
@@ -196,6 +197,11 @@ public final class Constants {
     public static final double kOuttakeCurrentLimit = 35.0;
     public static final double kCoralDistanceFarBound = 1.7;
     public static final double kCoralDistanceCloseBound = 1.3;
+  }
+
+  public static final class GripperConstants {
+
+    public static final double kGripperCurrentLimit = -1;
   }
 
 public static final class DeAlgifierConstants {

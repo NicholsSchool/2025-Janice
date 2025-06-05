@@ -13,6 +13,14 @@ public class Gripper extends SubsystemBase{
     
     private GripperIO io;
     private final GripperIOInputsAutoLogged inputs = new GripperIOInputsAutoLogged();
+    private double voltage = 0.0;
+    private GripperMode gripperMode;
+
+    enum GripperMode{
+        OUTTAKE,
+        INTAKE,
+        STOP
+    }
 
     public Gripper(GripperIO io){
         this.io = io;
@@ -22,18 +30,35 @@ public class Gripper extends SubsystemBase{
         io.updateInputs(inputs);
         Logger.processInputs("Gripper", inputs);
         if (DriverStation.isDisabled()) {}
-    }
+        
+        switch(gripperMode){
+            case OUTTAKE -> {
+                    voltage = 1.5;
+            }
+            case INTAKE -> {
+                voltage = -3.0;
+            }
+            case STOP -> {
+                voltage = 0.0;
+            }
+            default -> {
+                voltage = 0.0;
+            }
+        }
+            io.setVoltage(voltage);
+        }
+    
 
     public void intake(){
-        io.setVoltage(-3.0)
+        gripperMode = GripperMode(INTAKE);
     }
 
     public void outtake(){
-        io.setVoltage(1.5)
+        gripperMode = GripperMode(OUTTAKE);
     }
 
     public void stop() {
-        io.setVoltage(0.0);
+        gripperMode = GripperMode(STOP);
     }
 
 

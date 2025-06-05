@@ -1,7 +1,9 @@
 package frc.robot.subsystems.DeAlgifier;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CAN;
 import frc.robot.Constants.DeAlgifierConstants;
 
 import org.littletonrobotics.junction.Logger;
@@ -12,6 +14,8 @@ public class DeAlgifier extends SubsystemBase{
 
     private final PIDController lateratorPidController;
     private final PIDController grabberPidController;
+    
+    private final DigitalInput limitSwitch;
 
     @SuppressWarnings("unused")
     private LateratorMode lateratorMode;
@@ -39,6 +43,8 @@ public class DeAlgifier extends SubsystemBase{
         this.io = io;
         lateratorPidController = new PIDController(DeAlgifierConstants.kLateratorPVelocity, 0, DeAlgifierConstants.kLateratorDVelocity);
         grabberPidController = new PIDController(DeAlgifierConstants.kGrabberP, 0, DeAlgifierConstants.kGrabberD);
+
+        limitSwitch = new DigitalInput(CAN.kDeAlgifierLimitSwitch);
 
         lateratorPidController.reset();
         grabberPidController.reset();

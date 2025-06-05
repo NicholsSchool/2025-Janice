@@ -21,6 +21,7 @@ import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIOReal;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIOSim;
+import frc.robot.subsystems.Gripper.GripperIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
@@ -60,6 +61,7 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final Vision vision;
   private final DeAlgifier deAlgifier;
+  private final Gripper gripper;
 
 
   // shuffleboard
@@ -107,6 +109,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
         deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
+        gripper = new Gripper(new GripperIOReal());
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -126,6 +129,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        gripper = new Gripper(new GripperIOSim());
         vision =
               new Vision(
                 drive::addVisionMeasurement,
@@ -145,6 +149,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        gripper = new Gripper(new GripperIOSim());
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -163,6 +168,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        gripper = new Gripper(new GripperIOSim());
         vision =
              new Vision(
               drive::addVisionMeasurement,
@@ -181,6 +187,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        gripper = new Gripper(new GripperIOSim());
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -200,6 +207,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        gripper = new Gripper(new GripperIO());
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;

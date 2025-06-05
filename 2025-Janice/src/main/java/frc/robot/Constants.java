@@ -85,7 +85,11 @@ public final class Constants {
 
     public static final int kDeAlgifierLaterator = 37;
     public static final int kDeAlgifierGrabber = 38;
+    public static final int kDeAlgifierLimitSwitch = -1;
+
     public static final int kGripperMotor = -1;
+    
+    public static final int kLateratorLimitSwitch = -1;
   }
 
   public static final class RobotConstants {
@@ -199,11 +203,6 @@ public final class Constants {
     public static final double kCoralDistanceCloseBound = 1.3;
   }
 
-  public static final class GripperConstants {
-
-    public static final double kGripperCurrentLimit = -1;
-  }
-
 public static final class DeAlgifierConstants {
   public static final double kDeAlgifierGrabberCurrentLimit = 60; //amps
   public static final double kDeAlgifierLateratorCurrentLimit = 30; // low to make sure does not overrdrive into hard stop
@@ -223,7 +222,15 @@ public static final class DeAlgifierConstants {
   public static final double kLateratorPVelocity = 2.0;
   public static final double kLateratorDVelocity = 0.0;
 }
-    
+
+public static final class GripperConstants {
+  public static final double kGripperCurrentLimit = -1;
+}
+
+public static final class LateratorConstants {
+
+}
+
   public static final class AutoConstants {
     public static final double driveFinishThreshold = 0.075;
     public static final double angleFinishThreshold = Math.PI / 12.0;

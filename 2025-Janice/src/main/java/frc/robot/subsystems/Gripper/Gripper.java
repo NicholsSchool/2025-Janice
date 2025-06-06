@@ -41,7 +41,10 @@ public class Gripper extends SubsystemBase{
             case INTAKE -> {
                 voltage = -3.0;
             }
-            case STOP, IDLE -> {
+            case STOP -> {
+                voltage = 0.0;
+            }
+            case IDLE -> {
                 voltage = 0.0;
             }
             default -> {

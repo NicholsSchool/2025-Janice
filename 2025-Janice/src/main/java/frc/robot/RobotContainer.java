@@ -26,6 +26,9 @@ import frc.robot.subsystems.Gripper.GripperIO;
 import frc.robot.subsystems.Gripper.GripperIOReal;
 import frc.robot.subsystems.Gripper.GripperIOSim;
 import frc.robot.subsystems.Laterator.Laterator;
+import frc.robot.subsystems.Laterator.LateratorIO;
+import frc.robot.subsystems.Laterator.LateratorIOReal;
+import frc.robot.subsystems.Laterator.LateratorIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
@@ -64,9 +67,9 @@ public class RobotContainer {
   private final Outtake outtake;
   @SuppressWarnings("unused")
   private final Vision vision;
-  private final DeAlgifier deAlgifier;
+  // private final DeAlgifier deAlgifier;
   private final Gripper gripper;
-
+  private final Laterator laterator;
 
   // shuffleboard
   ShuffleboardTab shuffleBoardTab;
@@ -112,7 +115,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
+        // deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
+        laterator = new Laterator(new LateratorIOReal());
         gripper = new Gripper(new GripperIOReal());
         vision =
              new Vision(
@@ -132,7 +136,8 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(3));
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
               new Vision(
@@ -152,7 +157,8 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
             new Vision(
@@ -171,7 +177,8 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
              new Vision(
@@ -190,7 +197,8 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
              new Vision(
@@ -210,7 +218,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        laterator = new Laterator(new LateratorIO() {});
         gripper = new Gripper(new GripperIO() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
@@ -335,11 +344,11 @@ public class RobotContainer {
 
     // //axis 5 is Right Y
     operatorController.axisMagnitudeGreaterThan(5, 0.07).whileTrue( 
-      new InstantCommand( () -> Laterator.lateratorManual(operatorController.getRightY())).repeatedly());
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> deAlgifier.lateratorManual(0.0)));
+      new InstantCommand( () -> laterator.lateratorManual(operatorController.getRightY())).repeatedly());
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> laterator.lateratorManual(0.0)));
 
-    operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
-    operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
+    operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> gripper.intake() )));
+    operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> gripper.stop() )));
 
     // rumbler
     driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());

@@ -16,6 +16,7 @@ public interface GripperIO {
   /** Set voltage command */
   public default void setVoltage(double voltage) {}
 
+  public default void setGripperBrake(boolean enable) {} 
 
 }
 

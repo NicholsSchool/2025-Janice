@@ -83,13 +83,13 @@ public final class Constants {
     public static final int elevatorEncoder = 43;
     public static final int kOuttakeMotor = 51;
 
-    public static final int kDeAlgifierLaterator = 37;
-    public static final int kDeAlgifierGrabber = 38;
-    public static final int kDeAlgifierLimitSwitch = -1;
+    // public static final int kDeAlgifierLaterator = 37;
+    // public static final int kDeAlgifierGrabber = 38;
+    // public static final int kDeAlgifierLimitSwitch = -1;
 
-    public static final int kGripperMotor = -1;
-    
-    public static final int kLateratorLimitSwitch = -1;
+    public static final int kGripperMotor = 38;
+    public static final int kLaterator = 37;
+    public static final int kLateratorLimitSwitch = -1; //TODO add CAMID for laterator limit switch
   }
 
   public static final class RobotConstants {
@@ -225,10 +225,14 @@ public static final class DeAlgifierConstants {
 
 public static final class GripperConstants {
   public static final double kGripperCurrentLimit = -1;
+
+  public static final double kGripperGearRatio = 3.86;
 }
 
 public static final class LateratorConstants {
+  public static final double kLateratorCurrentLimit = -1;
 
+  public static final double kLateratorGearRatio = 5.0;
 }
 
   public static final class AutoConstants {

@@ -21,7 +21,11 @@ import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIOReal;
 import frc.robot.subsystems.DeAlgifier.DeAlgifierIOSim;
+import frc.robot.subsystems.Gripper.Gripper;
+import frc.robot.subsystems.Gripper.GripperIO;
+import frc.robot.subsystems.Gripper.GripperIOReal;
 import frc.robot.subsystems.Gripper.GripperIOSim;
+import frc.robot.subsystems.Laterator.Laterator;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
@@ -207,7 +211,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         outtake = new Outtake(new OuttakeIO() {});
         deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
-        gripper = new Gripper(new GripperIO());
+        gripper = new Gripper(new GripperIO() {});
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
@@ -331,7 +335,7 @@ public class RobotContainer {
 
     // //axis 5 is Right Y
     operatorController.axisMagnitudeGreaterThan(5, 0.07).whileTrue( 
-      new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY())).repeatedly());
+      new InstantCommand( () -> Laterator.lateratorManual(operatorController.getRightY())).repeatedly());
     operatorController.rightBumper().onTrue(new InstantCommand(() -> deAlgifier.lateratorManual(0.0)));
 
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));

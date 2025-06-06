@@ -15,7 +15,7 @@ public class Laterator extends SubsystemBase{
 
     private double voltage = 0.0;
     private boolean isManual = true;
-    private double lateralManual = 0.0;
+    public static double lateratorManual = 0.0;
     private LateratorMode lateratorMode;
 
     enum LateratorMode{
@@ -37,12 +37,11 @@ public class Laterator extends SubsystemBase{
         if (DriverStation.isDisabled()) {}
 
         if(isManual){
-            io.setVoltage(lateralManual * 3);
+            io.setVoltage(lateratorManual * 3);
         }else{
             voltage = 0.0;
-            io.setVoltage(voltage); 
         }
-
+        else {
         switch(lateratorMode){
             case OUTTAKE -> {
                 if (inputs.limitSwitch && voltage > 0) {
@@ -62,6 +61,7 @@ public class Laterator extends SubsystemBase{
                 voltage = 0.0;
             }
         }
+    }
             io.setVoltage(voltage);
         }
     
@@ -80,6 +80,10 @@ public class Laterator extends SubsystemBase{
 
     public void idle() {
         lateratorMode = LateratorMode.IDLE;
+    }
+
+    public void lateralManual(){ //TODO add method
+        
     }
 }
 

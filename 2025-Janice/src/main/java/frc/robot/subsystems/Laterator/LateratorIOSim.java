@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LateratorConstants;
 import frc.robot.subsystems.Gripper.GripperIO.GripperIOInputs;
+import frc.robot.subsystems.Laterator.LateratorIO;
 
 public class LateratorIOSim implements LateratorIO{
     

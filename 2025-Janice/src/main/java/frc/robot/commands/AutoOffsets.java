@@ -115,7 +115,7 @@ public class AutoOffsets {
                 return reefOffset.translation2d;
             }
         }
-        System.out.println("૮(˶ㅠ︿ㅠ)ა   " + reefPosition.tagID + "  " + reefPosition.reefDirection);
+        System.out.println(":<   " + reefPosition.tagID + "  " + reefPosition.reefDirection);
         return new Translation2d();
     }
 
@@ -125,8 +125,9 @@ public class AutoOffsets {
                 return reefOffsetParallel.offset;
             }
         }
-        System.out.println("૮(˶ㅠ︿ㅠ)ა   " + tagID + "  " + reefDirection);
+        System.out.println(":<" + tagID + "  " + reefDirection);
         return 0.0;
     }
+    
     
 }

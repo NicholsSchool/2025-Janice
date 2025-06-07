@@ -36,32 +36,31 @@ public class Laterator extends SubsystemBase{
         Logger.processInputs("Laterator", inputs);
         if (DriverStation.isDisabled()) {}
 
-        // if(isManual){
-        //     io.setVoltage(lateratorManual * 3);
-        // }else{
-        //     voltage = 0.0;
-        // }
-        // else {
-        // switch(lateratorMode){
-        //     case OUTTAKE -> {
-        //         if (inputs.limitSwitch && voltage > 0) {
-        //             voltage = 0.0;
-        //         }
-        //         else {
-        //             voltage = 3.0;
-        //         }
-        //     }
-        //     case INTAKE -> {
-        //         voltage = -3.0;
-        //     }
-        //     case STOP, IDLE -> {
-        //         voltage = 0.0;
-        //     }
-        //     default -> {
-        //         voltage = 0.0;
-        //     }
-        // }
-    // }
+        if(isManual){
+            io.setVoltage(lateratorManual * 3);
+        }else{
+            voltage = 0.0;
+        
+            switch(lateratorMode){
+            case OUTTAKE -> {
+                if (inputs.limitSwitch && voltage > 0) {
+                    voltage = 0.0;
+                } 
+                else {
+                    voltage = 3.0;
+                }
+            }
+            case INTAKE -> {
+                voltage = -3.0;
+            }
+            case STOP, IDLE -> {
+                voltage = 0.0;
+            }
+            default -> {
+                voltage = 0.0;
+            }
+        }
+    }
             io.setVoltage(voltage);
         }
     

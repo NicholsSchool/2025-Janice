@@ -15,7 +15,7 @@ public class DeAlgifier extends SubsystemBase{
     private final PIDController lateratorPidController;
     private final PIDController grabberPidController;
     
-    private final DigitalInput limitSwitch;
+    // private final DigitalInput limitSwitch;
 
     @SuppressWarnings("unused")
     private LateratorMode lateratorMode;
@@ -44,7 +44,7 @@ public class DeAlgifier extends SubsystemBase{
         lateratorPidController = new PIDController(DeAlgifierConstants.kLateratorPVelocity, 0, DeAlgifierConstants.kLateratorDVelocity);
         grabberPidController = new PIDController(DeAlgifierConstants.kGrabberP, 0, DeAlgifierConstants.kGrabberD);
 
-        limitSwitch = new DigitalInput(CAN.kDeAlgifierLimitSwitch);
+        // limitSwitch = new DigitalInput(CAN.kDeAlgifierLimitSwitch);
 
         lateratorPidController.reset();
         grabberPidController.reset();

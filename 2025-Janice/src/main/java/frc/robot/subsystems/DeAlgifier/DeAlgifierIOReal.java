@@ -24,7 +24,7 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
     private DigitalInput backLimitSwitch;
 
     public DeAlgifierIOReal() {
-        laterator = new TalonFX(CAN.kDeAlgifierLaterator, "Elevator");
+        // laterator = new TalonFX(CAN.kDeAlgifierLaterator, "Elevator");
         TalonFXConfiguration lateratorConfig = new TalonFXConfiguration();
         lateratorConfig.CurrentLimits.StatorCurrentLimit = 20;
         lateratorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -32,7 +32,7 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         lateratorConfig.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kLateratorGearRatio;
         laterator.getConfigurator().apply(lateratorConfig);
 
-        grabber = new TalonFX(CAN.kDeAlgifierGrabber, "Elevator");
+        // grabber = new TalonFX(CAN.kDeAlgifierGrabber, "Elevator");
         TalonFXConfiguration grabberConfig = new TalonFXConfiguration();
         grabberConfig.CurrentLimits.StatorCurrentLimit = DeAlgifierConstants.kDeAlgifierGrabberCurrentLimit;
         grabberConfig.CurrentLimits.StatorCurrentLimitEnable = true;

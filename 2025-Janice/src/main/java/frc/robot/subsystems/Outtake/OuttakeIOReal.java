@@ -24,7 +24,7 @@ public class OuttakeIOReal implements OuttakeIO {
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         outtakeMotor.getConfigurator().apply(config);
-        outtakeSensor.setAutomaticMode(true);
+        // outtakeSensor.setAutomaticMode(true);
 
     }
 
@@ -32,8 +32,8 @@ public class OuttakeIOReal implements OuttakeIO {
         inputs.motorVoltage = outtakeMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentAmps = outtakeMotor.getStatorCurrent().getValueAsDouble();
         inputs.supplyVoltage = outtakeMotor.getSupplyVoltage().getValueAsDouble();
-        inputs.hasCoral = seesCoral();
-        inputs.distance = distance();
+        // inputs.hasCoral = seesCoral();
+        // inputs.distance = distance();
     }
 
     @Override

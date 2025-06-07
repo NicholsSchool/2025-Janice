@@ -18,9 +18,6 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
-import frc.robot.subsystems.DeAlgifier.DeAlgifier;
-import frc.robot.subsystems.DeAlgifier.DeAlgifierIOReal;
-import frc.robot.subsystems.DeAlgifier.DeAlgifierIOSim;
 import frc.robot.subsystems.Gripper.Gripper;
 import frc.robot.subsystems.Gripper.GripperIO;
 import frc.robot.subsystems.Gripper.GripperIOReal;
@@ -28,7 +25,7 @@ import frc.robot.subsystems.Gripper.GripperIOSim;
 import frc.robot.subsystems.Laterator.Laterator;
 import frc.robot.subsystems.Laterator.LateratorIO;
 import frc.robot.subsystems.Laterator.LateratorIOReal;
-//import frc.robot.subsystems.Laterator.LateratorIOSim;
+import frc.robot.subsystems.Laterator.LateratorIOSim;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Outtake.OuttakeIO;
 import frc.robot.subsystems.Outtake.OuttakeIOSim;
@@ -113,7 +110,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        elevator = new Elevator(new ElevatorIOReal());
+        elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOReal());
         // deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
         laterator = new Laterator(new LateratorIOReal());
@@ -137,7 +134,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
-        // laterator = new Laterator(new LateratorIOSim());
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
               new Vision(
@@ -157,8 +154,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
-        // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
-     //   laterator = new Laterator(new LateratorIOSim());
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
             new Vision(
@@ -178,7 +174,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
-        // laterator = new Laterator(new LateratorIOSim());
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
              new Vision(
@@ -198,7 +194,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOSim());
         // deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
-        // laterator = new Laterator(new LateratorIOSim());
+        laterator = new Laterator(new LateratorIOSim());
         gripper = new Gripper(new GripperIOSim());
         vision =
              new Vision(

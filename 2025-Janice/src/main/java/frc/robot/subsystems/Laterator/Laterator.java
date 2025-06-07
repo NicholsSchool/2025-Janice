@@ -38,35 +38,37 @@ public class Laterator extends SubsystemBase{
 
         if(isManual && inputs.limitSwitch && voltage > 0){
             voltage = 0.0;
-<<<<<<< HEAD
-        
-            switch(lateratorMode){
-=======
+            io.setVoltage(voltage);
         }else if (isManual) {
             voltage = lateratorManual * 3;
+            io.setVoltage(voltage);
         }
         
         switch(lateratorMode){
->>>>>>> 7db81d412fb6f019d10350d217119ec958e40514
             case OUTTAKE -> {
                 if (inputs.limitSwitch && voltage > 0) {
                     voltage = 0.0;
+                    io.setVoltage(voltage);
                 } 
                 else {
                     voltage = 3.0;
+                    io.setVoltage(voltage);
                 }
             }
             case INTAKE -> {
                 voltage = -3.0;
+                io.setVoltage(voltage);
             }
             case STOP, IDLE -> {
                 voltage = 0.0;
+                io.setVoltage(voltage);
             }
             default -> {
                 voltage = 0.0;
+                io.setVoltage(voltage);
             }
     }
-            io.setVoltage(voltage);
+            
         }
     
 

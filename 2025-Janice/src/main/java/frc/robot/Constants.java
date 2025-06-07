@@ -89,7 +89,7 @@ public final class Constants {
 
     public static final int kGripperMotor = 38;
     public static final int kLaterator = 37;
-    public static final int kLateratorLimitSwitch = -1; //TODO add CAMID for laterator limit switch
+    public static final int kLateratorLimitSwitch = 1; 
   }
 
   public static final class RobotConstants {

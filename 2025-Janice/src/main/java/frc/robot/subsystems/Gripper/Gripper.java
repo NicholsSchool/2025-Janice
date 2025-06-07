@@ -37,21 +37,26 @@ public class Gripper extends SubsystemBase{
         switch(gripperMode){
             case OUTTAKE -> {
                 voltage = 1.5;
+                io.setVoltage(voltage);
             }
             case INTAKE -> {
                 voltage = -3.0;
+                io.setVoltage(voltage);
             }
             case STOP -> {
                 voltage = 0.0;
+                io.setVoltage(voltage);
             }
             case IDLE -> {
                 voltage = 0.0;
+                io.setVoltage(voltage);
             }
             default -> {
                 voltage = 0.0;
+                io.setVoltage(voltage);
             }
         }
-            io.setVoltage(voltage);
+           
         }
     
 

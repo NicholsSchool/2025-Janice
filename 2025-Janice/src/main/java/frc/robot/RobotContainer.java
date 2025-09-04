@@ -1,8 +1,14 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,9 +19,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveToHumanPlayer;
 import frc.robot.commands.DriveToReef;
 import frc.robot.commands.DriveToReef.ReefDirection;
 import frc.robot.subsystems.DeAlgifier.DeAlgifier;
@@ -60,6 +68,8 @@ public class RobotContainer {
   private final Vision vision;
   private final DeAlgifier deAlgifier;
 
+  //private PowerDistribution pdh;
+  //ColorInfo colorInfo = null;
 
   // shuffleboard
   ShuffleboardTab shuffleBoardTab;
@@ -69,6 +79,9 @@ public class RobotContainer {
   public static CommandXboxController operatorController = new CommandXboxController(1);
   public Rumbler driveRumbler = new Rumbler(driveController);
   public Rumbler operatorRumbler = new Rumbler(operatorController);
+
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   // Start position selections
   public static final LoggedTunableNumber startPositionIndex =
@@ -96,6 +109,8 @@ public class RobotContainer {
 
       case ROBOT_REAL_JANICE:
         // Real robot, instantiate hardware IO implementations
+        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        //colorInfo = new ColorInfo();
         drive =
             new Drive(
                 new GyroIONAVX(),
@@ -103,9 +118,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        elevator = new Elevator(new ElevatorIOReal());
+        elevator = new Elevator(new ElevatorIOSim());
         outtake = new Outtake(new OuttakeIOReal());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -115,6 +130,8 @@ public class RobotContainer {
         
       case ROBOT_REAL_FRANKENLEW:
         // Real robot, instantiate hardware IO implementations
+        //pdh = new PowerDistribution(Constants.CAN.kPowerDistributionHub, ModuleType.kRev);
+        //colorInfo = new ColorInfo();
         drive =
             new Drive(
                 new GyroIONAVX(),
@@ -205,14 +222,25 @@ public class RobotContainer {
 
     }
 
+    // Set up auto routines
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
     // Create auto commands
     autoCommands = new AutoCommands(drive, elevator, outtake);
+
+    // autoChooser.addOption("Wait 5 seconds", new WaitCommand(5.0));
+
+    // add testing auto functions
+    addTestingAutos();
 
     // initialize the shuffleboard outputs
     initShuffleboard();
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // set starting position of robot
+    // setStartingPose();
   }
 
   private void initShuffleboard() {
@@ -225,6 +253,25 @@ public class RobotContainer {
     // if (RobotType.ROBOT_REAL == Constants.getRobot()) {
     //   colorInfo.pvCornerOne();
     // }
+  }
+
+  // changes robot pose with dashboard tunables
+  private void resetPosWithDashboard() {
+
+    // update robot position only if robot is disabled, otherwise
+    // robot could move in unexpected ways.
+    if (DriverStation.isDisabled()) {
+      if (startX0.hasChanged(hashCode())
+          || startY0.hasChanged(hashCode())
+          || startTheta0.hasChanged(hashCode())
+          || startX1.hasChanged(hashCode())
+          || startY1.hasChanged(hashCode())
+          || startTheta1.hasChanged(hashCode())
+          || startPositionIndex.hasChanged(hashCode())) {
+
+        setStartingPose();
+      }
+    }
   }
 
   /**
@@ -309,26 +356,68 @@ public class RobotContainer {
     driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
 
+    // driveController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 180,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .y()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 0,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .x()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 90,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .b()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -90,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+
     operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
     operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));
     operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
     operatorController.povUp().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL3));
     operatorController.povDown().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL2));
+    // operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
-    operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
+    driveController.rightTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
+    //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
-    // //axis 5 is Right Y
-    operatorController.axisMagnitudeGreaterThan(5, 0.07).whileTrue( 
-      new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY())).repeatedly());
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> deAlgifier.lateratorManual(0.0)));
+    // //axis 4 is Right X
+    operatorController.axisMagnitudeGreaterThan(5, 0).whileTrue( 
+      new RepeatCommand( new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY()))));
 
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
 
-    // rumbler
+
     driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());
     operatorRumbler.setDefaultCommand(new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0), operatorRumbler).repeatedly());
 
@@ -356,10 +445,65 @@ public class RobotContainer {
 
 
      try{
+        // Load the path you want to follow using its name in the GUI
+        // PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+        // System.out.println("ACTIVE PATH CALL BACK 3");
+        // return AutoBuilder.followPath(path);
         return autoCommands.autoRoutine();
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
     }
+
+    //   // var path = PathPlannerAuto.getStaringPoseFromAutoFile("TestAuto");
+    //   // var path = PathPlannerPath.fromChoreoTrajectory("New Path");
+    //   // NamedCommands.registerCommand("RunIntake", intake.runEatCommand().withTimeout(1.0));
+    //   // NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(),
+    // intake));
+    //   // NamedCommands.registerCommand(
+    //   //     "Shoot", new InstantCommand(() -> new Shoot(shooter, intake,
+    // indexer)).withTimeout(3));
+    //   // drive.setPose(PathPlannerAuto.getStaringPoseFromAutoFile("New Auto"));
+    //   // return new PathPlannerAuto("New Auto");
+    //   // return AutoBuilder.followPath(PathPlannerPath.fromPathFile("TestPath"));
+    //registerNamedCommands();
+    //return autoChooser.get();
+  }
+
+  private void addAutos() {}
+  
+  private void addTestingAutos() {
+    autoChooser.addOption("Wait Auto", new WaitCommand(Time.ofBaseUnits(5, Seconds)) );
+    // Pathplanner Auto Testing
+    // Set up feedforward characterization
+    // autoChooser.addOption(
+    //     "Drive FF Characterization",
+    //     new FeedForwardCharacterization(
+    //         drive,
+    //         drive::runCharacterizationVolts,
+    //         drive::getCharacterizationVelocity)); // todo change these for new robot
+
+    // autoChooser.addOption(
+    //     "Module Drive Ramp Test",
+    //     new VoltageCommandRamp(drive, drive::runDriveCommandRampVolts, 0.5, 5.0));
+
+    // autoChooser.addOption(
+    //     "Module Turn Ramp Test",
+    //     new VoltageCommandRamp(drive, drive::runTurnCommandRampVolts, 0.5, 5.0));
+    // autoChooser.addOption( // drives 10 ft for odometry testing
+    //     "10 foot test", autoCommands.TenFootTest(drive)); // TODO: change these for new robot
+
+    // autoChooser.addOption(
+    //   "DriveToPos",
+    //   autoCommands.splineToPose(
+    //       new Pose2d(
+    //           new Translation2d(4, 3),
+    //           new Rotation2d(Math.PI / 2)))); // TODO: change these for new robot
+
+  }
+
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("Print", new InstantCommand( () -> System.out.println("Print Command!")));
+    
   }
 }

@@ -121,7 +121,7 @@ public final class Constants {
 
     public static final double lowGearScaler = 0.6;
     public static final double reefLeftShift = 0.1 + 0.08 - Units.inchesToMeters(5);
-    public static final double reefRightShift = 0.22 + 0.08;
+    public static final double reefRightShift = 0.22 + 0.02;
   }
 
   // REV MAXSwerve Modules

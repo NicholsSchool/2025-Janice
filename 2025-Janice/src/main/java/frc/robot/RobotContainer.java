@@ -19,9 +19,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.AutoCommands;
+import frc.robot.commands.DriveAndScore;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriveToHumanPlayer;
 import frc.robot.commands.DriveToReef;
@@ -351,8 +355,8 @@ public class RobotContainer {
                     () -> true));
               
         // drive to closest reef
-    driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
-    driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
+    driveController.x().whileTrue(  new DriveAndScore(drive, elevator, outtake, ReefDirection.LEFT, true) );
+    driveController.b().whileTrue( new DriveAndScore(drive, elevator, outtake, ReefDirection.RIGHT, true) );
     driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
 

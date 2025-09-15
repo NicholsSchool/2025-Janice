@@ -407,7 +407,7 @@ public class RobotContainer {
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
-    driveController.rightTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
+    operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // //axis 4 is Right X
@@ -417,6 +417,8 @@ public class RobotContainer {
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
 
+    driveController.rightTrigger().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
+    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
 
     driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());
     operatorRumbler.setDefaultCommand(new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0), operatorRumbler).repeatedly());

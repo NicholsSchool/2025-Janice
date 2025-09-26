@@ -216,6 +216,9 @@ public static final class DeAlgifierConstants {
   public static final double kLateratorVelocityGoalRadPerSec = 5;
   public static final double kLateratorPVelocity = 2.0;
   public static final double kLateratorDVelocity = 0.0;
+
+  public static final int backLimitSwitchID = 1;
+  public static final int frontLimitSwitchID = 2;
 }
     
   public static final class AutoConstants {

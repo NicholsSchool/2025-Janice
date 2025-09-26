@@ -19,7 +19,7 @@ public class DeAlgifier extends SubsystemBase{
 
     private double lateralManual = 0.0;
 
-    boolean manual = true;
+    boolean manual = false;
 
     enum LateratorMode {
         IN,
@@ -65,22 +65,20 @@ public class DeAlgifier extends SubsystemBase{
         }else{
             io.setLateratorVoltage(0.0);
             io.setGrabberBrake(true);            
-        //     switch( lateratorMode ) {
-        //     case IN -> {
-        //         if( !inputs.backLimitSwitch)
-        //             io.setLateratorVoltage(lateratorPidController.calculate(
-        //                 inputs.lateratorVelocityRadPerSec, -DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
-        //         else io.setLateratorVoltage(0.0);
-        //     }
-        //     case OUT -> {
-        //         if( !inputs.frontLimitSwitch )
-        //             io.setLateratorVoltage(lateratorPidController.calculate(
-        //                 inputs.lateratorVelocityRadPerSec, DeAlgifierConstants.kLateratorVelocityGoalRadPerSec));
-        //         else io.setLateratorVoltage(0.0);
-        //     }
-        //     case IDLE -> io.setLateratorVoltage(0.0);
-        //     default -> io.setLateratorVoltage(0.0);
-        // }
+            switch( lateratorMode ) {
+            case IN -> {
+                if( !inputs.backLimitSwitch)
+                    io.setLateratorVoltage(-7.5);
+                else io.setLateratorVoltage(0.0);
+            }
+            case OUT -> {
+                if( !inputs.frontLimitSwitch )
+                    io.setLateratorVoltage(4.5);
+                else io.setLateratorVoltage(0.0);
+            }
+            case IDLE -> io.setLateratorVoltage(0.0);
+            default -> io.setLateratorVoltage(0.0);
+        }
         }
 
         switch( grabberMode ) {

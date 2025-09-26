@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DeAlgifierConstants;
 
@@ -42,6 +43,9 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         grabberConfig.Feedback.SensorToMechanismRatio = DeAlgifierConstants.kGrabberGearRatio;
         grabber.getConfigurator().apply(grabberConfig);
 
+        frontLimitSwitch = new DigitalInput(Constants.DeAlgifierConstants.frontLimitSwitchID);
+        backLimitSwitch = new DigitalInput(Constants.DeAlgifierConstants.backLimitSwitchID);
+
         staticBrake = new StaticBrake();
 
         voltageControl = new VoltageOut(0.0);
@@ -60,8 +64,8 @@ public class DeAlgifierIOReal implements DeAlgifierIO {
         inputs.grabberCurrentAmps = grabber.getSupplyCurrent().getValueAsDouble();
         inputs.grabberVelocityRPM = grabber.getVelocity().getValue().in(RPM);
 
-        inputs.frontLimitSwitch = frontLimitSwitch.get();
-        inputs.backLimitSwitch = backLimitSwitch.get();
+        inputs.frontLimitSwitch = !frontLimitSwitch.get();
+        inputs.backLimitSwitch = !backLimitSwitch.get();
     }
 
     @Override

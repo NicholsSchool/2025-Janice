@@ -118,9 +118,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
-        elevator = new Elevator(new ElevatorIOSim());
+        elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
+        deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
         vision =
              new Vision(
                 drive::addVisionMeasurement,
@@ -402,7 +402,8 @@ public class RobotContainer {
     operatorController.b().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL2));
     operatorController.povUp().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL3));
     operatorController.povDown().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kAlgaeL2));
-    // operatorController.y().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL4));
+    operatorController.povRight().onTrue(new InstantCommand(() -> deAlgifier.lateratorOut()));
+    operatorController.povLeft().onTrue(new InstantCommand(() -> deAlgifier.lateratorIn()));
 
     elevator.setDefaultCommand(new InstantCommand(() -> elevator.runManualPos(operatorController.getLeftY()), elevator));
 
@@ -410,9 +411,9 @@ public class RobotContainer {
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
-    // //axis 4 is Right X
-    operatorController.axisMagnitudeGreaterThan(5, 0).whileTrue( 
-      new RepeatCommand( new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY()))));
+    // // //axis 4 is Right X
+    // operatorController.axisMagnitudeGreaterThan(5, 0).whileTrue( 
+    //   new RepeatCommand( new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY()))));
 
     operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));

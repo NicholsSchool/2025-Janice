@@ -37,6 +37,7 @@ import frc.robot.subsystems.Outtake.OuttakeIOReal;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONAVX;
+import frc.robot.subsystems.drive.GyroIORedux;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -113,14 +114,14 @@ public class RobotContainer {
         //colorInfo = new ColorInfo();
         drive =
             new Drive(
-                new GyroIONAVX(),
+                new GyroIORedux(),
                 new ModuleIOTalonFX(0),
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         elevator = new Elevator(new ElevatorIOReal());
         outtake = new Outtake(new OuttakeIOReal());
-        deAlgifier = new DeAlgifier(new DeAlgifierIOReal() {});
+        deAlgifier = new DeAlgifier(new DeAlgifierIOSim() {});
         vision =
              new Vision(
                 drive::addVisionMeasurement,

@@ -257,5 +257,7 @@ public static final class DeAlgifierConstants {
     public static final double rotationPhotonStdDevs = 0.005;
 
     public static final int visionStatsNumBuffer = 100;
+
+    public static final double splineV2RotationalP = 0.1;
   }
 }

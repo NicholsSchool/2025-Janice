@@ -20,7 +20,7 @@ public class SplineV2Math {
             return new Translation2d(x,y);
         }
 
-        Rotation2d theta = new Rotation2d(-Math.atan2(y,x) + Math.PI / 2);
+        Rotation2d theta = new Rotation2d(-Math.atan2(y,x));
         Translation2d offsetDriveTranslation = (drivePos.getTranslation().minus(objectPos(TX, TA, drivePos))).rotateBy(theta);
 
         Translation2d driveVector = new Translation2d(1, 2 * offsetDriveTranslation.getY() / offsetDriveTranslation.getX());

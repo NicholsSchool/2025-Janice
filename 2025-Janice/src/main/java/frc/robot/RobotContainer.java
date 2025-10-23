@@ -367,8 +367,8 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
           //replace the translation w limelight helpers ran thru a way of getting position for gamepiece
             drive,
-            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getX(),
-            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getY(),
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(5,3), drive.getPose()).getX(),
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(5,3), drive.getPose()).getY(),
             () -> -driveController.getRightX(),
             () -> Constants.driveRobotRelative));
 

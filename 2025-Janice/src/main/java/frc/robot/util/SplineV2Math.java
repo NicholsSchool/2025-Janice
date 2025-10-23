@@ -5,7 +5,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class SplineV2Math {
-    
+
+        /*
+        The rotation for the drive method should be PID to center the gamepiece
+        in the limelight also in here we will need a convert TA and TX to pos whether
+        that needs filtering is another question, but the driving should be able to adapt
+        only time will tell though and a lot of experimenting
+        maybe so the driver feels more in control, add a manual rotation to the limelight PID though this is optional
+         */
+    // TODO: have this method intake TX and TY then convert to translation2d input from there, this way I can use the yaw from this
     public static Translation2d splineTwo(double x, double y, Translation2d desiredPos, Pose2d drivePos){
         if(desiredPos.equals(new Translation2d())){
             return new Translation2d(x,y);
@@ -19,6 +27,13 @@ public class SplineV2Math {
         driveVector.times(Math.hypot(x,y) / driveVector.getNorm());
 
         return(driveVector.rotateBy(theta.times(-1.0)));
+    }
+
+    public static Translation2d objectPos(double TX, double TA, Pose2d drivePos){
+        double distance = 1; //(insert distance function here, this will be gotten by TA and some sort of regression)
+        double theta = Math.toRadians(TX + drivePos.getRotation().getDegrees()); //calibration needed also check if TX is rad or deg
+        return drivePos.getTranslation().plus(new Translation2d(distance * Math.cos(theta), distance * Math.sin(theta)));
+
     }
 
 }

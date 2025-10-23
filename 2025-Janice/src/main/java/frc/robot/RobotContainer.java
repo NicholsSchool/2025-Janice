@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -50,9 +51,12 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.SplineV2Math;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import static frc.robot.subsystems.vision.VisionConstants.*;
+
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -354,8 +358,20 @@ public class RobotContainer {
         // drive to closest reef
     driveController.x().whileTrue(new DriveToReef(drive, ReefDirection.LEFT));
     driveController.b().whileTrue(new DriveToReef(drive, ReefDirection.RIGHT));
-    driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
+    // driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
+    
+    driveController
+    .a()
+    .whileTrue(
+        DriveCommands.joystickDrive(
+          //replace the translation w limelight helpers ran thru a way of getting position for gamepiece
+            drive,
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getX(),
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getY(),
+            () -> -driveController.getRightX(),
+            () -> Constants.driveRobotRelative));
+
 
     // driveController
     //     .a()
@@ -410,17 +426,21 @@ public class RobotContainer {
 
     outtake.setDefaultCommand(new InstantCommand(() -> outtake.stop(), outtake ) );
     operatorController.leftTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
+    operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand( new InstantCommand( () -> outtake.outtakeTele(), outtake )));
     //operatorController.leftTrigger(0.8).whileFalse(new InstantCommand(() -> outtake.processCoral(), outtake ));
 
     // // //axis 4 is Right X
     // operatorController.axisMagnitudeGreaterThan(5, 0).whileTrue( 
     //   new RepeatCommand( new InstantCommand( () -> deAlgifier.lateratorManual(operatorController.getRightY()))));
 
-    operatorController.rightTrigger(0.8).whileTrue(new RepeatCommand(new InstantCommand( () -> deAlgifier.intake() )));
     operatorController.rightTrigger(0.8).whileFalse(new RepeatCommand(new InstantCommand( () -> deAlgifier.holdAlgae() )));
 
-    driveController.rightTrigger().and(() -> (LimelightHelpers.getTA("limelight") > 0.1))
-    .whileTrue(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 1), driveRumbler).repeatedly());
+    driveController.rightTrigger(0.8).whileTrue( DriveCommands.joystickDrive(
+      drive,
+      () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+      () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+      () -> -driveController.getRightX() * 0.55,
+      () -> true));
 
     driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());
     operatorRumbler.setDefaultCommand(new InstantCommand(() -> operatorRumbler.setRumble(RumbleType.kBothRumble, 0), operatorRumbler).repeatedly());

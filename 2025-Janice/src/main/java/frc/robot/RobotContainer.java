@@ -365,15 +365,54 @@ public class RobotContainer {
     .a()
     .whileTrue(
         DriveCommands.joystickDrive(
-          //replace the translation w limelight helpers ran thru a way of getting position for gamepiece
+          // it goes y then x because the y jostick moves the bot x on the field
             drive,
-            () -> SplineV2Math.splineTwo(-driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
-            LimelightHelpers.getTY("limelight"), drive.getPose()).getY(),
-            () -> SplineV2Math.splineTwo(-driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
-            LimelightHelpers.getTY("limelight"), drive.getPose()).getX(),
-            //Check sign:
-            () -> LimelightHelpers.getTX("limelight") * Constants.VisionConstants.splineV2RotationalP,
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getX(),
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getY(),
+            () -> -driveController.getRightX(),
             () -> Constants.driveRobotRelative));
+
+
+    // driveController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 180,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .y()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 0,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .x()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> 90,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
+    // driveController
+    //     .b()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveWithAngle(
+    //             drive,
+    //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
+    //             () -> -90,
+    //             () -> drive.getYaw(),
+    //             () -> Constants.driveRobotRelative));
 
     operatorController.a().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL1));
     operatorController.x().onTrue(elevator.runGoToPosCommand(Constants.ElevatorConstants.kArmL3));

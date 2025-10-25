@@ -14,14 +14,30 @@ public class SplineV2Math {
         maybe so the driver feels more in control, add a manual rotation to the limelight PID though this is optional
          */
     // TODO: have this method intake TX and TY then convert to translation2d input from there, this way I can use the yaw from this
-    public static Translation2d splineTwo(double x, double y, double TX, double TA, Pose2d drivePos){
-        // is it 0 or 0.0? to check
-        if(TA == 0){
-            return new Translation2d(x,y);
+    // public static Translation2d splineTwo(double x, double y, double TX, double TA, Pose2d drivePos){
+    //     // is it 0 or 0.0? to check
+    //     if(TA == 0){
+    //         return new Translation2d(x,y);
+    //     }
+
+    //     Rotation2d theta = new Rotation2d(-Math.atan2(y,x) + Math.PI / 2);
+    //     Translation2d offsetDriveTranslation = (drivePos.getTranslation().minus(objectPos(TX, TA, drivePos))).rotateBy(theta);
+
+    //     Translation2d driveVector = new Translation2d(1, 2 * offsetDriveTranslation.getY() / offsetDriveTranslation.getX());
+
+    //     driveVector.times(Math.hypot(x,y) / driveVector.getNorm());
+
+    //     return(driveVector.rotateBy(theta.times(-1.0)));
+    // }
+
+    public static Translation2d splineTwo(double x, double y, Translation2d desiredPos, Pose2d drivePos){
+        if(desiredPos.equals(new Translation2d())){
+            //joystick y and field y aren't the same
+            return new Translation2d(y,x);
         }
 
-        Rotation2d theta = new Rotation2d(-Math.atan2(y,x));
-        Translation2d offsetDriveTranslation = (drivePos.getTranslation().minus(objectPos(TX, TA, drivePos))).rotateBy(theta);
+        Rotation2d theta = new Rotation2d(-Math.atan2(y,x) + Math.PI / 2);
+        Translation2d offsetDriveTranslation = (drivePos.getTranslation().minus(desiredPos)).rotateBy(theta);
 
         Translation2d driveVector = new Translation2d(1, 2 * offsetDriveTranslation.getY() / offsetDriveTranslation.getX());
 

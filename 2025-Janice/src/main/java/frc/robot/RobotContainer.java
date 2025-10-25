@@ -367,11 +367,24 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
           // it goes y then x because the y jostick moves the bot x on the field
             drive,
-            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getX(),
-            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(2,2), drive.getPose()).getY(),
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(5,5), drive.getPose()).getX(),
+            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(5,5), drive.getPose()).getY(),
             () -> -driveController.getRightX(),
             () -> Constants.driveRobotRelative));
 
+    // driveController
+    //   .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDrive(
+    //               //replace the translation w limelight helpers ran thru a way of getting position for gamepiece
+    //              drive,
+    //               () -> SplineV2Math.splineTwoVision(-driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
+    //                 LimelightHelpers.getTY("limelight"), drive.getPose()).getY(),
+    //                 () -> SplineV2Math.splineTwoVision(-driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
+    //                 LimelightHelpers.getTY("limelight"), drive.getPose()).getX(),
+    //                 //Check sign:
+    //                 () -> LimelightHelpers.getTX("limelight") * Constants.VisionConstants.splineV2RotationalP,
+    //                 () -> Constants.driveRobotRelative));
 
     // driveController
     //     .a()

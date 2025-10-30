@@ -361,35 +361,36 @@ public class RobotContainer {
     // driveController.a().whileTrue(new DriveToReef(drive, ReefDirection.DEALGIFY));
     driveController.y().onTrue(new InstantCommand( () -> drive.requestCoast() ));
     
-    driveController
-    .a()
-    .whileTrue(
-        DriveCommands.joystickDrive(
-          // it goes y then x because the y jostick moves the bot x on the field
-            drive,
-            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(5,5), drive.getPose()).getX(),
-            () -> SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(5,5), drive.getPose()).getY(),
-            () -> -driveController.getRightX(),
-            () -> Constants.driveRobotRelative));
-
     // driveController
-    //   .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDrive(
-    //               //replace the translation w limelight helpers ran thru a way of getting position for gamepiece
-    //              drive,
-    //               () -> SplineV2Math.splineTwoVision(-driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
-    //                 LimelightHelpers.getTY("limelight"), drive.getPose()).getY(),
-    //                 () -> SplineV2Math.splineTwoVision(-driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
-    //                 LimelightHelpers.getTY("limelight"), drive.getPose()).getX(),
-    //                 //Check sign:
-    //                 () -> LimelightHelpers.getTX("limelight") * Constants.VisionConstants.splineV2RotationalP,
-    //                 () -> Constants.driveRobotRelative));
+    // .a()
+    // .whileTrue(
+    //     DriveCommands.joystickDrive(
+    //       // it goes y then x because the y jostick moves the bot x on the field
+    //         drive,
+    //         () -> 0.4 * SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(14,5.6), drive.getPose()).getX(),
+    //         () -> 0.4 * SplineV2Math.splineTwo(driveController.getLeftX(), -driveController.getLeftY(), new Translation2d(14,5.6), drive.getPose()).getY(),
+    //         () -> -driveController.getRightX(),
+    //         () -> Constants.driveRobotRelative));
+
+    driveController
+      .a()
+        .whileTrue(
+            DriveCommands.joystickDrive(
+                  //replace the translation w limelight helpers ran thru a way of getting position for gamepiece
+                 drive,
+                  () -> Constants.DriveConstants.lowGearScaler * SplineV2Math.splineTwoVision(driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
+                    LimelightHelpers.getTA("limelight"), drive.getPose()).getX(),
+                    () -> Constants.DriveConstants.lowGearScaler * SplineV2Math.splineTwoVision(driveController.getLeftX(), -driveController.getLeftY(), LimelightHelpers.getTX("limelight"),
+                    LimelightHelpers.getTA("limelight"), drive.getPose()).getY(),
+                    //Check sign:
+                    () -> -LimelightHelpers.getTX("limelight") * Constants.VisionConstants.splineV2RotationalP,
+                            // () -> -driveController.getRightX(),
+                    () -> Constants.driveRobotRelative));
 
     // driveController
     //     .a()
     //     .whileTrue(
-    //         DriveCommands.joystickDriveWithAngle(
+    //         DriveCommands.joystickDriveWithAngle
     //             drive,
     //             () -> driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
     //             () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
@@ -452,7 +453,7 @@ public class RobotContainer {
       drive,
       () -> -driveController.getLeftY() * Constants.DriveConstants.lowGearScaler,
       () -> -driveController.getLeftX() * Constants.DriveConstants.lowGearScaler,
-      () -> -driveController.getRightX() * 0.55,
+      () -> -driveController.getRightX() * 0.55 - LimelightHelpers.getTX("limelight") * Constants.VisionConstants.splineV2RotationalP,
       () -> true));
 
     driveRumbler.setDefaultCommand(new InstantCommand(() -> driveRumbler.setRumble(RumbleType.kBothRumble, 0), driveRumbler).repeatedly());

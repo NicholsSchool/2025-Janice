@@ -32,8 +32,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.SplineV2Math;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
 
 import java.util.ArrayDeque;
@@ -407,6 +409,10 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput
   public double getYaw() {
     return kalman.getEstimatedPosition().getRotation().getRadians();
+  }
+  @AutoLogOutput
+  public Pose2d notePos(){
+    return new Pose2d(SplineV2Math.objectPos(LimelightHelpers.getTX("limelight"), LimelightHelpers.getTA("limelight"), getPose()), new Rotation2d());
   }
 
   public void updateEstimatedPose(SwerveModulePosition[] wheelAbsolutes) {

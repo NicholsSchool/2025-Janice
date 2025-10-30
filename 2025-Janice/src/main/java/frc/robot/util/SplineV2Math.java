@@ -3,7 +3,6 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
 public class SplineV2Math {
 
         /*
@@ -30,9 +29,9 @@ public class SplineV2Math {
     }
 
     public static Translation2d splineTwoVision(double x, double y, double TX, double TA, Pose2d drivePos){
-        if(TA == 0.0){
+        if(TA < 0.1){
             //joystick y and field y aren't the same
-            return new Translation2d(x,y);
+            return new Translation2d(y,-x);
         }
 
         Rotation2d theta = new Rotation2d(-Math.atan2(y,x) + Math.PI / 2);
@@ -40,14 +39,16 @@ public class SplineV2Math {
 
         Translation2d driveVector = new Translation2d(1, 2 * offsetDriveTranslation.getY() / offsetDriveTranslation.getX());
 
-        driveVector.times(Math.hypot(x,y) / driveVector.getNorm());
+        driveVector.times(Math.hypot(x,y));
+        driveVector.times(1 / (driveVector.getNorm() * 0.3 * (x + y)));
 
         return(driveVector.rotateBy(theta.times(-1.0)));
     }
 
+
     public static Translation2d objectPos(double TX, double TA, Pose2d drivePos){
-        double distance = 1; //(insert distance function here, this will be gotten by TA and some sort of regression)
-        double theta = Math.toRadians(TX + drivePos.getRotation().getDegrees()); //calibration needed also check if TX is rad or deg
+        double distance = 3.75537 / Math.pow(TA + 0.9487, 2) + 0.64;
+        double theta = Math.toRadians(-TX + drivePos.getRotation().getDegrees() - 90.0);
         return drivePos.getTranslation().plus(new Translation2d(distance * Math.cos(theta), distance * Math.sin(theta)));
 
     }

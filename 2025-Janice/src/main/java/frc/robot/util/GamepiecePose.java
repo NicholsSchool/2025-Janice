@@ -23,6 +23,7 @@ public class GamepiecePose {
         //this is so if it gets a really unconfident first hit it doesn't make a bunch of tiny regions around it
         //as it gets more confident the region shinks to our min radius
         this.refinedRegionRadius = RegionConstants.minRegionRadius / confidence;
+        maxConfidence = confidence;
     }
 
     public void updateRegion(Translation2d translation, double confidence){
@@ -31,7 +32,7 @@ public class GamepiecePose {
             refinedRegionRadius = RegionConstants.minRegionRadius / confidence;
             maxConfidence = confidence;
         }
-
+        //make null inputs default translation 2ds
         if(translation.getNorm() != 0.0){
             //weighted average with confidence
             gamepieceTranslation = (gamepieceTranslation.plus(translation.times(confidence))).div(confidence + 1.0);
@@ -40,6 +41,10 @@ public class GamepiecePose {
             // TODO: update with loop time intervals
             lastSeen = lastSeen + 1.0;
         }
+    }
+
+    public void updateRegion(GamepiecePose detection){
+        updateRegion(detection.getTranslation(), detection.maxConfidence);
     }
 
     public Translation2d getTranslation(){

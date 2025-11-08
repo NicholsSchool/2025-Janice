@@ -1,18 +1,17 @@
-// package frc.robot.subsystems.RegionHandler;
+package frc.robot.subsystems.RegionHandler;
 
-// import java.util.ArrayList;
+import java.util.ArrayList;
 
-// import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLog;
 
-// import edu.wpi.first.math.geometry.Translation2d;
-// import frc.robot.util.GamepiecePose;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.util.GamepiecePose;
 
-// public interface RegionHandlerIO {
-//     @AutoLog
-//     public static class RegionHandlerIOInputs{
-//         // ArrayList<GamepiecePose> gamepiecePoses = new ArrayList<GamepiecePose>();
-//         GamepiecePose gamepiecePose;
-//     }
+public interface RegionHandlerIO {
+    public static class RegionHandlerIOInputs{
+        //for real supply your poses in here with whatever cameras you want just make sure to overwrite the current ones
+        ArrayList<GamepiecePose> detectedPoses = new ArrayList<GamepiecePose>();
+    }
 
-//     public default void updateInputs(RegionHandlerIOInputs inputs) {}
-// }
+    public default void updateInputs(RegionHandlerIOInputs inputs) {}
+}

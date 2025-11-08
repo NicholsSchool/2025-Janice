@@ -1,27 +1,46 @@
-// package frc.robot.subsystems.RegionHandler;
+package frc.robot.subsystems.RegionHandler;
 
-// import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.ArrayList;
 
-// import java.util.function.BooleanSupplier;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.RegionHandler.RegionHandlerIO.RegionHandlerIOInputs;
+import frc.robot.util.GamepiecePose;
 
-// import org.littletonrobotics.junction.Logger;
 
-// public class RegionHandler extends SubsystemBase {
+public class RegionHandler extends SubsystemBase {
     
-//     private RegionHandlerIO io;
-//     private final RegionHandlerIOInputsAutoLogged inputs = new RegionHandlerIOInputsAutoLogged();
+    private RegionHandlerIO io;
+    private RegionHandlerIOInputs inputs = new RegionHandlerIOInputs();
+
+    ArrayList<GamepiecePose> gamepiecePoses = new ArrayList<GamepiecePose>();
     
-//     public RegionHandler (RegionHandlerIO io){
-//         this.io = io;
-//     }
+    public RegionHandler (RegionHandlerIO io){
+        this.io = io;
+    }
     
-//     public void periodic(){
-//         io.updateInputs(inputs);
-//         Logger.processInputs("RegionHandler", inputs);
-//         if (DriverStation.isDisabled()) {}
-//     }
+    public void periodic(){
+        io.updateInputs(inputs);
+        handleRegions();
+    }
+
+    public void handleRegions(){
+        for(int detectedIndex = 0; detectedIndex < inputs.detectedPoses.size(); detectedIndex++){
+            for(int regionIndex = 0; regionIndex < gamepiecePoses.size(); regionIndex++){
+                if((inputs.detectedPoses.get(detectedIndex).getTranslation().minus(gamepiecePoses.get(regionIndex)
+                .getTranslation())).getNorm() < gamepiecePoses.get(regionIndex).refinedRegionRadius){
+                    gamepiecePoses.get(regionIndex).updateRegion(inputs.detectedPoses.get(detectedIndex));
+                    break;
+                }
+                if(regionIndex - 1 == gamepiecePoses.size() && gamepiecePoses.get(regionIndex).getTranslation().getNorm() != 0.0){
+                    gamepiecePoses.add(inputs.detectedPoses.get(detectedIndex));
+                }
+            }
+        }
+        for(int regionIndex = 0; regionIndex < gamepiecePoses.size(); regionIndex++){
+            if(gamepiecePoses.get(regionIndex).terminateRegion()){
+                gamepiecePoses.remove(regionIndex);
+            }
+        }
+    }
   
-// }
+}

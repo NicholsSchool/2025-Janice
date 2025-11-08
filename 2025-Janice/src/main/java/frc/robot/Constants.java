@@ -260,4 +260,13 @@ public static final class DeAlgifierConstants {
 
     public static final double splineV2RotationalP = 0.01;
   }
+
+  public static final class RegionConstants{
+    //meters
+    public static final double minRegionRadius = 0.3;
+    //approximately 1 sec if loop time is 20ms
+    public static final double terminateTime = 20000;
+
+
+  }
 }

@@ -39,9 +39,11 @@ public class PhotonVision extends SubsystemBase {
   }
 
   // The yaw of the target in degrees (positive right)
+  //TX
   public double getYaw(PhotonTrackedTarget target) {
     return target.getYaw();
   }
+  
 
   // The pitch of the target in degrees (positive up)
   public double getPitch(PhotonTrackedTarget target) {
@@ -49,6 +51,7 @@ public class PhotonVision extends SubsystemBase {
   }
 
   // The area (how much of the camera feed the bounding box takes up) as a percent (0-100)
+  //TA
   public double getArea(PhotonTrackedTarget target) {
     return target.getArea();
   }
